@@ -1,162 +1,294 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2487.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Copa pIAstão</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #111827 0%, #1f2937 100%);
+      color: #f9fafb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .game {
+      width: 100%;
+      max-width: 920px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+    .subtitle {
+      margin: 0 0 24px;
+      color: #d1d5db;
+    }
+    .scoreboard {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .name {
+      font-size: 1rem;
+      color: #d1d5db;
+      margin-bottom: 8px;
+    }
+    .points {
+      font-size: 3rem;
+      font-weight: 700;
+    }
+    .versus {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+    .question-box {
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .question-label {
+      font-size: 0.95rem;
+      color: #93c5fd;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .question {
+      font-size: 1.35rem;
+      line-height: 1.5;
+      min-height: 64px;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    button:hover { transform: translateY(-2px); }
+    button:active { transform: translateY(0); }
+    .gpt { background: #22c55e; color: #06240f; }
+    .google { background: #60a5fa; color: #081a33; }
+    .next { background: #fbbf24; color: #2a1700; }
+    .reset { background: #f87171; color: #2b0909; width: 100%; margin-top: 10px; }
+    .log {
+      background: rgba(0,0,0,0.22);
+      border-radius: 16px;
+      padding: 16px;
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .log h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+    .log-entry {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      margin-bottom: 8px;
+      color: #e5e7eb;
+      line-height: 1.4;
+    }
+    .winner {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 16px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: rgba(251,191,36,0.12);
+      border: 1px solid rgba(251,191,36,0.35);
+      color: #fde68a;
+      display: none;
+    }
+    .small {
+      color: #9ca3af;
+      font-size: 0.92rem;
+      margin-top: 10px;
+    }
+    @media (max-width: 720px) {
+      .scoreboard, .controls { grid-template-columns: 1fr; }
+      .versus { text-align: center; }
+      .points { font-size: 2.4rem; }
+      .question { font-size: 1.1rem; }
+    }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="pt-br"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Mano Google Jump - Bi-Campeão&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #202124; color: white; font-family: sans-serif; overflow: hidden; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>#gameCanvas { border-bottom: 2px solid #555; background: #fff; display: block; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.info { margin-top: 20px; text-align: center; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>h1 { color: #4285F4; margin: 5px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Mano Google Jump 🏆&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;Pressione &lt;b&gt;Espaço&lt;/b&gt; ou &lt;b&gt;Toque na Tela&lt;/b&gt; para pular os obstáculos!&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;canvas id="gameCanvas"&gt;&lt;/canvas&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="info"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2 id="score"&gt;Score: 0&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p id="msg"&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p1">const canvas = document.getElementById("gameCanvas");</p>
-<p class="p1">const ctx = canvas.getContext("2d");</p>
-<p class="p1">const scoreElement = document.getElementById("score");</p>
-<p class="p2"><br></p>
-<p class="p1">canvas.width = 600;</p>
-<p class="p1">canvas.height = 200;</p>
-<p class="p2"><br></p>
-<p class="p1">let score = 0;</p>
-<p class="p1">let gameActive = true;</p>
-<p class="p2"><br></p>
-<p class="p1">// Config do Personagem (Mano Google)</p>
-<p class="p1">let player = { x: 50, y: 150, w: 30, h: 30, dy: 0, jumpForce: 12, gravity: 0.6, grounded: false, color: "#4285F4" };</p>
-<p class="p2"><br></p>
-<p class="p1">// Obstáculos (Gepetetas)</p>
-<p class="p1">let obstacles = [];</p>
-<p class="p1">let spawnTimer = 0;</p>
-<p class="p2"><br></p>
-<p class="p1">function spawnObstacle() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let size = Math.random() * (40 - 20) + 20;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>obstacles.push({ x: canvas.width, y: 180 - size, w: 20, h: size, speed: 5 + (score / 100) });</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function update() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (!gameActive) return;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Gravidade</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (!player.grounded) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>player.dy += player.gravity;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>player.y += player.dy;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (player.y &gt; 150) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>player.y = 150;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>player.dy = 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>player.grounded = true;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Obstáculos</p>
-<p class="p1"><span class="Apple-converted-space">    </span>spawnTimer++;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (spawnTimer &gt; Math.max(40, 80 - score/5)) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>spawnObstacle();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>spawnTimer = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>obstacles.forEach((obs, index) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>obs.x -= obs.speed;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Colisão</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (player.x &lt; obs.x + obs.w &amp;&amp; player.x + player.w &gt; obs.x &amp;&amp;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>player.y &lt; obs.y + obs.h &amp;&amp; player.y + player.h &gt; obs.y) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gameOver();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (obs.x + obs.w &lt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>obstacles.splice(index, 1);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>score++;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>scoreElement.innerText = "Score: " + score;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>draw();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>requestAnimationFrame(update);</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function draw() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>ctx.clearRect(0, 0, canvas.width, canvas.height);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Chão</p>
-<p class="p1"><span class="Apple-converted-space">    </span>ctx.strokeStyle = "#555";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>ctx.beginPath(); ctx.moveTo(0, 180); ctx.lineTo(600, 180); ctx.stroke();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Player (Mano Google)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>ctx.fillStyle = player.color;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>ctx.fillRect(player.x, player.y, player.w, player.h);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Detalhe do "olho" pra dar carisma</p>
-<p class="p1"><span class="Apple-converted-space">    </span>ctx.fillStyle = "white"; ctx.fillRect(player.x + 18, player.y + 5, 5, 5);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Obstáculos (Os Gepetetas vermelhos)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>ctx.fillStyle = "#EA4335";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>obstacles.forEach(obs =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillRect(obs.x, obs.y, obs.w, obs.h);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function gameOver() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>gameActive = false;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("msg").innerHTML = "&lt;span style='color: #EA4335; font-size: 24px; font-weight: bold;'&gt;GAME OVER!&lt;/span&gt;&lt;br&gt;O Gepeteta te pegou! Clique para reiniciar.";</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function resetGame() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (!gameActive) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>player.y = 150;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>obstacles = [];</p>
-<p class="p1"><span class="Apple-converted-space">        </span>score = 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>scoreElement.innerText = "Score: 0";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("msg").innerText = "";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>gameActive = true;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>update();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">window.addEventListener("keydown", (e) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (e.code === "Space") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (player.grounded) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>player.dy = -player.jumpForce;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>player.grounded = false;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>resetGame();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1">});</p>
-<p class="p2"><br></p>
-<p class="p1">canvas.addEventListener("touchstart", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (player.grounded) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>player.dy = -player.jumpForce;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>player.grounded = false;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>resetGame();</p>
-<p class="p1">});</p>
-<p class="p2"><br></p>
-<p class="p1">update();</p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <div class="game">
+    <h1>🏁 Copa pIAstão</h1>
+    <p class="subtitle">Marque pontos para o Gepeteta ou para o Mano Google e avance pelas perguntas.</p>
+
+    <div class="scoreboard">
+      <div class="card">
+        <div class="name">Gepeteta</div>
+        <div class="points" id="gptScore">0</div>
+      </div>
+      <div class="versus">VS</div>
+      <div class="card">
+        <div class="name">Mano Google</div>
+        <div class="points" id="googleScore">0</div>
+      </div>
+    </div>
+
+    <div class="question-box">
+      <div class="question-label" id="roundLabel">Pergunta 1</div>
+      <div class="question" id="questionText"></div>
+    </div>
+
+    <div class="controls">
+      <button class="gpt" id="pointGpt">Ponto para Gepeteta</button>
+      <button class="google" id="pointGoogle">Ponto para Mano Google</button>
+      <button class="next" id="nextQuestion">Próxima pergunta</button>
+    </div>
+
+    <div class="log">
+      <h2>Histórico</h2>
+      <div id="logEntries"></div>
+    </div>
+
+    <div class="winner" id="winnerBox"></div>
+
+    <button class="reset" id="resetGame">Reiniciar torneio</button>
+    <div class="small">Dica: você pode editar o array <strong>questions</strong> no código para colocar suas próprias perguntas.</div>
+  </div>
+
+  <script>
+    const questions = [
+      'Qual o estádio do Goiatuba?',
+      'Foi criado um partido recentemente. Qual é?',
+      'Quais são os pré-candidatos a presidente em 2026?',
+      'Crie uma pergunta curta para o maninho.',
+      'Sabe o DeepSeek? Mande um recado para ele.',
+      'Quando lançou o último vídeo de Guto Zacarias?',
+      'Dê apelidos para 10 IAs.',
+      'Quando Ciro Gomes foi candidato a presidente?',
+      'Quem sou eu?',
+      'Qual foi o primeiro partido de Aécio Neves?'
+    ];
+
+    let currentQuestion = 0;
+    let gptScore = 0;
+    let googleScore = 0;
+
+    const gptScoreEl = document.getElementById('gptScore');
+    const googleScoreEl = document.getElementById('googleScore');
+    const roundLabelEl = document.getElementById('roundLabel');
+    const questionTextEl = document.getElementById('questionText');
+    const logEntriesEl = document.getElementById('logEntries');
+    const winnerBoxEl = document.getElementById('winnerBox');
+
+    function renderQuestion() {
+      if (currentQuestion < questions.length) {
+        roundLabelEl.textContent = `Pergunta ${currentQuestion + 1}`;
+        questionTextEl.textContent = questions[currentQuestion];
+      } else {
+        roundLabelEl.textContent = 'Fim da Copa pIAstão';
+        questionTextEl.textContent = 'Todas as perguntas acabaram. Veja quem venceu abaixo.';
+        showWinner();
+      }
+    }
+
+    function updateScore() {
+      gptScoreEl.textContent = gptScore;
+      googleScoreEl.textContent = googleScore;
+    }
+
+    function addLog(text) {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.textContent = text;
+      logEntriesEl.prepend(entry);
+    }
+
+    function awardPoint(player) {
+      if (currentQuestion >= questions.length) return;
+
+      const question = questions[currentQuestion];
+
+      if (player === 'gpt') {
+        gptScore++;
+        addLog(`Pergunta ${currentQuestion + 1}: ponto para Gepeteta — ${question}`);
+      } else {
+        googleScore++;
+        addLog(`Pergunta ${currentQuestion + 1}: ponto para Mano Google — ${question}`);
+      }
+
+      updateScore();
+      currentQuestion++;
+      renderQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentQuestion >= questions.length) return;
+      addLog(`Pergunta ${currentQuestion + 1}: pulada — ${questions[currentQuestion]}`);
+      currentQuestion++;
+      renderQuestion();
+    }
+
+    function showWinner() {
+      winnerBoxEl.style.display = 'block';
+      if (gptScore > googleScore) {
+        winnerBoxEl.textContent = `🏆 Gepeteta venceu a Copa pIAstão por ${gptScore} x ${googleScore}!`;
+      } else if (googleScore > gptScore) {
+        winnerBoxEl.textContent = `🏆 Mano Google venceu a Copa pIAstão por ${googleScore} x ${gptScore}!`;
+      } else {
+        winnerBoxEl.textContent = `🤝 Empate total: ${gptScore} x ${googleScore}. Vai ter revanche!`;
+      }
+    }
+
+    function resetGame() {
+      currentQuestion = 0;
+      gptScore = 0;
+      googleScore = 0;
+      logEntriesEl.innerHTML = '';
+      winnerBoxEl.style.display = 'none';
+      updateScore();
+      renderQuestion();
+      addLog('Novo torneio iniciado.');
+    }
+
+    document.getElementById('pointGpt').addEventListener('click', () => awardPoint('gpt'));
+    document.getElementById('pointGoogle').addEventListener('click', () => awardPoint('google'));
+    document.getElementById('nextQuestion').addEventListener('click', nextQuestion);
+    document.getElementById('resetGame').addEventListener('click', resetGame);
+
+    updateScore();
+    renderQuestion();
+    addLog('Copa pIAstão iniciada.');
+  </script>
 </body>
 </html>
