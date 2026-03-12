@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="pt-br"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Mano Google Jump - Bi-Campeão&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #202124; color: white; font-family: sans-serif; overflow: hidden; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#gameCanvas { border-bottom: 2px solid #555; background: #fff; display: block; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.info { margin-top: 20px; text-align: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h1 { color: #4285F4; margin: 5px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Mano Google Jump 🏆&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;Pressione &lt;b&gt;Espaço&lt;/b&gt; ou &lt;b&gt;Toque na Tela&lt;/b&gt; para pular os obstáculos!&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;canvas id="gameCanvas"&gt;&lt;/canvas&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="info"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2 id="score"&gt;Score: 0&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p id="msg"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1">const canvas = document.getElementById("gameCanvas");</p>
+<p class="p1">const ctx = canvas.getContext("2d");</p>
+<p class="p1">const scoreElement = document.getElementById("score");</p>
+<p class="p2"><br></p>
+<p class="p1">canvas.width = 600;</p>
+<p class="p1">canvas.height = 200;</p>
+<p class="p2"><br></p>
+<p class="p1">let score = 0;</p>
+<p class="p1">let gameActive = true;</p>
+<p class="p2"><br></p>
+<p class="p1">// Config do Personagem (Mano Google)</p>
+<p class="p1">let player = { x: 50, y: 150, w: 30, h: 30, dy: 0, jumpForce: 12, gravity: 0.6, grounded: false, color: "#4285F4" };</p>
+<p class="p2"><br></p>
+<p class="p1">// Obstáculos (Gepetetas)</p>
+<p class="p1">let obstacles = [];</p>
+<p class="p1">let spawnTimer = 0;</p>
+<p class="p2"><br></p>
+<p class="p1">function spawnObstacle() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let size = Math.random() * (40 - 20) + 20;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>obstacles.push({ x: canvas.width, y: 180 - size, w: 20, h: size, speed: 5 + (score / 100) });</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function update() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!gameActive) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Gravidade</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!player.grounded) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>player.dy += player.gravity;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>player.y += player.dy;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (player.y &gt; 150) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>player.y = 150;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>player.dy = 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>player.grounded = true;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Obstáculos</p>
+<p class="p1"><span class="Apple-converted-space">    </span>spawnTimer++;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (spawnTimer &gt; Math.max(40, 80 - score/5)) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>spawnObstacle();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>spawnTimer = 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>obstacles.forEach((obs, index) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>obs.x -= obs.speed;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Colisão</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (player.x &lt; obs.x + obs.w &amp;&amp; player.x + player.w &gt; obs.x &amp;&amp;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>player.y &lt; obs.y + obs.h &amp;&amp; player.y + player.h &gt; obs.y) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gameOver();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (obs.x + obs.w &lt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>obstacles.splice(index, 1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>score++;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>scoreElement.innerText = "Score: " + score;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>draw();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>requestAnimationFrame(update);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function draw() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ctx.clearRect(0, 0, canvas.width, canvas.height);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Chão</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ctx.strokeStyle = "#555";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ctx.beginPath(); ctx.moveTo(0, 180); ctx.lineTo(600, 180); ctx.stroke();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Player (Mano Google)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ctx.fillStyle = player.color;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ctx.fillRect(player.x, player.y, player.w, player.h);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Detalhe do "olho" pra dar carisma</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ctx.fillStyle = "white"; ctx.fillRect(player.x + 18, player.y + 5, 5, 5);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Obstáculos (Os Gepetetas vermelhos)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ctx.fillStyle = "#EA4335";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>obstacles.forEach(obs =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillRect(obs.x, obs.y, obs.w, obs.h);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function gameOver() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>gameActive = false;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("msg").innerHTML = "&lt;span style='color: #EA4335; font-size: 24px; font-weight: bold;'&gt;GAME OVER!&lt;/span&gt;&lt;br&gt;O Gepeteta te pegou! Clique para reiniciar.";</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function resetGame() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!gameActive) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>player.y = 150;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>obstacles = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>score = 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>scoreElement.innerText = "Score: 0";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("msg").innerText = "";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>gameActive = true;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>update();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">window.addEventListener("keydown", (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (e.code === "Space") {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (player.grounded) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>player.dy = -player.jumpForce;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>player.grounded = false;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>resetGame();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">canvas.addEventListener("touchstart", () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (player.grounded) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>player.dy = -player.jumpForce;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>player.grounded = false;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>resetGame();</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">update();</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
