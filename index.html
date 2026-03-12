@@ -432,223 +432,350 @@
   </div>
 
   <script>
-    const DATA = {
-      politica: {
-        label: 'Política do Brasil',
-        presidents: [
-          { name: 'Deodoro da Fonseca', order: 1, period: '1889-1891', difficulty: 'facil' },
-          { name: 'Floriano Peixoto', order: 2, period: '1891-1894', difficulty: 'facil' },
-          { name: 'Prudente de Morais', order: 3, period: '1894-1898', difficulty: 'medio' },
-          { name: 'Getúlio Vargas', order: 14, period: '1930-1945 e 1951-1954', difficulty: 'facil' },
-          { name: 'Juscelino Kubitschek', order: 21, period: '1956-1961', difficulty: 'facil' },
-          { name: 'Jânio Quadros', order: 22, period: '1961', difficulty: 'medio' },
-          { name: 'João Goulart', order: 24, period: '1961-1964', difficulty: 'medio' },
-          { name: 'José Sarney', order: 31, period: '1985-1990', difficulty: 'facil' },
-          { name: 'Fernando Collor', order: 32, period: '1990-1992', difficulty: 'facil' },
-          { name: 'Itamar Franco', order: 33, period: '1992-1995', difficulty: 'medio' },
-          { name: 'Fernando Henrique Cardoso', order: 34, period: '1995-2003', difficulty: 'facil' },
-          { name: 'Luiz Inácio Lula da Silva', order: 35, period: '2003-2011 e 2023-presente', difficulty: 'facil' },
-          { name: 'Dilma Rousseff', order: 36, period: '2011-2016', difficulty: 'facil' },
-          { name: 'Michel Temer', order: 37, period: '2016-2019', difficulty: 'medio' },
-          { name: 'Jair Bolsonaro', order: 38, period: '2019-2023', difficulty: 'facil' }
-        ],
-        capitalsHistory: [
-          { year: 1763, city: 'Rio de Janeiro', difficulty: 'medio' },
-          { year: 1960, city: 'Brasília', difficulty: 'facil' }
-        ],
-        institutions: [
-          { prompt: 'Quantos senadores cada estado brasileiro e o Distrito Federal elegem?', answer: '3', wrong: ['2', '4', '5'], difficulty: 'facil' },
-          { prompt: 'Qual é a sede do Poder Executivo federal do Brasil?', answer: 'Palácio do Planalto', wrong: ['Congresso Nacional', 'Supremo Tribunal Federal', 'Palácio da Alvorada'], difficulty: 'facil' },
-          { prompt: 'Qual é a casa legislativa que representa os estados no Congresso Nacional?', answer: 'Senado Federal', wrong: ['Câmara dos Deputados', 'Assembleia Nacional', 'Conselho da República'], difficulty: 'facil' },
-          { prompt: 'Qual é o nome do tribunal de cúpula do Poder Judiciário brasileiro?', answer: 'Supremo Tribunal Federal', wrong: ['Superior Tribunal de Justiça', 'Tribunal Superior Eleitoral', 'Tribunal de Contas da União'], difficulty: 'facil' },
-          { prompt: 'Em quantos poderes se organiza a República Federativa do Brasil?', answer: '3', wrong: ['2', '4', '5'], difficulty: 'facil' },
-          { prompt: 'Quem substitui o presidente em caso de vacância simultânea do presidente e do vice, antes dos presidentes da Câmara e do Senado?', answer: 'Nenhum, o vice é o substituto direto; depois vêm Câmara, Senado e STF', wrong: ['Presidente do STF', 'Ministro da Justiça', 'Presidente do TSE'], difficulty: 'lendario' },
-          { prompt: 'Qual é a idade mínima para candidatura à Presidência da República no Brasil?', answer: '35 anos', wrong: ['30 anos', '40 anos', '45 anos'], difficulty: 'medio' },
-          { prompt: 'Qual é o voto adotado nas eleições brasileiras para cargos do Executivo?', answer: 'Voto direto e secreto', wrong: ['Voto indireto e aberto', 'Voto censitário', 'Voto distrital obrigatório'], difficulty: 'medio' }
-        ],
-        constitution: [
-          { prompt: 'Em que ano foi promulgada a atual Constituição brasileira?', answer: '1988', wrong: ['1985', '1989', '1990'], difficulty: 'facil' },
-          { prompt: 'Qual apelido é comumente dado à Constituição de 1988?', answer: 'Constituição Cidadã', wrong: ['Constituição Imperial', 'Constituição Nova República', 'Carta Liberal'], difficulty: 'medio' },
-          { prompt: 'A atual Constituição brasileira foi promulgada durante qual período político?', answer: 'Redemocratização', wrong: ['Estado Novo', 'República Velha', 'Regime Militar'], difficulty: 'medio' }
-        ]
-      },
-      futebol: {
-        label: 'Futebol',
-        clubs: [
-          { club: 'Flamengo', city: 'Rio de Janeiro', state: 'RJ', stadium: 'Maracanã', difficulty: 'facil' },
-          { club: 'Fluminense', city: 'Rio de Janeiro', state: 'RJ', stadium: 'Maracanã', difficulty: 'medio' },
-          { club: 'Vasco da Gama', city: 'Rio de Janeiro', state: 'RJ', stadium: 'São Januário', difficulty: 'medio' },
-          { club: 'Botafogo', city: 'Rio de Janeiro', state: 'RJ', stadium: 'Nilton Santos', difficulty: 'medio' },
-          { club: 'Corinthians', city: 'São Paulo', state: 'SP', stadium: 'Neo Química Arena', difficulty: 'facil' },
-          { club: 'Palmeiras', city: 'São Paulo', state: 'SP', stadium: 'Allianz Parque', difficulty: 'facil' },
-          { club: 'São Paulo', city: 'São Paulo', state: 'SP', stadium: 'Morumbi', difficulty: 'facil' },
-          { club: 'Santos', city: 'Santos', state: 'SP', stadium: 'Vila Belmiro', difficulty: 'medio' },
-          { club: 'Grêmio', city: 'Porto Alegre', state: 'RS', stadium: 'Arena do Grêmio', difficulty: 'medio' },
-          { club: 'Internacional', city: 'Porto Alegre', state: 'RS', stadium: 'Beira-Rio', difficulty: 'facil' },
-          { club: 'Cruzeiro', city: 'Belo Horizonte', state: 'MG', stadium: 'Mineirão', difficulty: 'facil' },
-          { club: 'Atlético Mineiro', city: 'Belo Horizonte', state: 'MG', stadium: 'Arena MRV', difficulty: 'medio' },
-          { club: 'Bahia', city: 'Salvador', state: 'BA', stadium: 'Arena Fonte Nova', difficulty: 'medio' },
-          { club: 'Vitória', city: 'Salvador', state: 'BA', stadium: 'Barradão', difficulty: 'medio' },
-          { club: 'Athletico Paranaense', city: 'Curitiba', state: 'PR', stadium: 'Ligga Arena', difficulty: 'medio' },
-          { club: 'Coritiba', city: 'Curitiba', state: 'PR', stadium: 'Couto Pereira', difficulty: 'medio' },
-          { club: 'Fortaleza', city: 'Fortaleza', state: 'CE', stadium: 'Arena Castelão', difficulty: 'medio' },
-          { club: 'Ceará', city: 'Fortaleza', state: 'CE', stadium: 'Arena Castelão', difficulty: 'medio' },
-          { club: 'Sport', city: 'Recife', state: 'PE', stadium: 'Ilha do Retiro', difficulty: 'medio' },
-          { club: 'Náutico', city: 'Recife', state: 'PE', stadium: 'Aflitos', difficulty: 'dificil' }
-        ],
-        worldCups: [
-          { year: 1958, host: 'Suécia', champion: 'Brasil', difficulty: 'facil' },
-          { year: 1962, host: 'Chile', champion: 'Brasil', difficulty: 'facil' },
-          { year: 1970, host: 'México', champion: 'Brasil', difficulty: 'facil' },
-          { year: 1994, host: 'Estados Unidos', champion: 'Brasil', difficulty: 'facil' },
-          { year: 2002, host: 'Coreia do Sul e Japão', champion: 'Brasil', difficulty: 'facil' },
-          { year: 2014, host: 'Brasil', champion: 'Alemanha', difficulty: 'medio' }
-        ],
-        facts: [
-          { prompt: 'Quantas estrelas representam os títulos mundiais do Brasil na camisa tradicional da seleção masculina?', answer: '5', wrong: ['4', '6', '3'], difficulty: 'facil' },
-          { prompt: 'Qual é o apelido histórico da seleção brasileira de futebol?', answer: 'Seleção Canarinho', wrong: ['Seleção Celeste', 'Seleção Albiceleste', 'Seleção Tricolor'], difficulty: 'medio' },
-          { prompt: 'Quem é conhecido como Rei do Futebol?', answer: 'Pelé', wrong: ['Garrincha', 'Zico', 'Romário'], difficulty: 'facil' },
-          { prompt: 'Em que cidade fica o estádio Maracanã?', answer: 'Rio de Janeiro', wrong: ['São Paulo', 'Belo Horizonte', 'Brasília'], difficulty: 'facil' },
-          { prompt: 'Qual clube manda seus jogos na Vila Belmiro?', answer: 'Santos', wrong: ['Corinthians', 'Botafogo', 'Bahia'], difficulty: 'facil' },
-          { prompt: 'Qual clube manda seus jogos no Morumbi?', answer: 'São Paulo', wrong: ['Palmeiras', 'Flamengo', 'Grêmio'], difficulty: 'facil' }
-        ]
-      },
-      historia: {
-        label: 'História',
-        facts: [
-          { prompt: 'Em que ano ocorreu a Proclamação da República no Brasil?', answer: '1889', wrong: ['1822', '1888', '1891'], difficulty: 'facil' },
-          { prompt: 'Em que ano foi assinada a Lei Áurea?', answer: '1888', wrong: ['1822', '1889', '1871'], difficulty: 'facil' },
-          { prompt: 'Quem liderou a Proclamação da República?', answer: 'Deodoro da Fonseca', wrong: ['Dom Pedro II', 'Floriano Peixoto', 'Getúlio Vargas'], difficulty: 'facil' },
-          { prompt: 'Em que ano ocorreu a Independência do Brasil?', answer: '1822', wrong: ['1808', '1889', '1831'], difficulty: 'facil' },
-          { prompt: 'Quem proclamou a Independência do Brasil?', answer: 'Dom Pedro I', wrong: ['Dom Pedro II', 'José Bonifácio', 'Tiradentes'], difficulty: 'facil' },
-          { prompt: 'Qual movimento teve Tiradentes como um de seus nomes mais lembrados?', answer: 'Inconfidência Mineira', wrong: ['Revolta da Chibata', 'Sabinada', 'Confederação do Equador'], difficulty: 'medio' },
-          { prompt: 'Qual foi o período do Estado Novo no Brasil?', answer: '1937-1945', wrong: ['1930-1934', '1946-1950', '1964-1985'], difficulty: 'medio' },
-          { prompt: 'Em que ano começou o regime militar no Brasil?', answer: '1964', wrong: ['1954', '1961', '1968'], difficulty: 'facil' },
-          { prompt: 'Em que ano terminou o regime militar no Brasil?', answer: '1985', wrong: ['1984', '1986', '1988'], difficulty: 'medio' },
-          { prompt: 'Quem foi a princesa regente que assinou a Lei Áurea?', answer: 'Princesa Isabel', wrong: ['Maria Leopoldina', 'Carlota Joaquina', 'Anita Garibaldi'], difficulty: 'facil' },
-          { prompt: 'Qual era o nome do imperador do Brasil deposto em 1889?', answer: 'Dom Pedro II', wrong: ['Dom Pedro I', 'Dom João VI', 'Dom Luís'], difficulty: 'facil' },
-          { prompt: 'A chegada da família real portuguesa ao Brasil ocorreu em que ano?', answer: '1808', wrong: ['1822', '1789', '1815'], difficulty: 'medio' },
-          { prompt: 'Em qual cidade foi assinado o grito da Independência, às margens do Ipiranga?', answer: 'São Paulo', wrong: ['Rio de Janeiro', 'Salvador', 'Petrópolis'], difficulty: 'medio' },
-          { prompt: 'Qual conflito opôs o Paraguai à Tríplice Aliança?', answer: 'Guerra do Paraguai', wrong: ['Guerra dos Farrapos', 'Guerra de Canudos', 'Guerra do Contestado'], difficulty: 'medio' },
-          { prompt: 'Quem foi o presidente que se suicidou em 1954?', answer: 'Getúlio Vargas', wrong: ['Jânio Quadros', 'Juscelino Kubitschek', 'João Goulart'], difficulty: 'medio' },
-          { prompt: 'Qual foi o movimento liderado por Antônio Conselheiro?', answer: 'Guerra de Canudos', wrong: ['Revolta da Vacina', 'Sabinada', 'Balaiada'], difficulty: 'dificil' },
-          { prompt: 'Qual revolta urbana do início do século XX ocorreu no Rio de Janeiro contra a vacinação obrigatória?', answer: 'Revolta da Vacina', wrong: ['Revolta da Armada', 'Revolta da Chibata', 'Intentona Comunista'], difficulty: 'medio' },
-          { prompt: 'Qual navegador português chegou ao Brasil em 1500?', answer: 'Pedro Álvares Cabral', wrong: ['Vasco da Gama', 'Fernão de Magalhães', 'Bartolomeu Dias'], difficulty: 'facil' },
-          { prompt: 'Em que ano ocorreu a chegada portuguesa ao território que hoje é o Brasil?', answer: '1500', wrong: ['1492', '1502', '1530'], difficulty: 'facil' },
-          { prompt: 'Qual constituição foi a primeira do Brasil?', answer: 'Constituição de 1824', wrong: ['Constituição de 1891', 'Constituição de 1934', 'Constituição de 1988'], difficulty: 'dificil' }
-        ]
-      },
-      gerais: {
-        label: 'Conhecimentos Gerais',
-        facts: [
-          { prompt: 'Qual é o maior planeta do Sistema Solar?', answer: 'Júpiter', wrong: ['Saturno', 'Marte', 'Netuno'], difficulty: 'facil' },
-          { prompt: 'Qual é a fórmula química da água?', answer: 'H2O', wrong: ['CO2', 'O2', 'NaCl'], difficulty: 'facil' },
-          { prompt: 'Quantos continentes são tradicionalmente considerados no modelo mais comum ensinado no Brasil?', answer: '6', wrong: ['5', '7', '8'], difficulty: 'medio' },
-          { prompt: 'Qual é o maior oceano da Terra?', answer: 'Pacífico', wrong: ['Atlântico', 'Índico', 'Ártico'], difficulty: 'facil' },
-          { prompt: 'Qual é a capital da França?', answer: 'Paris', wrong: ['Londres', 'Roma', 'Madri'], difficulty: 'facil' },
-          { prompt: 'Qual é o elemento químico representado pelo símbolo Au?', answer: 'Ouro', wrong: ['Prata', 'Argônio', 'Alumínio'], difficulty: 'medio' },
-          { prompt: 'Qual é o resultado de 9 x 8?', answer: '72', wrong: ['64', '81', '69'], difficulty: 'facil' },
-          { prompt: 'Qual animal é conhecido como o maior mamífero do planeta?', answer: 'Baleia-azul', wrong: ['Elefante africano', 'Orca', 'Girafa'], difficulty: 'facil' },
-          { prompt: 'Quantos lados tem um hexágono?', answer: '6', wrong: ['5', '7', '8'], difficulty: 'facil' },
-          { prompt: 'Quem escreveu Dom Casmurro?', answer: 'Machado de Assis', wrong: ['José de Alencar', 'Clarice Lispector', 'Graciliano Ramos'], difficulty: 'medio' },
-          { prompt: 'Qual é a capital do Japão?', answer: 'Tóquio', wrong: ['Pequim', 'Seul', 'Kyoto'], difficulty: 'facil' },
-          { prompt: 'Qual é o gás mais abundante na atmosfera terrestre?', answer: 'Nitrogênio', wrong: ['Oxigênio', 'Gás carbônico', 'Hidrogênio'], difficulty: 'medio' },
-          { prompt: 'Qual é a unidade básica da vida?', answer: 'Célula', wrong: ['Átomo', 'Molécula', 'Tecido'], difficulty: 'facil' },
-          { prompt: 'Qual planeta é conhecido como Planeta Vermelho?', answer: 'Marte', wrong: ['Vênus', 'Mercúrio', 'Júpiter'], difficulty: 'facil' },
-          { prompt: 'Qual é o rio mais extenso do Brasil?', answer: 'Amazonas', wrong: ['São Francisco', 'Paraná', 'Tocantins'], difficulty: 'medio' },
-          { prompt: 'Qual instrumento mede a temperatura?', answer: 'Termômetro', wrong: ['Barômetro', 'Higrômetro', 'Altímetro'], difficulty: 'facil' },
-          { prompt: 'Qual é o processo pelo qual as plantas produzem seu alimento?', answer: 'Fotossíntese', wrong: ['Respiração', 'Fermentação', 'Digestão'], difficulty: 'facil' },
-          { prompt: 'Qual é a raiz quadrada de 144?', answer: '12', wrong: ['14', '16', '10'], difficulty: 'medio' },
-          { prompt: 'Qual é o idioma mais falado no Brasil?', answer: 'Português', wrong: ['Espanhol', 'Inglês', 'Francês'], difficulty: 'facil' },
-          { prompt: 'Qual é o metal líquido em temperatura ambiente?', answer: 'Mercúrio', wrong: ['Ferro', 'Cobre', 'Zinco'], difficulty: 'dificil' }
-        ]
-      }
-    };
+    const QUESTION_BANK = [
+  { category:'politica', difficulty:'facil', question:'Qual é a capital do Brasil?', options:['Brasília','Rio de Janeiro','São Paulo','Salvador'], correct:'Brasília' },
+  { category:'politica', difficulty:'facil', question:'Em que ano foi promulgada a atual Constituição brasileira?', options:['1988','1985','1990','1978'], correct:'1988' },
+  { category:'politica', difficulty:'facil', question:'Quantos poderes existem no Brasil?', options:['3','2','4','5'], correct:'3' },
+  { category:'politica', difficulty:'facil', question:'Qual poder executa as leis no Brasil?', options:['Executivo','Legislativo','Judiciário','Moderador'], correct:'Executivo' },
+  { category:'politica', difficulty:'facil', question:'Qual é o nome do sistema político do Brasil?', options:['República federativa','Monarquia parlamentar','Império federal','Ditadura presidencial'], correct:'República federativa' },
+  { category:'politica', difficulty:'facil', question:'Quem foi o primeiro presidente do Brasil?', options:['Deodoro da Fonseca','Floriano Peixoto','Prudente de Morais','Campos Sales'], correct:'Deodoro da Fonseca' },
+  { category:'politica', difficulty:'facil', question:'Qual é a sede do Poder Executivo federal?', options:['Palácio do Planalto','Congresso Nacional','STF','Palácio da Alvorada'], correct:'Palácio do Planalto' },
+  { category:'politica', difficulty:'facil', question:'Qual é a casa legislativa que representa os estados?', options:['Senado Federal','Câmara dos Deputados','Assembleia Nacional','Conselho da República'], correct:'Senado Federal' },
+  { category:'politica', difficulty:'facil', question:'Qual é o tribunal mais alto do Brasil?', options:['Supremo Tribunal Federal','STJ','TSE','TCU'], correct:'Supremo Tribunal Federal' },
+  { category:'politica', difficulty:'facil', question:'Quantos senadores cada estado elege?', options:['3','2','4','5'], correct:'3' },
+  { category:'politica', difficulty:'facil', question:'Qual é a residência oficial do presidente do Brasil?', options:['Palácio da Alvorada','Palácio do Planalto','Itamaraty','Palácio do Jaburu'], correct:'Palácio da Alvorada' },
+  { category:'politica', difficulty:'facil', question:'Qual presidente está ligado à construção de Brasília?', options:['Juscelino Kubitschek','Getúlio Vargas','João Goulart','Eurico Gaspar Dutra'], correct:'Juscelino Kubitschek' },
+  { category:'politica', difficulty:'facil', question:'Qual presidente sofreu impeachment em 1992?', options:['Fernando Collor','Itamar Franco','José Sarney','Fernando Henrique Cardoso'], correct:'Fernando Collor' },
+  { category:'politica', difficulty:'facil', question:'Qual presidente brasileiro se suicidou em 1954?', options:['Getúlio Vargas','Jânio Quadros','Castelo Branco','João Goulart'], correct:'Getúlio Vargas' },
+  { category:'politica', difficulty:'facil', question:'Qual é a idade mínima para concorrer à Presidência da República?', options:['35 anos','30 anos','40 anos','45 anos'], correct:'35 anos' },
+  { category:'politica', difficulty:'facil', question:'Qual poder julga no Brasil?', options:['Judiciário','Executivo','Legislativo','Moderador'], correct:'Judiciário' },
+  { category:'politica', difficulty:'facil', question:'Qual poder cria as leis?', options:['Legislativo','Executivo','Judiciário','Ministério Público'], correct:'Legislativo' },
+  { category:'politica', difficulty:'facil', question:'Qual presidente governou o Brasil entre 2019 e 2023?', options:['Jair Bolsonaro','Michel Temer','Luiz Inácio Lula da Silva','Dilma Rousseff'], correct:'Jair Bolsonaro' },
+  { category:'politica', difficulty:'facil', question:'Qual presidente governou o Brasil entre 2016 e 2019?', options:['Michel Temer','Dilma Rousseff','Jair Bolsonaro','Fernando Henrique Cardoso'], correct:'Michel Temer' },
+  { category:'politica', difficulty:'facil', question:'Qual presidente governou o Brasil entre 2011 e 2016?', options:['Dilma Rousseff','Luiz Inácio Lula da Silva','Michel Temer','Jair Bolsonaro'], correct:'Dilma Rousseff' },
+  { category:'politica', difficulty:'facil', question:'Qual presidente governou o Brasil entre 2003 e 2011?', options:['Luiz Inácio Lula da Silva','Fernando Henrique Cardoso','Dilma Rousseff','José Sarney'], correct:'Luiz Inácio Lula da Silva' },
+  { category:'politica', difficulty:'facil', question:'Qual presidente governou o Brasil entre 1995 e 2003?', options:['Fernando Henrique Cardoso','Itamar Franco','Luiz Inácio Lula da Silva','Fernando Collor'], correct:'Fernando Henrique Cardoso' },
+  { category:'politica', difficulty:'facil', question:'Qual presidente assumiu após o impeachment de Collor?', options:['Itamar Franco','José Sarney','Fernando Henrique Cardoso','João Goulart'], correct:'Itamar Franco' },
+  { category:'politica', difficulty:'facil', question:'Em que cidade fica a Praça dos Três Poderes?', options:['Brasília','Rio de Janeiro','São Paulo','Belo Horizonte'], correct:'Brasília' },
+  { category:'politica', difficulty:'facil', question:'O voto no Brasil é, em regra, de qual tipo?', options:['Direto e secreto','Indireto e aberto','Censitário','Distrital obrigatório'], correct:'Direto e secreto' },
 
-    function shuffle(array) {
-      const arr = [...array];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
+  { category:'politica', difficulty:'medio', question:'Qual é o apelido comum dado à Constituição de 1988?', options:['Constituição Cidadã','Carta Imperial','Constituição Nova','Carta Liberal'], correct:'Constituição Cidadã' },
+  { category:'politica', difficulty:'medio', question:'A Constituição de 1988 foi promulgada durante qual período?', options:['Redemocratização','Estado Novo','República Velha','Regime Militar'], correct:'Redemocratização' },
+  { category:'politica', difficulty:'medio', question:'Quem foi o presidente após Deodoro da Fonseca?', options:['Floriano Peixoto','Prudente de Morais','Campos Sales','Rodrigues Alves'], correct:'Floriano Peixoto' },
+  { category:'politica', difficulty:'medio', question:'Qual presidente renunciou em 1961?', options:['Jânio Quadros','João Goulart','Juscelino Kubitschek','Getúlio Vargas'], correct:'Jânio Quadros' },
+  { category:'politica', difficulty:'medio', question:'Quem governou o Brasil entre 1961 e 1964?', options:['João Goulart','Jânio Quadros','Castelo Branco','Juscelino Kubitschek'], correct:'João Goulart' },
+  { category:'politica', difficulty:'medio', question:'Qual presidente encerrou a transição e governou entre 1985 e 1990?', options:['José Sarney','Tancredo Neves','Fernando Collor','Itamar Franco'], correct:'José Sarney' },
+  { category:'politica', difficulty:'medio', question:'Tancredo Neves foi eleito em 1985, mas quem assumiu a presidência?', options:['José Sarney','Ulysses Guimarães','Fernando Henrique Cardoso','Itamar Franco'], correct:'José Sarney' },
+  { category:'politica', difficulty:'medio', question:'Qual presidente governou o país de 1956 a 1961?', options:['Juscelino Kubitschek','Getúlio Vargas','João Goulart','Jânio Quadros'], correct:'Juscelino Kubitschek' },
+  { category:'politica', difficulty:'medio', question:'Qual presidente está associado ao Plano Real como ministro e depois presidente?', options:['Fernando Henrique Cardoso','Itamar Franco','Fernando Collor','Luiz Inácio Lula da Silva'], correct:'Fernando Henrique Cardoso' },
+  { category:'politica', difficulty:'medio', question:'Qual cidade deixou de ser capital do Brasil em 1960?', options:['Rio de Janeiro','Salvador','São Paulo','Ouro Preto'], correct:'Rio de Janeiro' },
+  { category:'politica', difficulty:'medio', question:'Antes do Rio de Janeiro, qual cidade foi capital do Brasil colonial?', options:['Salvador','Recife','Olinda','São Luís'], correct:'Salvador' },
+  { category:'politica', difficulty:'medio', question:'Qual órgão fiscaliza as contas públicas federais?', options:['Tribunal de Contas da União','STF','TSE','Senado Federal'], correct:'Tribunal de Contas da União' },
+  { category:'politica', difficulty:'medio', question:'Qual tribunal é responsável pela Justiça Eleitoral na esfera máxima?', options:['Tribunal Superior Eleitoral','Supremo Tribunal Federal','Superior Tribunal de Justiça','Tribunal de Contas da União'], correct:'Tribunal Superior Eleitoral' },
+  { category:'politica', difficulty:'medio', question:'Qual é o nome do conjunto formado por Câmara e Senado?', options:['Congresso Nacional','Assembleia Federal','Plenário Supremo','Conselho da República'], correct:'Congresso Nacional' },
+  { category:'politica', difficulty:'medio', question:'Em qual cidade está a sede do Supremo Tribunal Federal?', options:['Brasília','Rio de Janeiro','São Paulo','Curitiba'], correct:'Brasília' },
+  { category:'politica', difficulty:'medio', question:'Quantos anos dura o mandato presidencial no Brasil?', options:['4 anos','5 anos','6 anos','8 anos'], correct:'4 anos' },
+  { category:'politica', difficulty:'medio', question:'Qual instrumento permite ao presidente editar norma com força de lei em casos relevantes e urgentes?', options:['Medida provisória','Projeto complementar','Decreto legislativo','Súmula vinculante'], correct:'Medida provisória' },
+  { category:'politica', difficulty:'medio', question:'Qual presidente governou o Brasil durante grande parte dos anos 1930 e 1940?', options:['Getúlio Vargas','Juscelino Kubitschek','João Goulart','Eurico Dutra'], correct:'Getúlio Vargas' },
+  { category:'politica', difficulty:'medio', question:'Qual vice-presidente assumiu após o impeachment de Dilma Rousseff?', options:['Michel Temer','José Alencar','Hamilton Mourão','Itamar Franco'], correct:'Michel Temer' },
+  { category:'politica', difficulty:'medio', question:'Qual poder é responsável por sancionar ou vetar projetos de lei?', options:['Executivo','Judiciário','Legislativo','Ministério Público'], correct:'Executivo' },
+  { category:'politica', difficulty:'medio', question:'Qual instituição representa o Ministério Público da União na chefia?', options:['Procuradoria-Geral da República','Supremo Tribunal Federal','Advocacia-Geral da União','Polícia Federal'], correct:'Procuradoria-Geral da República' },
+  { category:'politica', difficulty:'medio', question:'Qual foi a primeira presidente mulher do Brasil?', options:['Dilma Rousseff','Roseana Sarney','Marina Silva','Yeda Crusius'], correct:'Dilma Rousseff' },
+  { category:'politica', difficulty:'medio', question:'Quem foi o primeiro presidente civil após o regime militar a ser eleito por voto direto?', options:['Fernando Collor','José Sarney','Tancredo Neves','Fernando Henrique Cardoso'], correct:'Fernando Collor' },
+  { category:'politica', difficulty:'medio', question:'Qual presidente governou antes de Jair Bolsonaro?', options:['Michel Temer','Dilma Rousseff','Luiz Inácio Lula da Silva','Fernando Henrique Cardoso'], correct:'Michel Temer' },
+  { category:'politica', difficulty:'medio', question:'Qual presidente governou antes de Dilma Rousseff?', options:['Luiz Inácio Lula da Silva','Fernando Henrique Cardoso','Michel Temer','Jair Bolsonaro'], correct:'Luiz Inácio Lula da Silva' },
 
-    function pickWrongFromList(list, current, key, count = 3) {
-      const candidates = shuffle(list.filter(item => item[key] !== current[key]).map(item => item[key]));
-      return candidates.slice(0, count);
-    }
+  { category:'politica', difficulty:'dificil', question:'Em que ano o Rio de Janeiro se tornou capital do Brasil, substituindo Salvador?', options:['1763','1750','1808','1822'], correct:'1763' },
+  { category:'politica', difficulty:'dificil', question:'Qual foi a primeira constituição do Brasil republicano?', options:['Constituição de 1891','Constituição de 1824','Constituição de 1934','Constituição de 1946'], correct:'Constituição de 1891' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente governou durante o Estado Novo?', options:['Getúlio Vargas','Eurico Gaspar Dutra','Washington Luís','Juscelino Kubitschek'], correct:'Getúlio Vargas' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente foi deposto no movimento de 1964?', options:['João Goulart','Jânio Quadros','Juscelino Kubitschek','Castelo Branco'], correct:'João Goulart' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente era conhecido pelo slogan “50 anos em 5”?', options:['Juscelino Kubitschek','Getúlio Vargas','João Goulart','Jânio Quadros'], correct:'Juscelino Kubitschek' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente teve mandato interrompido após renúncia em 1961?', options:['Jânio Quadros','João Goulart','Getúlio Vargas','José Sarney'], correct:'Jânio Quadros' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente é historicamente associado ao fechamento do Congresso durante o Estado Novo?', options:['Getúlio Vargas','Floriano Peixoto','Marechal Deodoro','Castelo Branco'], correct:'Getúlio Vargas' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente governou logo após José Sarney?', options:['Fernando Collor','Itamar Franco','Fernando Henrique Cardoso','Luiz Inácio Lula da Silva'], correct:'Fernando Collor' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente governou logo após Itamar Franco?', options:['Fernando Henrique Cardoso','Fernando Collor','Luiz Inácio Lula da Silva','José Sarney'], correct:'Fernando Henrique Cardoso' },
+  { category:'politica', difficulty:'dificil', question:'Qual cidade mineira foi capital de Minas Gerais antes de Belo Horizonte?', options:['Ouro Preto','Juiz de Fora','Uberaba','Diamantina'], correct:'Ouro Preto' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente assumiu após a morte de Getúlio Vargas em 1954?', options:['Café Filho','Jânio Quadros','Juscelino Kubitschek','João Goulart'], correct:'Café Filho' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente foi eleito indiretamente pelo Colégio Eleitoral em 1985?', options:['Tancredo Neves','José Sarney','Fernando Collor','Ulysses Guimarães'], correct:'Tancredo Neves' },
+  { category:'politica', difficulty:'dificil', question:'Qual instrumento constitucional permite ao presidente vetar total ou parcialmente um projeto de lei?', options:['Veto presidencial','Decreto anulatório','Cláusula executiva','Súmula impeditiva'], correct:'Veto presidencial' },
+  { category:'politica', difficulty:'dificil', question:'Qual princípio organiza as competências entre União, estados e municípios?', options:['Federalismo','Centralismo','Parlamentarismo','Unitarismo'], correct:'Federalismo' },
+  { category:'politica', difficulty:'dificil', question:'Qual instituição brasileira tem a função de defender judicialmente a União?', options:['Advocacia-Geral da União','Ministério da Justiça','Supremo Tribunal Federal','Tribunal de Contas da União'], correct:'Advocacia-Geral da União' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente governou o Brasil no início da Nova República após Sarney?', options:['Fernando Collor','Itamar Franco','Fernando Henrique Cardoso','Lula'], correct:'Fernando Collor' },
+  { category:'politica', difficulty:'dificil', question:'Qual presidente governou o país no momento da promulgação da Constituição de 1988?', options:['José Sarney','Fernando Collor','Itamar Franco','Tancredo Neves'], correct:'José Sarney' },
+  { category:'politica', difficulty:'dificil', question:'Qual cidade foi inaugurada como capital federal em 1960?', options:['Brasília','Rio de Janeiro','Belo Horizonte','Goiânia'], correct:'Brasília' },
+  { category:'politica', difficulty:'dificil', question:'Qual poder pode declarar a inconstitucionalidade de leis no controle concentrado?', options:['Judiciário','Executivo','Legislativo','Tribunal de Contas'], correct:'Judiciário' },
+  { category:'politica', difficulty:'dificil', question:'Qual órgão julga presidentes por crimes de responsabilidade no processo de impeachment?', options:['Senado Federal','STF','Câmara dos Deputados','TSE'], correct:'Senado Federal' },
 
-    function makeQuestion(category, difficulty, question, correct, wrong) {
-      const options = shuffle([correct, ...wrong.slice(0, 3)]);
-      return { category, difficulty, question, options, correct };
-    }
+  { category:'politica', difficulty:'lendario', question:'Qual foi a ordem histórica de Prudente de Morais entre os presidentes do Brasil?', options:['3','4','5','6'], correct:'3' },
+  { category:'politica', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1894 e 1898?', options:['Prudente de Morais','Floriano Peixoto','Campos Sales','Rodrigues Alves'], correct:'Prudente de Morais' },
+  { category:'politica', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1889 e 1891?', options:['Deodoro da Fonseca','Floriano Peixoto','Prudente de Morais','Getúlio Vargas'], correct:'Deodoro da Fonseca' },
+  { category:'politica', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1891 e 1894?', options:['Floriano Peixoto','Campos Sales','Prudente de Morais','Rodrigues Alves'], correct:'Floriano Peixoto' },
+  { category:'politica', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1992 e 1995?', options:['Itamar Franco','Fernando Collor','Fernando Henrique Cardoso','José Sarney'], correct:'Itamar Franco' },
+  { category:'politica', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 2003 e 2011?', options:['Luiz Inácio Lula da Silva','Fernando Henrique Cardoso','Dilma Rousseff','Jair Bolsonaro'], correct:'Luiz Inácio Lula da Silva' },
+  { category:'politica', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 2011 e 2016?', options:['Dilma Rousseff','Michel Temer','Luiz Inácio Lula da Silva','Jair Bolsonaro'], correct:'Dilma Rousseff' },
+  { category:'politica', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 2016 e 2019?', options:['Michel Temer','Dilma Rousseff','Jair Bolsonaro','Fernando Henrique Cardoso'], correct:'Michel Temer' },
+  { category:'politica', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 2019 e 2023?', options:['Jair Bolsonaro','Michel Temer','Luiz Inácio Lula da Silva','Dilma Rousseff'], correct:'Jair Bolsonaro' },
+  { category:'politica', difficulty:'lendario', question:'Qual presidente governou o Brasil a partir de 2023?', options:['Luiz Inácio Lula da Silva','Jair Bolsonaro','Michel Temer','Dilma Rousseff'], correct:'Luiz Inácio Lula da Silva' },
+  { category:'politica', difficulty:'lendario', question:'Qual tribunal superior não integra a Justiça Comum, mas a Justiça Eleitoral?', options:['TSE','STJ','STM','TRF'], correct:'TSE' },
+  { category:'politica', difficulty:'lendario', question:'Qual instrumento constitucional, quando rejeitado pelo Congresso, perde eficácia ex nunc?', options:['Medida provisória','Lei complementar','Emenda constitucional','Súmula vinculante'], correct:'Medida provisória' },
+  { category:'politica', difficulty:'lendario', question:'Qual princípio constitucional impede a concentração de funções estatais em um só poder?', options:['Separação dos poderes','Legalidade estrita','Anterioridade tributária','Irretroatividade penal'], correct:'Separação dos poderes' },
+  { category:'politica', difficulty:'lendario', question:'Qual cidade foi capital do Brasil entre 1549 e 1763?', options:['Salvador','Rio de Janeiro','Recife','Olinda'], correct:'Salvador' },
+  { category:'politica', difficulty:'lendario', question:'Qual casa inicia a autorização para abertura de processo de impeachment do presidente?', options:['Câmara dos Deputados','Senado Federal','STF','TSE'], correct:'Câmara dos Deputados' },
 
-    function buildPoliticsQuestions() {
-      const qs = [];
-      const d = DATA.politica;
+  { category:'futebol', difficulty:'facil', question:'Quantos jogadores cada time tem em campo no futebol?', options:['11','10','9','12'], correct:'11' },
+  { category:'futebol', difficulty:'facil', question:'Qual seleção venceu a Copa do Mundo de 2002?', options:['Brasil','Alemanha','França','Argentina'], correct:'Brasil' },
+  { category:'futebol', difficulty:'facil', question:'Quem é conhecido como Rei do Futebol?', options:['Pelé','Zico','Romário','Ronaldo'], correct:'Pelé' },
+  { category:'futebol', difficulty:'facil', question:'Em qual cidade fica o Maracanã?', options:['Rio de Janeiro','São Paulo','Belo Horizonte','Brasília'], correct:'Rio de Janeiro' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube manda seus jogos no Morumbi?', options:['São Paulo','Corinthians','Palmeiras','Santos'], correct:'São Paulo' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube manda seus jogos na Neo Química Arena?', options:['Corinthians','Palmeiras','São Paulo','Santos'], correct:'Corinthians' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube manda seus jogos no Allianz Parque?', options:['Palmeiras','Corinthians','São Paulo','Flamengo'], correct:'Palmeiras' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube manda seus jogos na Vila Belmiro?', options:['Santos','Botafogo','Bahia','Coritiba'], correct:'Santos' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube manda seus jogos no Beira-Rio?', options:['Internacional','Grêmio','Cruzeiro','Atlético Mineiro'], correct:'Internacional' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube manda seus jogos na Arena do Grêmio?', options:['Grêmio','Internacional','Athletico Paranaense','Bahia'], correct:'Grêmio' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube está associado ao Mineirão como estádio clássico?', options:['Cruzeiro','Atlético Mineiro','América Mineiro','Botafogo'], correct:'Cruzeiro' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube está associado à Arena MRV?', options:['Atlético Mineiro','Cruzeiro','Grêmio','São Paulo'], correct:'Atlético Mineiro' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube está associado ao São Januário?', options:['Vasco da Gama','Flamengo','Botafogo','Fluminense'], correct:'Vasco da Gama' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube está associado ao Nilton Santos?', options:['Botafogo','Flamengo','Fluminense','Vasco da Gama'], correct:'Botafogo' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube joga no Barradão?', options:['Vitória','Bahia','Sport','Fortaleza'], correct:'Vitória' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube joga na Arena Fonte Nova?', options:['Bahia','Vitória','Fortaleza','Ceará'], correct:'Bahia' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube está ligado à Ligga Arena?', options:['Athletico Paranaense','Coritiba','Paraná Clube','Cruzeiro'], correct:'Athletico Paranaense' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube joga no Couto Pereira?', options:['Coritiba','Athletico Paranaense','Ceará','Náutico'], correct:'Coritiba' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube joga na Ilha do Retiro?', options:['Sport','Náutico','Santa Cruz','Bahia'], correct:'Sport' },
+  { category:'futebol', difficulty:'facil', question:'Qual clube joga nos Aflitos?', options:['Náutico','Sport','Ceará','Fortaleza'], correct:'Náutico' },
+  { category:'futebol', difficulty:'facil', question:'Quantos títulos de Copa do Mundo a seleção brasileira masculina conquistou?', options:['5','4','6','3'], correct:'5' },
+  { category:'futebol', difficulty:'facil', question:'Qual país venceu a Copa do Mundo de 2014?', options:['Alemanha','Brasil','Argentina','França'], correct:'Alemanha' },
+  { category:'futebol', difficulty:'facil', question:'Em qual país foi disputada a Copa do Mundo de 2014?', options:['Brasil','Alemanha','África do Sul','México'], correct:'Brasil' },
+  { category:'futebol', difficulty:'facil', question:'Em qual país foi disputada a Copa do Mundo de 1958, vencida pelo Brasil?', options:['Suécia','Chile','México','Estados Unidos'], correct:'Suécia' },
+  { category:'futebol', difficulty:'facil', question:'Em qual país foi disputada a Copa do Mundo de 1962, vencida pelo Brasil?', options:['Chile','Suécia','México','Estados Unidos'], correct:'Chile' },
 
-      d.presidents.forEach(p => {
-        qs.push(makeQuestion('politica', p.difficulty, `Qual presidente do Brasil governou no período ${p.period}?`, p.name, pickWrongFromList(d.presidents, p, 'name')));
-        qs.push(makeQuestion('politica', p.difficulty, `Qual a posição de ${p.name} na numeração histórica dos presidentes do Brasil?`, String(p.order), shuffle(d.presidents.filter(x => x.order !== p.order).map(x => String(x.order))).slice(0, 3)));
-      });
+  { category:'futebol', difficulty:'medio', question:'Qual cidade é a sede do Flamengo?', options:['Rio de Janeiro','São Paulo','Belo Horizonte','Salvador'], correct:'Rio de Janeiro' },
+  { category:'futebol', difficulty:'medio', question:'Qual cidade é a sede do Corinthians?', options:['São Paulo','Santos','Rio de Janeiro','Campinas'], correct:'São Paulo' },
+  { category:'futebol', difficulty:'medio', question:'Qual cidade é a sede do Santos?', options:['Santos','São Paulo','Campinas','Rio de Janeiro'], correct:'Santos' },
+  { category:'futebol', difficulty:'medio', question:'Qual cidade é a sede do Grêmio?', options:['Porto Alegre','Curitiba','Caxias do Sul','Florianópolis'], correct:'Porto Alegre' },
+  { category:'futebol', difficulty:'medio', question:'Qual cidade é a sede do Cruzeiro?', options:['Belo Horizonte','Contagem','Uberlândia','Juiz de Fora'], correct:'Belo Horizonte' },
+  { category:'futebol', difficulty:'medio', question:'Qual cidade é a sede do Bahia?', options:['Salvador','Feira de Santana','Fortaleza','Recife'], correct:'Salvador' },
+  { category:'futebol', difficulty:'medio', question:'Qual cidade é a sede do Athletico Paranaense?', options:['Curitiba','Londrina','Maringá','Ponta Grossa'], correct:'Curitiba' },
+  { category:'futebol', difficulty:'medio', question:'Qual cidade é a sede do Fortaleza?', options:['Fortaleza','Recife','Natal','Salvador'], correct:'Fortaleza' },
+  { category:'futebol', difficulty:'medio', question:'Qual estado é a sede do Internacional?', options:['RS','SC','PR','SP'], correct:'RS' },
+  { category:'futebol', difficulty:'medio', question:'Qual estado é a sede do Palmeiras?', options:['SP','RJ','MG','RS'], correct:'SP' },
+  { category:'futebol', difficulty:'medio', question:'Qual estado é a sede do Bahia?', options:['BA','PE','CE','PB'], correct:'BA' },
+  { category:'futebol', difficulty:'medio', question:'Qual estado é a sede do Sport?', options:['PE','BA','CE','RN'], correct:'PE' },
+  { category:'futebol', difficulty:'medio', question:'Quem venceu a Copa do Mundo de 1994?', options:['Brasil','Itália','Alemanha','Argentina'], correct:'Brasil' },
+  { category:'futebol', difficulty:'medio', question:'Quem venceu a Copa do Mundo de 1970?', options:['Brasil','Itália','Alemanha','Uruguai'], correct:'Brasil' },
+  { category:'futebol', difficulty:'medio', question:'Quem venceu a Copa do Mundo de 1958?', options:['Brasil','Suécia','Uruguai','Alemanha'], correct:'Brasil' },
+  { category:'futebol', difficulty:'medio', question:'Quem venceu a Copa do Mundo de 1962?', options:['Brasil','Chile','Tchecoslováquia','Alemanha'], correct:'Brasil' },
+  { category:'futebol', difficulty:'medio', question:'Quem venceu a Copa do Mundo de 2002?', options:['Brasil','Alemanha','França','Itália'], correct:'Brasil' },
+  { category:'futebol', difficulty:'medio', question:'Qual país sediou a Copa do Mundo de 1994?', options:['Estados Unidos','México','Brasil','França'], correct:'Estados Unidos' },
+  { category:'futebol', difficulty:'medio', question:'Qual país sediou a Copa do Mundo de 1970?', options:['México','Chile','Argentina','Estados Unidos'], correct:'México' },
+  { category:'futebol', difficulty:'medio', question:'Qual seleção é apelidada de Canarinho?', options:['Brasil','Argentina','Uruguai','Chile'], correct:'Brasil' },
+  { category:'futebol', difficulty:'medio', question:'Qual regra impede o atacante de receber a bola à frente da defesa em certas condições?', options:['Impedimento','Escanteio','Reposição','Tiro livre'], correct:'Impedimento' },
+  { category:'futebol', difficulty:'medio', question:'Qual clube brasileiro é conhecido como Galo?', options:['Atlético Mineiro','Cruzeiro','Botafogo','Bahia'], correct:'Atlético Mineiro' },
+  { category:'futebol', difficulty:'medio', question:'Qual clube brasileiro é conhecido como Peixe?', options:['Santos','São Paulo','Corinthians','Flamengo'], correct:'Santos' },
+  { category:'futebol', difficulty:'medio', question:'Qual clube brasileiro é conhecido como Tricolor Paulista?', options:['São Paulo','Bahia','Fluminense','Grêmio'], correct:'São Paulo' },
+  { category:'futebol', difficulty:'medio', question:'Qual clube brasileiro é conhecido como Rubro-Negro carioca?', options:['Flamengo','Athletico Paranaense','Vitória','Sport'], correct:'Flamengo' },
 
-      d.capitalsHistory.forEach(c => {
-        qs.push(makeQuestion('politica', c.difficulty, `Em que ano ${c.city} passou a ser capital do Brasil?`, String(c.year), shuffle(['1549', '1763', '1822', '1891', '1960', '1964'].filter(x => x !== String(c.year))).slice(0, 3)));
-      });
+  { category:'futebol', difficulty:'dificil', question:'Qual competição nacional brasileira é tradicionalmente disputada em sistema mata-mata?', options:['Copa do Brasil','Campeonato Brasileiro','Paulistão por pontos corridos','Recopa Sul-Americana'], correct:'Copa do Brasil' },
+  { category:'futebol', difficulty:'dificil', question:'Qual competição reúne clubes campeões continentais para definir um campeão mundial?', options:['Mundial de Clubes','Libertadores','Copa do Brasil','Supercopa do Brasil'], correct:'Mundial de Clubes' },
+  { category:'futebol', difficulty:'dificil', question:'Em qual país surgiu o futebol moderno com regras organizadas?', options:['Inglaterra','Brasil','Espanha','Itália'], correct:'Inglaterra' },
+  { category:'futebol', difficulty:'dificil', question:'Qual estádio é compartilhado por Flamengo e Fluminense em muitas partidas históricas?', options:['Maracanã','São Januário','Nilton Santos','Morumbi'], correct:'Maracanã' },
+  { category:'futebol', difficulty:'dificil', question:'Qual clube pernambucano manda jogos nos Aflitos?', options:['Náutico','Sport','Santa Cruz','Retrô'], correct:'Náutico' },
+  { category:'futebol', difficulty:'dificil', question:'Qual clube cearense divide o Castelão com o Fortaleza?', options:['Ceará','Vitória','Bahia','Náutico'], correct:'Ceará' },
+  { category:'futebol', difficulty:'dificil', question:'Qual estado abriga o clássico Gre-Nal?', options:['Rio Grande do Sul','Paraná','Santa Catarina','São Paulo'], correct:'Rio Grande do Sul' },
+  { category:'futebol', difficulty:'dificil', question:'Qual estado abriga o clássico Ba-Vi?', options:['Bahia','Pernambuco','Ceará','Rio de Janeiro'], correct:'Bahia' },
+  { category:'futebol', difficulty:'dificil', question:'Qual estado abriga o clássico Atletiba?', options:['Paraná','Rio Grande do Sul','Minas Gerais','São Paulo'], correct:'Paraná' },
+  { category:'futebol', difficulty:'dificil', question:'Qual estado abriga o clássico mineiro entre Cruzeiro e Atlético Mineiro?', options:['MG','SP','RJ','RS'], correct:'MG' },
+  { category:'futebol', difficulty:'dificil', question:'Qual estado abriga o clássico paulista entre Corinthians e Palmeiras?', options:['SP','RJ','MG','PR'], correct:'SP' },
+  { category:'futebol', difficulty:'dificil', question:'Qual país foi vice-campeão da Copa de 2014?', options:['Argentina','Brasil','Alemanha','Holanda'], correct:'Argentina' },
+  { category:'futebol', difficulty:'dificil', question:'Qual país foi vice-campeão da Copa de 2002?', options:['Alemanha','Brasil','França','Itália'], correct:'Alemanha' },
+  { category:'futebol', difficulty:'dificil', question:'Qual país foi vice-campeão da Copa de 1994?', options:['Itália','Brasil','Alemanha','Argentina'], correct:'Itália' },
+  { category:'futebol', difficulty:'dificil', question:'Qual país foi vice-campeão da Copa de 1970?', options:['Itália','Brasil','Alemanha','Uruguai'], correct:'Itália' },
+  { category:'futebol', difficulty:'dificil', question:'Qual país foi vice-campeão da Copa de 1958?', options:['Suécia','Brasil','Alemanha','França'], correct:'Suécia' },
+  { category:'futebol', difficulty:'dificil', question:'Qual país foi vice-campeão da Copa de 1962?', options:['Tchecoslováquia','Brasil','Chile','Alemanha'], correct:'Tchecoslováquia' },
+  { category:'futebol', difficulty:'dificil', question:'Qual clube brasileiro está ligado ao apelido Colorado?', options:['Internacional','Grêmio','Bahia','Botafogo'], correct:'Internacional' },
+  { category:'futebol', difficulty:'dificil', question:'Qual clube brasileiro está ligado ao apelido Alvinegro Praiano?', options:['Santos','Botafogo','Corinthians','Atlético Mineiro'], correct:'Santos' },
+  { category:'futebol', difficulty:'dificil', question:'Qual clube brasileiro está ligado ao apelido Timão?', options:['Corinthians','Palmeiras','Flamengo','São Paulo'], correct:'Corinthians' },
 
-      d.institutions.forEach(item => {
-        qs.push(makeQuestion('politica', item.difficulty, item.prompt, item.answer, item.wrong));
-      });
+  { category:'futebol', difficulty:'lendario', question:'Qual seleção tem mais títulos de Copa do Mundo masculina?', options:['Brasil','Alemanha','Itália','Argentina'], correct:'Brasil' },
+  { category:'futebol', difficulty:'lendario', question:'Qual foi o país-sede da Copa do Mundo vencida pelo Brasil em 2002?', options:['Coreia do Sul e Japão','França','Estados Unidos','México'], correct:'Coreia do Sul e Japão' },
+  { category:'futebol', difficulty:'lendario', question:'Qual foi o país-sede da Copa do Mundo vencida pelo Brasil em 1958?', options:['Suécia','Chile','México','Alemanha'], correct:'Suécia' },
+  { category:'futebol', difficulty:'lendario', question:'Qual foi o país-sede da Copa do Mundo vencida pelo Brasil em 1962?', options:['Chile','Suécia','México','Estados Unidos'], correct:'Chile' },
+  { category:'futebol', difficulty:'lendario', question:'Qual foi o país-sede da Copa do Mundo vencida pelo Brasil em 1970?', options:['México','Itália','França','Alemanha'], correct:'México' },
+  { category:'futebol', difficulty:'lendario', question:'Qual foi o país-sede da Copa do Mundo vencida pelo Brasil em 1994?', options:['Estados Unidos','México','França','Brasil'], correct:'Estados Unidos' },
+  { category:'futebol', difficulty:'lendario', question:'Qual clube carioca manda jogos em estádio próprio chamado São Januário?', options:['Vasco da Gama','Botafogo','Flamengo','Fluminense'], correct:'Vasco da Gama' },
+  { category:'futebol', difficulty:'lendario', question:'Qual clube gaúcho manda jogos no estádio Beira-Rio?', options:['Internacional','Grêmio','Juventude','Caxias'], correct:'Internacional' },
+  { category:'futebol', difficulty:'lendario', question:'Qual clube paranaense manda jogos na Ligga Arena?', options:['Athletico Paranaense','Coritiba','Paraná Clube','Londrina'], correct:'Athletico Paranaense' },
+  { category:'futebol', difficulty:'lendario', question:'Qual clube baiano manda jogos no Barradão?', options:['Vitória','Bahia','Jacuipense','Itabuna'], correct:'Vitória' },
+  { category:'futebol', difficulty:'lendario', question:'Qual clube mineiro manda jogos na Arena MRV?', options:['Atlético Mineiro','Cruzeiro','América Mineiro','Tupi'], correct:'Atlético Mineiro' },
+  { category:'futebol', difficulty:'lendario', question:'Qual clube paulista manda jogos no Morumbi?', options:['São Paulo','Corinthians','Palmeiras','Santos'], correct:'São Paulo' },
+  { category:'futebol', difficulty:'lendario', question:'Qual clube paulista manda jogos na Vila Belmiro?', options:['Santos','Palmeiras','Corinthians','Bragantino'], correct:'Santos' },
+  { category:'futebol', difficulty:'lendario', question:'Qual clube carioca manda jogos no Nilton Santos?', options:['Botafogo','Flamengo','Fluminense','Vasco da Gama'], correct:'Botafogo' },
+  { category:'futebol', difficulty:'lendario', question:'Qual clube pernambucano manda jogos na Ilha do Retiro?', options:['Sport','Náutico','Santa Cruz','Central'], correct:'Sport' },
 
-      d.constitution.forEach(item => {
-        qs.push(makeQuestion('politica', item.difficulty, item.prompt, item.answer, item.wrong));
-      });
+  { category:'historia', difficulty:'facil', question:'Em que ano ocorreu a Independência do Brasil?', options:['1822','1808','1889','1831'], correct:'1822' },
+  { category:'historia', difficulty:'facil', question:'Quem proclamou a Independência do Brasil?', options:['Dom Pedro I','Dom Pedro II','José Bonifácio','Tiradentes'], correct:'Dom Pedro I' },
+  { category:'historia', difficulty:'facil', question:'Em que ano ocorreu a Proclamação da República no Brasil?', options:['1889','1888','1891','1900'], correct:'1889' },
+  { category:'historia', difficulty:'facil', question:'Quem liderou a Proclamação da República?', options:['Deodoro da Fonseca','Floriano Peixoto','Getúlio Vargas','Dom Pedro II'], correct:'Deodoro da Fonseca' },
+  { category:'historia', difficulty:'facil', question:'Em que ano foi assinada a Lei Áurea?', options:['1888','1889','1822','1871'], correct:'1888' },
+  { category:'historia', difficulty:'facil', question:'Quem assinou a Lei Áurea?', options:['Princesa Isabel','Maria Leopoldina','Anita Garibaldi','Carlota Joaquina'], correct:'Princesa Isabel' },
+  { category:'historia', difficulty:'facil', question:'Quem era o imperador do Brasil quando a República foi proclamada?', options:['Dom Pedro II','Dom Pedro I','Dom João VI','José Bonifácio'], correct:'Dom Pedro II' },
+  { category:'historia', difficulty:'facil', question:'Em que ano a família real portuguesa chegou ao Brasil?', options:['1808','1822','1789','1815'], correct:'1808' },
+  { category:'historia', difficulty:'facil', question:'Quem chegou ao Brasil em 1500 segundo a narrativa histórica tradicional?', options:['Pedro Álvares Cabral','Cristóvão Colombo','Vasco da Gama','Fernão de Magalhães'], correct:'Pedro Álvares Cabral' },
+  { category:'historia', difficulty:'facil', question:'Em que ano ocorreu a chegada portuguesa ao território do atual Brasil?', options:['1500','1492','1502','1530'], correct:'1500' },
+  { category:'historia', difficulty:'facil', question:'Qual líder da Inconfidência Mineira é mais lembrado como mártir?', options:['Tiradentes','Duque de Caxias','José Bonifácio','Bento Gonçalves'], correct:'Tiradentes' },
+  { category:'historia', difficulty:'facil', question:'Qual conflito global ocorreu entre 1914 e 1918?', options:['Primeira Guerra Mundial','Segunda Guerra Mundial','Guerra Fria','Guerra dos Cem Anos'], correct:'Primeira Guerra Mundial' },
+  { category:'historia', difficulty:'facil', question:'Qual conflito global ocorreu entre 1939 e 1945?', options:['Segunda Guerra Mundial','Primeira Guerra Mundial','Guerra Fria','Guerra do Vietnã'], correct:'Segunda Guerra Mundial' },
+  { category:'historia', difficulty:'facil', question:'Qual período de tensão geopolítica opôs EUA e URSS sem guerra direta total?', options:['Guerra Fria','Belle Époque','Paz Armada','Era Napoleônica'], correct:'Guerra Fria' },
+  { category:'historia', difficulty:'facil', question:'Qual civilização construiu as pirâmides de Gizé?', options:['Egípcia','Romana','Grega','Persa'], correct:'Egípcia' },
+  { category:'historia', difficulty:'facil', question:'Em que século ocorreu a Revolução Francesa?', options:['Século XVIII','Século XVII','Século XIX','Século XVI'], correct:'Século XVIII' },
+  { category:'historia', difficulty:'facil', question:'Qual documento inglês de 1215 é marco na limitação do poder real?', options:['Magna Carta','Bill of Rights','Tratado de Versalhes','Edito de Nantes'], correct:'Magna Carta' },
+  { category:'historia', difficulty:'facil', question:'Quem foi o primeiro presidente do Brasil?', options:['Deodoro da Fonseca','Floriano Peixoto','Campos Sales','Getúlio Vargas'], correct:'Deodoro da Fonseca' },
+  { category:'historia', difficulty:'facil', question:'Quem foi o presidente que se suicidou em 1954?', options:['Getúlio Vargas','Jânio Quadros','Juscelino Kubitschek','João Goulart'], correct:'Getúlio Vargas' },
+  { category:'historia', difficulty:'facil', question:'Qual movimento foi liderado por Antônio Conselheiro?', options:['Guerra de Canudos','Revolta da Vacina','Sabinada','Balaiada'], correct:'Guerra de Canudos' },
+  { category:'historia', difficulty:'facil', question:'Qual revolta urbana ocorreu contra a vacinação obrigatória no Rio de Janeiro?', options:['Revolta da Vacina','Revolta da Chibata','Revolta da Armada','Intentona Comunista'], correct:'Revolta da Vacina' },
+  { category:'historia', difficulty:'facil', question:'Em que ano começou o regime militar no Brasil?', options:['1964','1954','1961','1968'], correct:'1964' },
+  { category:'historia', difficulty:'facil', question:'Em que ano terminou o regime militar no Brasil?', options:['1985','1984','1986','1988'], correct:'1985' },
+  { category:'historia', difficulty:'facil', question:'Qual presidente foi deposto em 1964?', options:['João Goulart','Jânio Quadros','Getúlio Vargas','Castelo Branco'], correct:'João Goulart' },
+  { category:'historia', difficulty:'facil', question:'Qual navegador português chegou ao Brasil em 1500?', options:['Pedro Álvares Cabral','Vasco da Gama','Bartolomeu Dias','Fernão de Magalhães'], correct:'Pedro Álvares Cabral' },
 
-      return qs;
-    }
+  { category:'historia', difficulty:'medio', question:'Qual foi a primeira constituição do Brasil?', options:['Constituição de 1824','Constituição de 1891','Constituição de 1934','Constituição de 1988'], correct:'Constituição de 1824' },
+  { category:'historia', difficulty:'medio', question:'Qual guerra opôs o Paraguai à Tríplice Aliança?', options:['Guerra do Paraguai','Guerra dos Farrapos','Guerra de Canudos','Guerra do Contestado'], correct:'Guerra do Paraguai' },
+  { category:'historia', difficulty:'medio', question:'Quem foi o líder mais associado à Inconfidência Mineira?', options:['Tiradentes','José Bonifácio','Zumbi','Dom Pedro I'], correct:'Tiradentes' },
+  { category:'historia', difficulty:'medio', question:'Qual período brasileiro ficou conhecido como Estado Novo?', options:['1937-1945','1930-1934','1946-1950','1964-1985'], correct:'1937-1945' },
+  { category:'historia', difficulty:'medio', question:'Qual presidente governava o Brasil quando a Constituição de 1988 foi promulgada?', options:['José Sarney','Fernando Collor','Tancredo Neves','Itamar Franco'], correct:'José Sarney' },
+  { category:'historia', difficulty:'medio', question:'Em qual cidade foi dado o Grito do Ipiranga?', options:['São Paulo','Rio de Janeiro','Salvador','Petrópolis'], correct:'São Paulo' },
+  { category:'historia', difficulty:'medio', question:'Quem era o presidente em 1964 no momento do golpe militar?', options:['João Goulart','Jânio Quadros','Juscelino Kubitschek','Getúlio Vargas'], correct:'João Goulart' },
+  { category:'historia', difficulty:'medio', question:'Qual período opôs Estados Unidos e União Soviética após a Segunda Guerra?', options:['Guerra Fria','Era Napoleônica','Paz Armada','Mercantilismo'], correct:'Guerra Fria' },
+  { category:'historia', difficulty:'medio', question:'A Revolução Francesa começou em qual ano?', options:['1789','1776','1815','1848'], correct:'1789' },
+  { category:'historia', difficulty:'medio', question:'Qual documento britânico é considerado um marco medieval de limitação do rei?', options:['Magna Carta','Act of Union','Tratado de Utrecht','Bill of Rights de 1689'], correct:'Magna Carta' },
+  { category:'historia', difficulty:'medio', question:'Qual presidente ficou associado à construção de Brasília?', options:['Juscelino Kubitschek','Getúlio Vargas','João Goulart','Eurico Dutra'], correct:'Juscelino Kubitschek' },
+  { category:'historia', difficulty:'medio', question:'Quem foi o imperador do Brasil na Independência?', options:['Dom Pedro I','Dom Pedro II','Dom João VI','José Bonifácio'], correct:'Dom Pedro I' },
+  { category:'historia', difficulty:'medio', question:'Qual presidente renunciou em 1961?', options:['Jânio Quadros','João Goulart','Getúlio Vargas','Juscelino Kubitschek'], correct:'Jânio Quadros' },
+  { category:'historia', difficulty:'medio', question:'Quem foi o vice que assumiu após o impeachment de Collor?', options:['Itamar Franco','José Sarney','Fernando Henrique Cardoso','Tancredo Neves'], correct:'Itamar Franco' },
+  { category:'historia', difficulty:'medio', question:'Qual princesa assinou a Lei Áurea em 1888?', options:['Princesa Isabel','Maria Leopoldina','Ana Néri','Carlota Joaquina'], correct:'Princesa Isabel' },
+  { category:'historia', difficulty:'medio', question:'Qual presidente brasileiro governou durante grande parte dos anos 1930 e 1940?', options:['Getúlio Vargas','Juscelino Kubitschek','João Goulart','Castelo Branco'], correct:'Getúlio Vargas' },
+  { category:'historia', difficulty:'medio', question:'Qual civilização antiga foi responsável pelas pirâmides de Gizé?', options:['Egípcia','Grega','Romana','Persa'], correct:'Egípcia' },
+  { category:'historia', difficulty:'medio', question:'Em que século se localiza o ano de 1789?', options:['Século XVIII','Século XVII','Século XIX','Século XVI'], correct:'Século XVIII' },
+  { category:'historia', difficulty:'medio', question:'Em que século se localiza o ano de 1500?', options:['Século XVI','Século XV','Século XVII','Século XIV'], correct:'Século XVI' },
+  { category:'historia', difficulty:'medio', question:'Em que século se localiza o ano de 1889?', options:['Século XIX','Século XVIII','Século XX','Século XVII'], correct:'Século XIX' },
 
-    function buildFootballQuestions() {
-      const qs = [];
-      const d = DATA.futebol;
+  { category:'historia', difficulty:'dificil', question:'Qual presidente governou no início da República após Deodoro?', options:['Floriano Peixoto','Prudente de Morais','Campos Sales','Rodrigues Alves'], correct:'Floriano Peixoto' },
+  { category:'historia', difficulty:'dificil', question:'Qual líder sertanejo está associado à Guerra de Canudos?', options:['Antônio Conselheiro','Lampião','Padre Cícero','Bento Gonçalves'], correct:'Antônio Conselheiro' },
+  { category:'historia', difficulty:'dificil', question:'Qual conflito brasileiro do século XIX envolveu o Rio Grande do Sul e ficou conhecido como Revolução Farroupilha?', options:['Guerra dos Farrapos','Guerra do Paraguai','Canudos','Contestado'], correct:'Guerra dos Farrapos' },
+  { category:'historia', difficulty:'dificil', question:'Qual documento marcou a limitação do absolutismo inglês em 1215?', options:['Magna Carta','Bill of Rights','Ato de Supremacia','Petição de Direitos'], correct:'Magna Carta' },
+  { category:'historia', difficulty:'dificil', question:'Quem assumiu a presidência após a morte de Tancredo Neves?', options:['José Sarney','Ulysses Guimarães','Fernando Collor','Itamar Franco'], correct:'José Sarney' },
+  { category:'historia', difficulty:'dificil', question:'Qual foi a capital do Brasil antes de Brasília?', options:['Rio de Janeiro','Salvador','São Paulo','Ouro Preto'], correct:'Rio de Janeiro' },
+  { category:'historia', difficulty:'dificil', question:'Qual foi a capital do Brasil antes do Rio de Janeiro?', options:['Salvador','Recife','Olinda','São Luís'], correct:'Salvador' },
+  { category:'historia', difficulty:'dificil', question:'Qual imperador foi deposto com a Proclamação da República?', options:['Dom Pedro II','Dom Pedro I','Dom João VI','Dom Miguel'], correct:'Dom Pedro II' },
+  { category:'historia', difficulty:'dificil', question:'Em que ano começou a Segunda Guerra Mundial?', options:['1939','1937','1941','1945'], correct:'1939' },
+  { category:'historia', difficulty:'dificil', question:'Em que ano terminou a Segunda Guerra Mundial?', options:['1945','1944','1946','1939'], correct:'1945' },
+  { category:'historia', difficulty:'dificil', question:'Em que ano começou a Primeira Guerra Mundial?', options:['1914','1912','1918','1920'], correct:'1914' },
+  { category:'historia', difficulty:'dificil', question:'Em que ano terminou a Primeira Guerra Mundial?', options:['1918','1916','1920','1914'], correct:'1918' },
+  { category:'historia', difficulty:'dificil', question:'Qual era o nome do marechal que proclamou a República?', options:['Deodoro da Fonseca','Floriano Peixoto','Duque de Caxias','Castelo Branco'], correct:'Deodoro da Fonseca' },
+  { category:'historia', difficulty:'dificil', question:'Qual presidente está ligado ao Estado Novo?', options:['Getúlio Vargas','Juscelino Kubitschek','João Goulart','José Sarney'], correct:'Getúlio Vargas' },
+  { category:'historia', difficulty:'dificil', question:'Qual movimento teve como símbolo Tiradentes?', options:['Inconfidência Mineira','Sabinada','Balaiada','Cabanagem'], correct:'Inconfidência Mineira' },
+  { category:'historia', difficulty:'dificil', question:'Quem foi o imperador do Brasil durante a maior parte do século XIX?', options:['Dom Pedro II','Dom Pedro I','Dom João VI','Dom Pedro III'], correct:'Dom Pedro II' },
+  { category:'historia', difficulty:'dificil', question:'Qual período brasileiro é chamado de Nova República?', options:['Após 1985','1930-1945','1964-1985','1889-1930'], correct:'Após 1985' },
+  { category:'historia', difficulty:'dificil', question:'Qual documento brasileiro acabou com a escravidão formal?', options:['Lei Áurea','Lei do Ventre Livre','Lei dos Sexagenários','Código Criminal'], correct:'Lei Áurea' },
+  { category:'historia', difficulty:'dificil', question:'Qual foi a primeira constituição republicana do Brasil?', options:['1891','1824','1934','1946'], correct:'1891' },
+  { category:'historia', difficulty:'dificil', question:'Qual foi a primeira constituição brasileira?', options:['1824','1891','1934','1946'], correct:'1824' },
 
-      d.clubs.forEach(c => {
-        qs.push(makeQuestion('futebol', c.difficulty, `Qual é o estádio associado ao ${c.club}?`, c.stadium, pickWrongFromList(d.clubs, c, 'stadium')));
-        qs.push(makeQuestion('futebol', c.difficulty, `De qual cidade é o clube ${c.club}?`, c.city, pickWrongFromList(d.clubs, c, 'city')));
-        qs.push(makeQuestion('futebol', c.difficulty, `${c.club} é um clube de qual estado brasileiro?`, c.state, pickWrongFromList(d.clubs, c, 'state')));
-      });
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1889 e 1891?', options:['Deodoro da Fonseca','Floriano Peixoto','Prudente de Morais','Campos Sales'], correct:'Deodoro da Fonseca' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1891 e 1894?', options:['Floriano Peixoto','Deodoro da Fonseca','Prudente de Morais','Campos Sales'], correct:'Floriano Peixoto' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1894 e 1898?', options:['Prudente de Morais','Floriano Peixoto','Campos Sales','Rodrigues Alves'], correct:'Prudente de Morais' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1930 e 1945?', options:['Getúlio Vargas','Juscelino Kubitschek','José Sarney','Eurico Dutra'], correct:'Getúlio Vargas' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1956 e 1961?', options:['Juscelino Kubitschek','Getúlio Vargas','Jânio Quadros','João Goulart'], correct:'Juscelino Kubitschek' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil em 1961 antes da posse efetiva de João Goulart?', options:['Jânio Quadros','Getúlio Vargas','Juscelino Kubitschek','Castelo Branco'], correct:'Jânio Quadros' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1961 e 1964?', options:['João Goulart','Jânio Quadros','Castelo Branco','Costa e Silva'], correct:'João Goulart' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1985 e 1990?', options:['José Sarney','Fernando Collor','Itamar Franco','Tancredo Neves'], correct:'José Sarney' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1990 e 1992?', options:['Fernando Collor','Itamar Franco','José Sarney','Fernando Henrique Cardoso'], correct:'Fernando Collor' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1992 e 1995?', options:['Itamar Franco','Fernando Collor','Fernando Henrique Cardoso','José Sarney'], correct:'Itamar Franco' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 1995 e 2003?', options:['Fernando Henrique Cardoso','Itamar Franco','Luiz Inácio Lula da Silva','José Sarney'], correct:'Fernando Henrique Cardoso' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 2003 e 2011?', options:['Luiz Inácio Lula da Silva','Fernando Henrique Cardoso','Dilma Rousseff','Jair Bolsonaro'], correct:'Luiz Inácio Lula da Silva' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 2011 e 2016?', options:['Dilma Rousseff','Luiz Inácio Lula da Silva','Michel Temer','Jair Bolsonaro'], correct:'Dilma Rousseff' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 2016 e 2019?', options:['Michel Temer','Dilma Rousseff','Jair Bolsonaro','Fernando Henrique Cardoso'], correct:'Michel Temer' },
+  { category:'historia', difficulty:'lendario', question:'Qual presidente governou o Brasil entre 2019 e 2023?', options:['Jair Bolsonaro','Michel Temer','Luiz Inácio Lula da Silva','Dilma Rousseff'], correct:'Jair Bolsonaro' },
 
-      d.worldCups.forEach(wc => {
-        qs.push(makeQuestion('futebol', wc.difficulty, `Quem venceu a Copa do Mundo de ${wc.year}, sediada em ${wc.host}?`, wc.champion, shuffle(['Brasil', 'Alemanha', 'Argentina', 'Itália', 'França', 'Espanha'].filter(x => x !== wc.champion)).slice(0, 3)));
-        qs.push(makeQuestion('futebol', wc.difficulty, `Em qual país ocorreu a Copa do Mundo de ${wc.year}, vencida por ${wc.champion}?`, wc.host, shuffle(d.worldCups.filter(x => x.host !== wc.host).map(x => x.host)).slice(0, 3)));
-      });
+  { category:'gerais', difficulty:'facil', question:'Qual planeta é conhecido como Planeta Vermelho?', options:['Marte','Vênus','Júpiter','Mercúrio'], correct:'Marte' },
+  { category:'gerais', difficulty:'facil', question:'Qual é a fórmula química da água?', options:['H2O','CO2','NaCl','O2'], correct:'H2O' },
+  { category:'gerais', difficulty:'facil', question:'Qual é o maior oceano da Terra?', options:['Pacífico','Atlântico','Índico','Ártico'], correct:'Pacífico' },
+  { category:'gerais', difficulty:'facil', question:'Quantos lados tem um hexágono?', options:['6','5','7','8'], correct:'6' },
+  { category:'gerais', difficulty:'facil', question:'Qual é a capital da França?', options:['Paris','Londres','Roma','Madri'], correct:'Paris' },
+  { category:'gerais', difficulty:'facil', question:'Qual é a capital do Japão?', options:['Tóquio','Pequim','Seul','Kyoto'], correct:'Tóquio' },
+  { category:'gerais', difficulty:'facil', question:'Qual é o maior planeta do Sistema Solar?', options:['Júpiter','Saturno','Marte','Netuno'], correct:'Júpiter' },
+  { category:'gerais', difficulty:'facil', question:'Qual é a unidade básica da vida?', options:['Célula','Átomo','Molécula','Tecido'], correct:'Célula' },
+  { category:'gerais', difficulty:'facil', question:'Qual processo permite às plantas produzir seu alimento?', options:['Fotossíntese','Respiração','Fermentação','Digestão'], correct:'Fotossíntese' },
+  { category:'gerais', difficulty:'facil', question:'Qual instrumento mede a temperatura?', options:['Termômetro','Barômetro','Altímetro','Higrômetro'], correct:'Termômetro' },
+  { category:'gerais', difficulty:'facil', question:'Qual é o idioma mais falado no Brasil?', options:['Português','Espanhol','Inglês','Francês'], correct:'Português' },
+  { category:'gerais', difficulty:'facil', question:'Qual é o resultado de 9 x 8?', options:['72','64','81','69'], correct:'72' },
+  { category:'gerais', difficulty:'facil', question:'Qual animal é o maior mamífero do planeta?', options:['Baleia-azul','Elefante africano','Orca','Girafa'], correct:'Baleia-azul' },
+  { category:'gerais', difficulty:'facil', question:'Qual rio é o mais extenso do Brasil?', options:['Amazonas','São Francisco','Paraná','Tocantins'], correct:'Amazonas' },
+  { category:'gerais', difficulty:'facil', question:'Qual cientista formulou a teoria da relatividade?', options:['Albert Einstein','Isaac Newton','Galileu Galilei','Nikola Tesla'], correct:'Albert Einstein' },
+  { category:'gerais', difficulty:'facil', question:'Qual é o gás mais abundante na atmosfera terrestre?', options:['Nitrogênio','Oxigênio','Gás carbônico','Hidrogênio'], correct:'Nitrogênio' },
+  { category:'gerais', difficulty:'facil', question:'Qual é o único número primo par?', options:['2','3','5','7'], correct:'2' },
+  { category:'gerais', difficulty:'facil', question:'Quem escreveu Dom Casmurro?', options:['Machado de Assis','José de Alencar','Clarice Lispector','Graciliano Ramos'], correct:'Machado de Assis' },
+  { category:'gerais', difficulty:'facil', question:'Qual elemento químico tem símbolo Au?', options:['Ouro','Prata','Argônio','Alumínio'], correct:'Ouro' },
+  { category:'gerais', difficulty:'facil', question:'Qual metal é líquido em temperatura ambiente?', options:['Mercúrio','Ferro','Cobre','Zinco'], correct:'Mercúrio' },
+  { category:'gerais', difficulty:'facil', question:'Quantos continentes são considerados no modelo mais comum ensinado no Brasil?', options:['6','5','7','8'], correct:'6' },
+  { category:'gerais', difficulty:'facil', question:'Qual é a raiz quadrada de 144?', options:['12','14','16','10'], correct:'12' },
+  { category:'gerais', difficulty:'facil', question:'Qual camada da atmosfera concentra a maior parte dos fenômenos meteorológicos?', options:['Troposfera','Estratosfera','Mesosfera','Exosfera'], correct:'Troposfera' },
+  { category:'gerais', difficulty:'facil', question:'Qual gás as plantas absorvem principalmente na fotossíntese?', options:['Dióxido de carbono','Oxigênio','Nitrogênio','Hélio'], correct:'Dióxido de carbono' },
+  { category:'gerais', difficulty:'facil', question:'Quantos lados tem um pentágono?', options:['5','6','4','7'], correct:'5' },
 
-      d.facts.forEach(item => {
-        qs.push(makeQuestion('futebol', item.difficulty, item.prompt, item.answer, item.wrong));
-      });
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital da Itália?', options:['Roma','Milão','Veneza','Nápoles'], correct:'Roma' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital da Espanha?', options:['Madri','Barcelona','Valência','Sevilha'], correct:'Madri' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital da Alemanha?', options:['Berlim','Munique','Frankfurt','Hamburgo'], correct:'Berlim' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital da Argentina?', options:['Buenos Aires','Córdoba','Rosário','Mendoza'], correct:'Buenos Aires' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital do Chile?', options:['Santiago','Valparaíso','Concepción','Antofagasta'], correct:'Santiago' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital do Uruguai?', options:['Montevidéu','Punta del Este','Salto','Paysandú'], correct:'Montevidéu' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital do Canadá?', options:['Ottawa','Toronto','Vancouver','Montreal'], correct:'Ottawa' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital da Austrália?', options:['Camberra','Sydney','Melbourne','Perth'], correct:'Camberra' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital de Portugal?', options:['Lisboa','Porto','Coimbra','Faro'], correct:'Lisboa' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital da China?', options:['Pequim','Xangai','Hong Kong','Cantão'], correct:'Pequim' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital da Coreia do Sul?', options:['Seul','Busan','Incheon','Daegu'], correct:'Seul' },
+  { category:'gerais', difficulty:'medio', question:'Qual é a capital da Índia?', options:['Nova Délhi','Mumbai','Calcutá','Bangalore'], correct:'Nova Délhi' },
+  { category:'gerais', difficulty:'medio', question:'Qual órgão do corpo humano bombeia sangue?', options:['Coração','Pulmão','Fígado','Rim'], correct:'Coração' },
+  { category:'gerais', difficulty:'medio', question:'Qual planeta é o mais próximo do Sol?', options:['Mercúrio','Vênus','Terra','Marte'], correct:'Mercúrio' },
+  { category:'gerais', difficulty:'medio', question:'Qual planeta é conhecido pelos anéis mais visíveis?', options:['Saturno','Júpiter','Urano','Netuno'], correct:'Saturno' },
+  { category:'gerais', difficulty:'medio', question:'Qual é o resultado de 12 x 12?', options:['144','124','132','156'], correct:'144' },
+  { category:'gerais', difficulty:'medio', question:'Qual é o maior animal terrestre?', options:['Elefante africano','Girafa','Rinoceronte','Hipopótamo'], correct:'Elefante africano' },
+  { category:'gerais', difficulty:'medio', question:'Qual é o ponto de ebulição da água ao nível do mar?', options:['100°C','90°C','80°C','120°C'], correct:'100°C' },
+  { category:'gerais', difficulty:'medio', question:'Qual é o principal satélite natural da Terra?', options:['Lua','Fobos','Io','Titã'], correct:'Lua' },
+  { category:'gerais', difficulty:'medio', question:'Qual escritor criou a obra O Pequeno Príncipe?', options:['Antoine de Saint-Exupéry','Victor Hugo','Jules Verne','Albert Camus'], correct:'Antoine de Saint-Exupéry' },
 
-      return qs;
-    }
+  { category:'gerais', difficulty:'dificil', question:'Qual é o símbolo químico do sódio?', options:['Na','So','Sd','S'], correct:'Na' },
+  { category:'gerais', difficulty:'dificil', question:'Qual é o símbolo químico do ferro?', options:['Fe','Fr','Ir','Fi'], correct:'Fe' },
+  { category:'gerais', difficulty:'dificil', question:'Qual é o símbolo químico da prata?', options:['Ag','Pt','Pr','Pa'], correct:'Ag' },
+  { category:'gerais', difficulty:'dificil', question:'Qual é a montanha mais alta do mundo acima do nível do mar?', options:['Everest','K2','Aconcágua','Makalu'], correct:'Everest' },
+  { category:'gerais', difficulty:'dificil', question:'Qual deserto é o maior deserto quente do mundo?', options:['Saara','Atacama','Kalahari','Gobi'], correct:'Saara' },
+  { category:'gerais', difficulty:'dificil', question:'Qual país tem o formato de bota na Europa?', options:['Itália','Grécia','Portugal','França'], correct:'Itália' },
+  { category:'gerais', difficulty:'dificil', question:'Qual camada da Terra é composta principalmente por rochas em estado plástico abaixo da crosta?', options:['Manto','Núcleo interno','Núcleo externo','Litosfera superficial'], correct:'Manto' },
+  { category:'gerais', difficulty:'dificil', question:'Qual cientista formulou as leis do movimento e da gravitação clássica?', options:['Isaac Newton','Albert Einstein','Nikola Tesla','Galileu Galilei'], correct:'Isaac Newton' },
+  { category:'gerais', difficulty:'dificil', question:'Qual organela é conhecida como a usina de energia da célula?', options:['Mitocôndria','Ribossomo','Lisossomo','Cloroplasto'], correct:'Mitocôndria' },
+  { category:'gerais', difficulty:'dificil', question:'Qual é a língua oficial mais falada na América do Sul?', options:['Espanhol','Português','Inglês','Francês'], correct:'Espanhol' },
+  { category:'gerais', difficulty:'dificil', question:'Qual mar separa a Europa da África pelo estreito de Gibraltar até o leste?', options:['Mediterrâneo','Negro','Báltico','Vermelho'], correct:'Mediterrâneo' },
+  { category:'gerais', difficulty:'dificil', question:'Qual é o maior órgão do corpo humano?', options:['Pele','Fígado','Pulmão','Cérebro'], correct:'Pele' },
+  { category:'gerais', difficulty:'dificil', question:'Qual é o nome da galáxia onde está o Sistema Solar?', options:['Via Láctea','Andrômeda','Triângulo','Ômega'], correct:'Via Láctea' },
+  { category:'gerais', difficulty:'dificil', question:'Qual filósofo grego foi mestre de Alexandre, o Grande?', options:['Aristóteles','Sócrates','Platão','Heráclito'], correct:'Aristóteles' },
+  { category:'gerais', difficulty:'dificil', question:'Qual escritor português escreveu Os Lusíadas?', options:['Luís de Camões','Fernando Pessoa','Eça de Queirós','José Saramago'], correct:'Luís de Camões' },
 
-    function buildHistoryQuestions() {
-      return DATA.historia.facts.map(item => makeQuestion('historia', item.difficulty, item.prompt, item.answer, item.wrong));
-    }
+  { category:'gerais', difficulty:'lendario', question:'Qual é a unidade astronômica usada para medir grandes distâncias no universo baseada na luz?', options:['Ano-luz','Parsec solar','Metro estelar','Milha cósmica'], correct:'Ano-luz' },
+  { category:'gerais', difficulty:'lendario', question:'Qual constante matemática é aproximadamente 3,14159?', options:['Pi','Euler','Phi','Sigma'], correct:'Pi' },
+  { category:'gerais', difficulty:'lendario', question:'Qual escritor russo escreveu Crime e Castigo?', options:['Fiódor Dostoiévski','Liev Tolstói','Anton Tchekhov','Nikolai Gógol'], correct:'Fiódor Dostoiévski' },
+  { category:'gerais', difficulty:'lendario', question:'Qual país africano tem Cairo como capital?', options:['Egito','Argélia','Sudão','Marrocos'], correct:'Egito' },
+  { category:'gerais', difficulty:'lendario', question:'Qual processo celular divide uma célula somática em duas geneticamente semelhantes?', options:['Mitose','Meiose','Fissão binária','Brotamento'], correct:'Mitose' },
+  { category:'gerais', difficulty:'lendario', question:'Qual filósofo é associado à frase “Só sei que nada sei”?', options:['Sócrates','Platão','Aristóteles','Epicuro'], correct:'Sócrates' },
+  { category:'gerais', difficulty:'lendario', question:'Qual continente concentra o maior número de países?', options:['África','Europa','Ásia','América'], correct:'África' },
+  { category:'gerais', difficulty:'lendario', question:'Qual país tem Wellington como capital?', options:['Nova Zelândia','Austrália','Irlanda','Canadá'], correct:'Nova Zelândia' },
+  { category:'gerais', difficulty:'lendario', question:'Qual cientista é associado à seleção natural?', options:['Charles Darwin','Gregor Mendel','Louis Pasteur','Carl Linnaeus'], correct:'Charles Darwin' },
+  { category:'gerais', difficulty:'lendario', question:'Qual é o menor número perfeito positivo?', options:['6','8','10','12'], correct:'6' },
+  { category:'gerais', difficulty:'lendario', question:'Qual civilização desenvolveu a escrita cuneiforme?', options:['Mesopotâmica','Egípcia','Grega','Romana'], correct:'Mesopotâmica' },
+  { category:'gerais', difficulty:'lendario', question:'Qual é a moeda oficial do Japão?', options:['Iene','Won','Yuan','Dólar'], correct:'Iene' },
+  { category:'gerais', difficulty:'lendario', question:'Qual substância tem pH 7 em condição neutra?', options:['Água pura','Vinagre','Suco de limão','Soda cáustica'], correct:'Água pura' },
+  { category:'gerais', difficulty:'lendario', question:'Qual país é atravessado pela Linha do Equador e tem Quito como capital?', options:['Equador','Colômbia','Peru','Bolívia'], correct:'Equador' },
+  { category:'gerais', difficulty:'lendario', question:'Qual camada atmosférica contém a maior parte do ozônio?', options:['Estratosfera','Troposfera','Mesosfera','Termosfera'], correct:'Estratosfera' }
+];
 
-    function buildGeneralQuestions() {
-      return DATA.gerais.facts.map(item => makeQuestion('gerais', item.difficulty, item.prompt, item.answer, item.wrong));
-    }
-
-    function buildQuestionPool() {
-      const pool = [
-        ...buildPoliticsQuestions(),
-        ...buildFootballQuestions(),
-        ...buildHistoryQuestions(),
-        ...buildGeneralQuestions()
-      ];
-      return shuffle(pool);
-    }
-
-    const ALL_QUESTIONS = buildQuestionPool();
+const ALL_QUESTIONS = QUESTION_BANK;
 
     let gameMode = 'solo';
     let tournamentName = 'Quiz Arena';
