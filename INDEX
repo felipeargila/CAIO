@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mano Google Jump - Bi-Campeão</title>
+    <style>
+        body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #202124; color: white; font-family: sans-serif; overflow: hidden; }
+        #gameCanvas { border-bottom: 2px solid #555; background: #fff; display: block; }
+        .info { margin-top: 20px; text-align: center; }
+        h1 { color: #4285F4; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Mano Google Jump 🏆</h1>
+    <p>Pressione <b>Espaço</b> ou <b>Toque na Tela</b> para pular os obstáculos!</p>
+    <canvas id="gameCanvas"></canvas>
+    <div class="info">
+        <h2 id="score">Score: 0</h2>
+        <p id="msg"></p>
+    </div>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const scoreElement = document.getElementById("score");
+
+canvas.width = 600;
+canvas.height = 200;
+
+let score = 0;
+let gameActive = true;
+
+// Config do Personagem (Mano Google)
+let player = { x: 50, y: 150, w: 30, h: 30, dy: 0, jumpForce: 12, gravity: 0.6, grounded: false, color: "#4285F4" };
+
+// Obstáculos (Gepetetas)
+let obstacles = [];
+let spawnTimer = 0;
+
+function spawnObstacle() {
+    let size = Math.random() * (40 - 20) + 20;
+    obstacles.push({ x: canvas.width, y: 180 - size, w: 20, h: size, speed: 5 + (score / 100) });
+}
+
+function update() {
+    if (!gameActive) return;
+
+    // Gravidade
+    if (!player.grounded) {
+        player.dy += player.gravity;
+        player.y += player.dy;
+    }
+
+    if (player.y > 150) {
+        player.y = 150;
+        player.dy = 0;
+        player.grounded = true;
+    }
+
+    // Obstáculos
+    spawnTimer++;
+    if (spawnTimer > Math.max(40, 80 - score/5)) {
+        spawnObstacle();
+        spawnTimer = 0;
+    }
+
+    obstacles.forEach((obs, index) => {
+        obs.x -= obs.speed;
+
+        // Colisão
+        if (player.x < obs.x + obs.w && player.x + player.w > obs.x &&
+            player.y < obs.y + obs.h && player.y + player.h > obs.y) {
+            gameOver();
+        }
+
+        if (obs.x + obs.w < 0) {
+            obstacles.splice(index, 1);
+            score++;
+            scoreElement.innerText = "Score: " + score;
+        }
+    });
+
+    draw();
+    requestAnimationFrame(update);
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Chão
+    ctx.strokeStyle = "#555";
+    ctx.beginPath(); ctx.moveTo(0, 180); ctx.lineTo(600, 180); ctx.stroke();
+
+    // Player (Mano Google)
+    ctx.fillStyle = player.color;
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+    // Detalhe do "olho" pra dar carisma
+    ctx.fillStyle = "white"; ctx.fillRect(player.x + 18, player.y + 5, 5, 5);
+
+    // Obstáculos (Os Gepetetas vermelhos)
+    ctx.fillStyle = "#EA4335";
+    obstacles.forEach(obs => {
+        ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
+    });
+}
+
+function gameOver() {
+    gameActive = false;
+    document.getElementById("msg").innerHTML = "<span style='color: #EA4335; font-size: 24px; font-weight: bold;'>GAME OVER!</span><br>O Gepeteta te pegou! Clique para reiniciar.";
+}
+
+function resetGame() {
+    if (!gameActive) {
+        player.y = 150;
+        obstacles = [];
+        score = 0;
+        scoreElement.innerText = "Score: 0";
+        document.getElementById("msg").innerText = "";
+        gameActive = true;
+        update();
+    }
+}
+
+window.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+        if (player.grounded) {
+            player.dy = -player.jumpForce;
+            player.grounded = false;
+        }
+        resetGame();
+    }
+});
+
+canvas.addEventListener("touchstart", () => {
+    if (player.grounded) {
+        player.dy = -player.jumpForce;
+        player.grounded = false;
+    }
+    resetGame();
+});
+
+update();
+</script>
+</body>
+</html>
