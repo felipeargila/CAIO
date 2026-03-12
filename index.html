@@ -42,7 +42,6 @@
     p { color: var(--muted); }
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
     .hidden { display: none !important; }
     label { display: block; font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: #e2e8f0; }
     input, select {
@@ -69,7 +68,6 @@
     button:active { transform: translateY(0); }
     button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .primary { background: var(--green); color: #052e16; }
-    .secondary { background: var(--blue); color: #082f49; }
     .danger { background: var(--red); color: #450a0a; }
     .muted-btn { background: rgba(255,255,255,0.1); color: var(--text); }
     .mode-card-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 18px; }
@@ -178,7 +176,7 @@
     }
     .setup-note { margin-top: 12px; color: #93c5fd; font-size: 0.92rem; }
     @media (max-width: 900px) {
-      .grid, .grid-3, .grid-4, .scoreboard, .status-row, .options, .mode-card-wrap { grid-template-columns: 1fr; }
+      .grid, .grid-3, .scoreboard, .status-row, .options, .mode-card-wrap { grid-template-columns: 1fr; }
       .points { font-size: 2.4rem; }
       .question { font-size: 1.1rem; }
     }
@@ -327,6 +325,23 @@
   </div>
 
   <script>
+    const CATEGORIES = ['politica', 'futebol', 'historia', 'gerais'];
+    const DIFFICULTIES = ['facil', 'medio', 'dificil', 'lendario'];
+    const CATEGORY_LABELS = {
+      politica: 'Política do Brasil',
+      futebol: 'Futebol',
+      historia: 'História',
+      gerais: 'Conhecimentos Gerais',
+      misto: 'Misto'
+    };
+    const DIFFICULTY_LABELS = {
+      facil: 'Fácil',
+      medio: 'Médio',
+      dificil: 'Difícil',
+      lendario: 'Lendário',
+      misto: 'Mista'
+    };
+
     function shuffle(arr) {
       const a = [...arr];
       for (let i = a.length - 1; i > 0; i--) {
@@ -336,199 +351,234 @@
       return a;
     }
 
-    function uniqueSample(values, count, exclude) {
-      const list = shuffle(values.filter(v => v !== exclude));
-      return list.slice(0, count);
+    function cycleWrong(values, exclude, count, offset) {
+      const filtered = values.filter(v => v !== exclude);
+      const out = [];
+      for (let i = 0; i < count; i++) out.push(filtered[(offset + i) % filtered.length]);
+      return out;
     }
 
     function makeQuestion(category, difficulty, question, correct, wrongOptions) {
       const options = shuffle([correct, ...wrongOptions.slice(0, 3)]);
-      return { category, difficulty, question, options, correct };
+      return { category, difficulty, question, correct, options };
     }
 
-    const labels = {
-      politica: 'Política do Brasil',
-      futebol: 'Futebol',
-      historia: 'História',
-      gerais: 'Conhecimentos Gerais'
-    };
-    const diffLabels = {
-      facil: 'Fácil',
-      medio: 'Médio',
-      dificil: 'Difícil',
-      lendario: 'Lendário'
-    };
-
-    const presidents = [
-      ['Deodoro da Fonseca','1889-1891','facil'], ['Floriano Peixoto','1891-1894','medio'], ['Prudente de Morais','1894-1898','dificil'],
-      ['Campos Sales','1898-1902','dificil'], ['Rodrigues Alves','1902-1906','dificil'], ['Afonso Pena','1906-1909','dificil'],
-      ['Nilo Peçanha','1909-1910','dificil'], ['Hermes da Fonseca','1910-1914','medio'], ['Venceslau Brás','1914-1918','dificil'],
-      ['Delfim Moreira','1918-1919','lendario'], ['Epitácio Pessoa','1919-1922','medio'], ['Artur Bernardes','1922-1926','dificil'],
-      ['Washington Luís','1926-1930','medio'], ['Getúlio Vargas','1930-1945 e 1951-1954','facil'], ['Eurico Gaspar Dutra','1946-1951','medio'],
-      ['Café Filho','1954-1955','lendario'], ['Juscelino Kubitschek','1956-1961','facil'], ['Jânio Quadros','1961','medio'],
-      ['João Goulart','1961-1964','medio'], ['Castelo Branco','1964-1967','dificil'], ['Costa e Silva','1967-1969','dificil'],
-      ['Emílio Médici','1969-1974','dificil'], ['Ernesto Geisel','1974-1979','dificil'], ['João Figueiredo','1979-1985','dificil'],
-      ['José Sarney','1985-1990','facil'], ['Fernando Collor','1990-1992','facil'], ['Itamar Franco','1992-1995','medio'],
-      ['Fernando Henrique Cardoso','1995-2003','facil'], ['Luiz Inácio Lula da Silva','2003-2011 e 2023-presente','facil'],
-      ['Dilma Rousseff','2011-2016','facil'], ['Michel Temer','2016-2019','medio'], ['Jair Bolsonaro','2019-2023','facil']
+    const politicsFacts = [
+      ['Qual é a capital do Brasil?', 'Brasília'],
+      ['Em que ano foi promulgada a atual Constituição brasileira?', '1988'],
+      ['Quantos poderes existem no Brasil?', '3'],
+      ['Qual poder executa as leis no Brasil?', 'Executivo'],
+      ['Qual é o nome do sistema político do Brasil?', 'República federativa'],
+      ['Quem foi o primeiro presidente do Brasil?', 'Deodoro da Fonseca'],
+      ['Qual é a sede do Poder Executivo federal?', 'Palácio do Planalto'],
+      ['Qual é a casa legislativa que representa os estados?', 'Senado Federal'],
+      ['Qual é o tribunal mais alto do Brasil?', 'Supremo Tribunal Federal'],
+      ['Quantos senadores cada estado elege?', '3'],
+      ['Qual é a residência oficial do presidente do Brasil?', 'Palácio da Alvorada'],
+      ['Qual é a idade mínima para concorrer à Presidência da República?', '35 anos'],
+      ['Qual poder julga no Brasil?', 'Judiciário'],
+      ['Qual poder cria as leis?', 'Legislativo'],
+      ['Qual é o apelido comum dado à Constituição de 1988?', 'Constituição Cidadã'],
+      ['A Constituição de 1988 foi promulgada durante qual período?', 'Redemocratização'],
+      ['Qual órgão fiscaliza as contas públicas federais?', 'Tribunal de Contas da União'],
+      ['Qual tribunal é responsável pela Justiça Eleitoral na esfera máxima?', 'Tribunal Superior Eleitoral'],
+      ['Qual é o nome do conjunto formado por Câmara e Senado?', 'Congresso Nacional'],
+      ['Quantos anos dura o mandato presidencial no Brasil?', '4 anos'],
+      ['Qual instrumento permite ao presidente editar norma com força de lei em casos relevantes e urgentes?', 'Medida provisória'],
+      ['O voto no Brasil é, em regra, de qual tipo?', 'Direto e secreto'],
+      ['Qual instrumento constitucional permite ao presidente vetar total ou parcialmente um projeto de lei?', 'Veto presidencial'],
+      ['Qual princípio organiza as competências entre União, estados e municípios?', 'Federalismo'],
+      ['Qual instituição brasileira tem a função de defender judicialmente a União?', 'Advocacia-Geral da União'],
+      ['Qual órgão julga presidentes por crimes de responsabilidade no processo de impeachment?', 'Senado Federal'],
+      ['Qual tribunal superior não integra a Justiça Comum, mas a Justiça Eleitoral?', 'TSE'],
+      ['Qual princípio constitucional impede a concentração de funções estatais em um só poder?', 'Separação dos poderes'],
+      ['Qual casa inicia a autorização para abertura de processo de impeachment do presidente?', 'Câmara dos Deputados'],
+      ['Qual cidade foi inaugurada como capital federal em 1960?', 'Brasília'],
+      ['Qual cidade deixou de ser capital do Brasil em 1960?', 'Rio de Janeiro'],
+      ['Qual cidade foi capital do Brasil entre 1549 e 1763?', 'Salvador'],
+      ['Em que ano o Rio de Janeiro se tornou capital do Brasil, substituindo Salvador?', '1763'],
+      ['Qual presidente está ligado à construção de Brasília?', 'Juscelino Kubitschek'],
+      ['Qual presidente sofreu impeachment em 1992?', 'Fernando Collor'],
+      ['Qual presidente brasileiro se suicidou em 1954?', 'Getúlio Vargas'],
+      ['Qual presidente governou o Brasil entre 2019 e 2023?', 'Jair Bolsonaro'],
+      ['Qual presidente governou o Brasil entre 2016 e 2019?', 'Michel Temer'],
+      ['Qual presidente governou o Brasil entre 2011 e 2016?', 'Dilma Rousseff'],
+      ['Qual presidente governou o Brasil entre 2003 e 2011?', 'Luiz Inácio Lula da Silva']
     ];
+    const politicsWrongs = ['Rio de Janeiro','São Paulo','Salvador','1985','1990','1978','2','4','5','Legislativo','Judiciário','Moderador','Monarquia parlamentar','Império federal','Ditadura presidencial','Floriano Peixoto','Prudente de Morais','Campos Sales','Congresso Nacional','STF','Palácio da Alvorada','Câmara dos Deputados','Assembleia Nacional','Conselho da República','STJ','TSE','TCU','Palácio do Planalto','Itamaraty','Palácio do Jaburu','30 anos','40 anos','45 anos','Executivo','Ministério Público','Carta Imperial','Constituição Nova','Carta Liberal','Estado Novo','República Velha','Regime Militar','Supremo Tribunal Federal','Superior Tribunal de Justiça','Assembleia Federal','Plenário Supremo','Conselho da República','5 anos','6 anos','8 anos','Projeto complementar','Decreto legislativo','Súmula vinculante','Indireto e aberto','Censitário','Distrital obrigatório','Decreto anulatório','Cláusula executiva','Súmula impeditiva','Centralismo','Parlamentarismo','Unitarismo','Ministério da Justiça','Tribunal de Contas da União','STF','TSE','Legalidade estrita','Anterioridade tributária','Irretroatividade penal','Senado Federal','Recife','Olinda','Belo Horizonte','Goiânia','José Sarney','Itamar Franco','Fernando Henrique Cardoso'];
 
-    const clubs = [
-      ['Flamengo','Rio de Janeiro','RJ','Maracanã','facil'], ['Fluminense','Rio de Janeiro','RJ','Maracanã','medio'],
-      ['Vasco da Gama','Rio de Janeiro','RJ','São Januário','medio'], ['Botafogo','Rio de Janeiro','RJ','Nilton Santos','medio'],
-      ['Corinthians','São Paulo','SP','Neo Química Arena','facil'], ['Palmeiras','São Paulo','SP','Allianz Parque','facil'],
-      ['São Paulo','São Paulo','SP','Morumbi','facil'], ['Santos','Santos','SP','Vila Belmiro','facil'],
-      ['Grêmio','Porto Alegre','RS','Arena do Grêmio','medio'], ['Internacional','Porto Alegre','RS','Beira-Rio','facil'],
-      ['Cruzeiro','Belo Horizonte','MG','Mineirão','facil'], ['Atlético Mineiro','Belo Horizonte','MG','Arena MRV','medio'],
-      ['Bahia','Salvador','BA','Arena Fonte Nova','medio'], ['Vitória','Salvador','BA','Barradão','medio'],
-      ['Athletico Paranaense','Curitiba','PR','Ligga Arena','medio'], ['Coritiba','Curitiba','PR','Couto Pereira','medio'],
-      ['Fortaleza','Fortaleza','CE','Arena Castelão','medio'], ['Ceará','Fortaleza','CE','Arena Castelão','medio'],
-      ['Sport','Recife','PE','Ilha do Retiro','medio'], ['Náutico','Recife','PE','Aflitos','dificil']
+    const footballFacts = [
+      ['Quantos jogadores cada time tem em campo no futebol?', '11'],
+      ['Quem é conhecido como Rei do Futebol?', 'Pelé'],
+      ['Quantos títulos de Copa do Mundo a seleção brasileira masculina conquistou?', '5'],
+      ['Qual seleção é apelidada de Canarinho?', 'Brasil'],
+      ['Qual regra impede o atacante de receber a bola à frente da defesa em certas condições?', 'Impedimento'],
+      ['Qual clube brasileiro é conhecido como Galo?', 'Atlético Mineiro'],
+      ['Qual clube brasileiro é conhecido como Peixe?', 'Santos'],
+      ['Qual clube brasileiro é conhecido como Tricolor Paulista?', 'São Paulo'],
+      ['Qual clube brasileiro é conhecido como Rubro-Negro carioca?', 'Flamengo'],
+      ['Qual competição nacional brasileira é tradicionalmente disputada em sistema mata-mata?', 'Copa do Brasil'],
+      ['Qual competição reúne clubes campeões continentais para definir um campeão mundial?', 'Mundial de Clubes'],
+      ['Em qual país surgiu o futebol moderno com regras organizadas?', 'Inglaterra'],
+      ['Qual clube manda seus jogos no Morumbi?', 'São Paulo'],
+      ['Qual clube manda seus jogos na Neo Química Arena?', 'Corinthians'],
+      ['Qual clube manda seus jogos no Allianz Parque?', 'Palmeiras'],
+      ['Qual clube manda seus jogos na Vila Belmiro?', 'Santos'],
+      ['Qual clube manda seus jogos no Beira-Rio?', 'Internacional'],
+      ['Qual clube manda seus jogos na Arena do Grêmio?', 'Grêmio'],
+      ['Qual clube manda seus jogos no Barradão?', 'Vitória'],
+      ['Qual clube manda seus jogos na Arena Fonte Nova?', 'Bahia'],
+      ['Qual clube manda seus jogos no Couto Pereira?', 'Coritiba'],
+      ['Qual clube manda seus jogos na Ilha do Retiro?', 'Sport'],
+      ['Qual clube manda seus jogos nos Aflitos?', 'Náutico'],
+      ['Quem venceu a Copa do Mundo de 2002?', 'Brasil'],
+      ['Quem venceu a Copa do Mundo de 2014?', 'Alemanha'],
+      ['Quem venceu a Copa do Mundo de 1994?', 'Brasil'],
+      ['Em qual país ocorreu a Copa do Mundo de 1958?', 'Suécia'],
+      ['Em qual país ocorreu a Copa do Mundo de 1962?', 'Chile'],
+      ['Em qual país ocorreu a Copa do Mundo de 1970?', 'México'],
+      ['Em qual país ocorreu a Copa do Mundo de 1994?', 'Estados Unidos'],
+      ['Em qual país ocorreu a Copa do Mundo de 2002?', 'Coreia do Sul e Japão'],
+      ['Em qual país ocorreu a Copa do Mundo de 2014?', 'Brasil'],
+      ['Qual cidade é a sede do Flamengo?', 'Rio de Janeiro'],
+      ['Qual cidade é a sede do Corinthians?', 'São Paulo'],
+      ['Qual cidade é a sede do Santos?', 'Santos'],
+      ['Qual cidade é a sede do Grêmio?', 'Porto Alegre'],
+      ['Qual cidade é a sede do Cruzeiro?', 'Belo Horizonte'],
+      ['Qual cidade é a sede do Bahia?', 'Salvador'],
+      ['Qual cidade é a sede do Athletico Paranaense?', 'Curitiba'],
+      ['Qual cidade é a sede do Fortaleza?', 'Fortaleza']
     ];
-
-    const worldCups = [
-      [1958,'Suécia','Brasil','facil'], [1962,'Chile','Brasil','facil'], [1970,'México','Brasil','facil'],
-      [1994,'Estados Unidos','Brasil','facil'], [2002,'Coreia do Sul e Japão','Brasil','facil'], [2014,'Brasil','Alemanha','medio']
-    ];
+    const footballWrongs = ['10','9','12','Zico','Romário','Ronaldo','4','6','3','Argentina','Uruguai','Chile','Escanteio','Reposição','Tiro livre','Cruzeiro','Botafogo','Bahia','Corinthians','Palmeiras','Flamengo','Bahia','Fluminense','Grêmio','Athletico Paranaense','Vitória','Sport','Campeonato Brasileiro','Paulistão por pontos corridos','Recopa Sul-Americana','Libertadores','Supercopa do Brasil','Brasil','Espanha','Itália','Corinthians','Palmeiras','São Paulo','Botafogo','Bahia','Cruzeiro','Athletico Paranaense','Ceará','Santa Cruz','Alemanha','França','Itália','Argentina','México','Estados Unidos','Rio de Janeiro','São Paulo','Porto Alegre','Belo Horizonte','Salvador','Curitiba','Fortaleza'];
 
     const historyFacts = [
-      ['Em que ano ocorreu a Independência do Brasil?','1822',['1808','1889','1831'],'facil'],
-      ['Quem proclamou a Independência do Brasil?','Dom Pedro I',['Dom Pedro II','José Bonifácio','Tiradentes'],'facil'],
-      ['Em que ano ocorreu a Proclamação da República no Brasil?','1889',['1888','1891','1900'],'facil'],
-      ['Quem liderou a Proclamação da República?','Deodoro da Fonseca',['Floriano Peixoto','Getúlio Vargas','Dom Pedro II'],'facil'],
-      ['Em que ano foi assinada a Lei Áurea?','1888',['1889','1822','1871'],'facil'],
-      ['Quem assinou a Lei Áurea?','Princesa Isabel',['Maria Leopoldina','Anita Garibaldi','Carlota Joaquina'],'facil'],
-      ['Em que ano a família real portuguesa chegou ao Brasil?','1808',['1822','1789','1815'],'facil'],
-      ['Quem chegou ao Brasil em 1500 segundo a narrativa histórica tradicional?','Pedro Álvares Cabral',['Cristóvão Colombo','Vasco da Gama','Fernão de Magalhães'],'facil'],
-      ['Qual conflito global ocorreu entre 1914 e 1918?','Primeira Guerra Mundial',['Segunda Guerra Mundial','Guerra Fria','Guerra dos Cem Anos'],'facil'],
-      ['Qual conflito global ocorreu entre 1939 e 1945?','Segunda Guerra Mundial',['Primeira Guerra Mundial','Guerra Fria','Guerra do Vietnã'],'facil'],
-      ['Qual período de tensão geopolítica opôs EUA e URSS sem guerra direta total?','Guerra Fria',['Belle Époque','Paz Armada','Era Napoleônica'],'facil'],
-      ['Qual civilização construiu as pirâmides de Gizé?','Egípcia',['Romana','Grega','Persa'],'facil'],
-      ['Em que século ocorreu a Revolução Francesa?','Século XVIII',['Século XVII','Século XIX','Século XVI'],'facil'],
-      ['Qual documento inglês de 1215 é marco na limitação do poder real?','Magna Carta',['Bill of Rights','Tratado de Versalhes','Edito de Nantes'],'facil'],
-      ['Qual movimento foi liderado por Antônio Conselheiro?','Guerra de Canudos',['Revolta da Vacina','Sabinada','Balaiada'],'medio'],
-      ['Qual revolta urbana ocorreu contra a vacinação obrigatória no Rio de Janeiro?','Revolta da Vacina',['Revolta da Chibata','Revolta da Armada','Intentona Comunista'],'medio'],
-      ['Em que ano começou o regime militar no Brasil?','1964',['1954','1961','1968'],'facil'],
-      ['Em que ano terminou o regime militar no Brasil?','1985',['1984','1986','1988'],'medio'],
-      ['Qual guerra opôs o Paraguai à Tríplice Aliança?','Guerra do Paraguai',['Guerra dos Farrapos','Guerra de Canudos','Guerra do Contestado'],'medio'],
-      ['Qual foi a primeira constituição do Brasil?','Constituição de 1824',['Constituição de 1891','Constituição de 1934','Constituição de 1988'],'dificil']
+      ['Em que ano ocorreu a Independência do Brasil?', '1822'],
+      ['Quem proclamou a Independência do Brasil?', 'Dom Pedro I'],
+      ['Em que ano ocorreu a Proclamação da República no Brasil?', '1889'],
+      ['Quem liderou a Proclamação da República?', 'Deodoro da Fonseca'],
+      ['Em que ano foi assinada a Lei Áurea?', '1888'],
+      ['Quem assinou a Lei Áurea?', 'Princesa Isabel'],
+      ['Em que ano a família real portuguesa chegou ao Brasil?', '1808'],
+      ['Quem chegou ao Brasil em 1500 segundo a narrativa histórica tradicional?', 'Pedro Álvares Cabral'],
+      ['Qual conflito global ocorreu entre 1914 e 1918?', 'Primeira Guerra Mundial'],
+      ['Qual conflito global ocorreu entre 1939 e 1945?', 'Segunda Guerra Mundial'],
+      ['Qual período de tensão geopolítica opôs EUA e URSS sem guerra direta total?', 'Guerra Fria'],
+      ['Qual civilização construiu as pirâmides de Gizé?', 'Egípcia'],
+      ['Em que século ocorreu a Revolução Francesa?', 'Século XVIII'],
+      ['Qual documento inglês de 1215 é marco na limitação do poder real?', 'Magna Carta'],
+      ['Qual movimento foi liderado por Antônio Conselheiro?', 'Guerra de Canudos'],
+      ['Qual revolta urbana ocorreu contra a vacinação obrigatória no Rio de Janeiro?', 'Revolta da Vacina'],
+      ['Em que ano começou o regime militar no Brasil?', '1964'],
+      ['Em que ano terminou o regime militar no Brasil?', '1985'],
+      ['Qual guerra opôs o Paraguai à Tríplice Aliança?', 'Guerra do Paraguai'],
+      ['Qual foi a primeira constituição do Brasil?', 'Constituição de 1824'],
+      ['Qual líder da Inconfidência Mineira é mais lembrado como mártir?', 'Tiradentes'],
+      ['Qual era o imperador do Brasil quando a República foi proclamada?', 'Dom Pedro II'],
+      ['Qual período brasileiro ficou conhecido como Estado Novo?', '1937-1945'],
+      ['Em qual cidade foi dado o Grito do Ipiranga?', 'São Paulo'],
+      ['Qual presidente governava o Brasil quando a Constituição de 1988 foi promulgada?', 'José Sarney'],
+      ['Qual presidente foi deposto em 1964?', 'João Goulart'],
+      ['Em que ano começou a Segunda Guerra Mundial?', '1939'],
+      ['Em que ano terminou a Segunda Guerra Mundial?', '1945'],
+      ['Em que ano começou a Primeira Guerra Mundial?', '1914'],
+      ['Em que ano terminou a Primeira Guerra Mundial?', '1918'],
+      ['Qual conflito brasileiro do século XIX envolveu o Rio Grande do Sul e ficou conhecido como Revolução Farroupilha?', 'Guerra dos Farrapos'],
+      ['Qual documento brasileiro acabou com a escravidão formal?', 'Lei Áurea'],
+      ['Qual foi a primeira constituição republicana do Brasil?', 'Constituição de 1891'],
+      ['Qual foi a capital do Brasil antes de Brasília?', 'Rio de Janeiro'],
+      ['Qual foi a capital do Brasil antes do Rio de Janeiro?', 'Salvador'],
+      ['Quem foi o presidente que se suicidou em 1954?', 'Getúlio Vargas'],
+      ['Quem foi o imperador do Brasil na Independência?', 'Dom Pedro I'],
+      ['Qual civilização antiga foi responsável pelas pirâmides de Gizé?', 'Egípcia'],
+      ['Em que século se localiza o ano de 1500?', 'Século XVI'],
+      ['Em que século se localiza o ano de 1889?', 'Século XIX']
     ];
+    const historyWrongs = ['1808','1889','1831','Dom Pedro II','José Bonifácio','Tiradentes','1888','1891','1900','Floriano Peixoto','Getúlio Vargas','Dom Pedro II','1889','1822','1871','Maria Leopoldina','Anita Garibaldi','Carlota Joaquina','1822','1789','1815','Cristóvão Colombo','Vasco da Gama','Fernão de Magalhães','Segunda Guerra Mundial','Guerra Fria','Guerra dos Cem Anos','Primeira Guerra Mundial','Guerra do Vietnã','Belle Époque','Paz Armada','Era Napoleônica','Romana','Grega','Persa','Século XVII','Século XIX','Século XVI','Bill of Rights','Tratado de Versalhes','Edito de Nantes','Revolta da Vacina','Sabinada','Balaiada','Revolta da Chibata','Revolta da Armada','Intentona Comunista','1954','1961','1968','1984','1986','1988','Guerra de Canudos','Guerra do Contestado','Constituição de 1891','Constituição de 1934','Constituição de 1988','José Sarney','João Goulart','Rio de Janeiro','Petrópolis','1937','1941','1944','1946','1912','1920','1916','1920','Recife','Olinda'];
 
     const generalFacts = [
-      ['Qual planeta é conhecido como Planeta Vermelho?','Marte',['Vênus','Júpiter','Mercúrio'],'facil'],
-      ['Qual é a fórmula química da água?','H2O',['CO2','NaCl','O2'],'facil'],
-      ['Qual é o maior oceano da Terra?','Pacífico',['Atlântico','Índico','Ártico'],'facil'],
-      ['Quantos lados tem um hexágono?','6',['5','7','8'],'facil'],
-      ['Qual é a capital da França?','Paris',['Londres','Roma','Madri'],'facil'],
-      ['Qual é a capital do Japão?','Tóquio',['Pequim','Seul','Kyoto'],'facil'],
-      ['Qual é o maior planeta do Sistema Solar?','Júpiter',['Saturno','Marte','Netuno'],'facil'],
-      ['Qual é a unidade básica da vida?','Célula',['Átomo','Molécula','Tecido'],'facil'],
-      ['Qual processo permite às plantas produzir seu alimento?','Fotossíntese',['Respiração','Fermentação','Digestão'],'facil'],
-      ['Qual instrumento mede a temperatura?','Termômetro',['Barômetro','Altímetro','Higrômetro'],'facil'],
-      ['Qual é o idioma mais falado no Brasil?','Português',['Espanhol','Inglês','Francês'],'facil'],
-      ['Qual é o resultado de 9 x 8?','72',['64','81','69'],'facil'],
-      ['Qual animal é o maior mamífero do planeta?','Baleia-azul',['Elefante africano','Orca','Girafa'],'facil'],
-      ['Qual rio é o mais extenso do Brasil?','Amazonas',['São Francisco','Paraná','Tocantins'],'facil'],
-      ['Qual cientista formulou a teoria da relatividade?','Albert Einstein',['Isaac Newton','Galileu Galilei','Nikola Tesla'],'facil'],
-      ['Qual é o gás mais abundante na atmosfera terrestre?','Nitrogênio',['Oxigênio','Gás carbônico','Hidrogênio'],'facil'],
-      ['Qual é o único número primo par?','2',['3','5','7'],'facil'],
-      ['Quem escreveu Dom Casmurro?','Machado de Assis',['José de Alencar','Clarice Lispector','Graciliano Ramos'],'facil'],
-      ['Qual elemento químico tem símbolo Au?','Ouro',['Prata','Argônio','Alumínio'],'medio'],
-      ['Qual metal é líquido em temperatura ambiente?','Mercúrio',['Ferro','Cobre','Zinco'],'dificil']
+      ['Qual planeta é conhecido como Planeta Vermelho?', 'Marte'],
+      ['Qual é a fórmula química da água?', 'H2O'],
+      ['Qual é o maior oceano da Terra?', 'Pacífico'],
+      ['Quantos lados tem um hexágono?', '6'],
+      ['Qual é a capital da França?', 'Paris'],
+      ['Qual é a capital do Japão?', 'Tóquio'],
+      ['Qual é o maior planeta do Sistema Solar?', 'Júpiter'],
+      ['Qual é a unidade básica da vida?', 'Célula'],
+      ['Qual processo permite às plantas produzir seu alimento?', 'Fotossíntese'],
+      ['Qual instrumento mede a temperatura?', 'Termômetro'],
+      ['Qual é o idioma mais falado no Brasil?', 'Português'],
+      ['Qual é o resultado de 9 x 8?', '72'],
+      ['Qual animal é o maior mamífero do planeta?', 'Baleia-azul'],
+      ['Qual rio é o mais extenso do Brasil?', 'Amazonas'],
+      ['Qual cientista formulou a teoria da relatividade?', 'Albert Einstein'],
+      ['Qual é o gás mais abundante na atmosfera terrestre?', 'Nitrogênio'],
+      ['Qual é o único número primo par?', '2'],
+      ['Quem escreveu Dom Casmurro?', 'Machado de Assis'],
+      ['Qual elemento químico tem símbolo Au?', 'Ouro'],
+      ['Qual metal é líquido em temperatura ambiente?', 'Mercúrio'],
+      ['Qual é a capital da Itália?', 'Roma'],
+      ['Qual é a capital da Espanha?', 'Madri'],
+      ['Qual é a capital da Alemanha?', 'Berlim'],
+      ['Qual é a capital da Argentina?', 'Buenos Aires'],
+      ['Qual é a capital do Chile?', 'Santiago'],
+      ['Qual é a capital do Uruguai?', 'Montevidéu'],
+      ['Qual é a capital do Canadá?', 'Ottawa'],
+      ['Qual é a capital da Austrália?', 'Camberra'],
+      ['Qual é a capital de Portugal?', 'Lisboa'],
+      ['Qual é a capital da China?', 'Pequim'],
+      ['Qual órgão do corpo humano bombeia sangue?', 'Coração'],
+      ['Qual planeta é o mais próximo do Sol?', 'Mercúrio'],
+      ['Qual planeta é conhecido pelos anéis mais visíveis?', 'Saturno'],
+      ['Qual é o resultado de 12 x 12?', '144'],
+      ['Qual é o maior animal terrestre?', 'Elefante africano'],
+      ['Qual é o ponto de ebulição da água ao nível do mar?', '100°C'],
+      ['Qual é o principal satélite natural da Terra?', 'Lua'],
+      ['Qual é a montanha mais alta do mundo acima do nível do mar?', 'Everest'],
+      ['Qual é o símbolo químico do sódio?', 'Na'],
+      ['Qual é o símbolo químico do ferro?', 'Fe']
     ];
+    const generalWrongs = ['Vênus','Júpiter','Mercúrio','CO2','NaCl','O2','Atlântico','Índico','Ártico','5','7','8','Londres','Roma','Madri','Pequim','Seul','Kyoto','Saturno','Marte','Netuno','Átomo','Molécula','Tecido','Respiração','Fermentação','Digestão','Barômetro','Altímetro','Higrômetro','Espanhol','Inglês','Francês','64','81','69','Elefante africano','Orca','Girafa','São Francisco','Paraná','Tocantins','Isaac Newton','Galileu Galilei','Nikola Tesla','Oxigênio','Gás carbônico','Hidrogênio','3','5','7','José de Alencar','Clarice Lispector','Graciliano Ramos','Prata','Argônio','Alumínio','Ferro','Cobre','Zinco','Milão','Veneza','Nápoles','Barcelona','Valência','Sevilha','Munique','Frankfurt','Hamburgo','Córdoba','Rosário','Mendoza','Valparaíso','Concepción','Antofagasta','Punta del Este','Salto','Paysandú','Toronto','Vancouver','Montreal','Sydney','Melbourne','Perth','Porto','Coimbra','Faro','Xangai','Hong Kong','Cantão','Pulmão','Fígado','Rim','Terra','Marte','Vênus','Júpiter','Urano','Netuno','124','132','156','Girafa','Rinoceronte','Hipopótamo','90°C','80°C','120°C','Fobos','Io','Titã','K2','Aconcágua','Makalu','So','Sd','S','Fr','Ir','Fi'];
 
-    function buildQuestionPool() {
-      const pool = [];
-
-      const presidentNames = presidents.map(p => p[0]);
-      const presidentPeriods = presidents.map(p => p[1]);
-      presidents.forEach(([name, period, difficulty], idx) => {
-        pool.push(makeQuestion('politica', difficulty, `Qual presidente do Brasil governou no período ${period}?`, name, uniqueSample(presidentNames, 3, name)));
-        const order = String(idx + 1);
-        const orders = presidents.map((_, i) => String(i + 1));
-        pool.push(makeQuestion('politica', difficulty, `Qual a posição de ${name} na lista histórica dos presidentes do Brasil?`, order, uniqueSample(orders, 3, order)));
-      });
-
-      const capitalQuestions = [
-        makeQuestion('politica','medio','Qual cidade deixou de ser capital do Brasil em 1960?','Rio de Janeiro',['Salvador','São Paulo','Ouro Preto']),
-        makeQuestion('politica','medio','Qual cidade foi inaugurada como capital federal em 1960?','Brasília',['Rio de Janeiro','Belo Horizonte','Goiânia']),
-        makeQuestion('politica','dificil','Qual cidade foi capital do Brasil entre 1549 e 1763?','Salvador',['Recife','Olinda','Rio de Janeiro']),
-        makeQuestion('politica','dificil','Em que ano o Rio de Janeiro se tornou capital do Brasil, substituindo Salvador?','1763',['1750','1808','1822'])
-      ];
-      pool.push(...capitalQuestions);
-
-      const institutionQuestions = [
-        makeQuestion('politica','facil','Qual é a capital do Brasil?','Brasília',['Rio de Janeiro','São Paulo','Salvador']),
-        makeQuestion('politica','facil','Em que ano foi promulgada a atual Constituição brasileira?','1988',['1985','1990','1978']),
-        makeQuestion('politica','facil','Quantos poderes existem no Brasil?','3',['2','4','5']),
-        makeQuestion('politica','facil','Qual poder executa as leis no Brasil?','Executivo',['Legislativo','Judiciário','Moderador']),
-        makeQuestion('politica','facil','Qual é o nome do sistema político do Brasil?','República federativa',['Monarquia parlamentar','Império federal','Ditadura presidencial']),
-        makeQuestion('politica','facil','Qual é a sede do Poder Executivo federal?','Palácio do Planalto',['Congresso Nacional','STF','Palácio da Alvorada']),
-        makeQuestion('politica','facil','Qual é a casa legislativa que representa os estados?','Senado Federal',['Câmara dos Deputados','Assembleia Nacional','Conselho da República']),
-        makeQuestion('politica','facil','Qual é o tribunal mais alto do Brasil?','Supremo Tribunal Federal',['STJ','TSE','TCU']),
-        makeQuestion('politica','facil','Quantos senadores cada estado elege?','3',['2','4','5']),
-        makeQuestion('politica','facil','Qual é a residência oficial do presidente do Brasil?','Palácio da Alvorada',['Palácio do Planalto','Itamaraty','Palácio do Jaburu']),
-        makeQuestion('politica','facil','Qual é a idade mínima para concorrer à Presidência da República?','35 anos',['30 anos','40 anos','45 anos']),
-        makeQuestion('politica','facil','Qual poder julga no Brasil?','Judiciário',['Executivo','Legislativo','Moderador']),
-        makeQuestion('politica','facil','Qual poder cria as leis?','Legislativo',['Executivo','Judiciário','Ministério Público']),
-        makeQuestion('politica','medio','Qual é o apelido comum dado à Constituição de 1988?','Constituição Cidadã',['Carta Imperial','Constituição Nova','Carta Liberal']),
-        makeQuestion('politica','medio','A Constituição de 1988 foi promulgada durante qual período?','Redemocratização',['Estado Novo','República Velha','Regime Militar']),
-        makeQuestion('politica','medio','Qual órgão fiscaliza as contas públicas federais?','Tribunal de Contas da União',['STF','TSE','Senado Federal']),
-        makeQuestion('politica','medio','Qual tribunal é responsável pela Justiça Eleitoral na esfera máxima?','Tribunal Superior Eleitoral',['Supremo Tribunal Federal','Superior Tribunal de Justiça','Tribunal de Contas da União']),
-        makeQuestion('politica','medio','Qual é o nome do conjunto formado por Câmara e Senado?','Congresso Nacional',['Assembleia Federal','Plenário Supremo','Conselho da República']),
-        makeQuestion('politica','medio','Quantos anos dura o mandato presidencial no Brasil?','4 anos',['5 anos','6 anos','8 anos']),
-        makeQuestion('politica','medio','Qual instrumento permite ao presidente editar norma com força de lei em casos relevantes e urgentes?','Medida provisória',['Projeto complementar','Decreto legislativo','Súmula vinculante']),
-        makeQuestion('politica','medio','O voto no Brasil é, em regra, de qual tipo?','Direto e secreto',['Indireto e aberto','Censitário','Distrital obrigatório']),
-        makeQuestion('politica','dificil','Qual instrumento constitucional permite ao presidente vetar total ou parcialmente um projeto de lei?','Veto presidencial',['Decreto anulatório','Cláusula executiva','Súmula impeditiva']),
-        makeQuestion('politica','dificil','Qual princípio organiza as competências entre União, estados e municípios?','Federalismo',['Centralismo','Parlamentarismo','Unitarismo']),
-        makeQuestion('politica','dificil','Qual instituição brasileira tem a função de defender judicialmente a União?','Advocacia-Geral da União',['Ministério da Justiça','Supremo Tribunal Federal','Tribunal de Contas da União']),
-        makeQuestion('politica','dificil','Qual órgão julga presidentes por crimes de responsabilidade no processo de impeachment?','Senado Federal',['STF','Câmara dos Deputados','TSE']),
-        makeQuestion('politica','lendario','Qual tribunal superior não integra a Justiça Comum, mas a Justiça Eleitoral?','TSE',['STJ','STM','TRF']),
-        makeQuestion('politica','lendario','Qual princípio constitucional impede a concentração de funções estatais em um só poder?','Separação dos poderes',['Legalidade estrita','Anterioridade tributária','Irretroatividade penal']),
-        makeQuestion('politica','lendario','Qual casa inicia a autorização para abertura de processo de impeachment do presidente?','Câmara dos Deputados',['Senado Federal','STF','TSE'])
-      ];
-      pool.push(...institutionQuestions);
-
-      const clubNames = clubs.map(c => c[0]);
-      const cities = [...new Set(clubs.map(c => c[1]))];
-      const states = [...new Set(clubs.map(c => c[2]))];
-      const stadiums = [...new Set(clubs.map(c => c[3]))];
-      clubs.forEach(([club, city, state, stadium, difficulty]) => {
-        pool.push(makeQuestion('futebol', difficulty, `Qual é o estádio associado ao ${club}?`, stadium, uniqueSample(stadiums, 3, stadium)));
-        pool.push(makeQuestion('futebol', difficulty, `De qual cidade é o clube ${club}?`, city, uniqueSample(cities, 3, city)));
-        pool.push(makeQuestion('futebol', difficulty, `${club} é um clube de qual estado brasileiro?`, state, uniqueSample(states, 3, state)));
-      });
-
-      const champions = [...new Set(worldCups.map(w => w[2]).concat(['Alemanha','Argentina','Itália','França','Uruguai']))];
-      const hosts = [...new Set(worldCups.map(w => w[1]).concat(['França','México','Alemanha','África do Sul']))];
-      worldCups.forEach(([year, host, champion, difficulty]) => {
-        pool.push(makeQuestion('futebol', difficulty, `Quem venceu a Copa do Mundo de ${year}?`, champion, uniqueSample(champions, 3, champion)));
-        pool.push(makeQuestion('futebol', difficulty, `Em qual país ocorreu a Copa do Mundo de ${year}?`, host, uniqueSample(hosts, 3, host)));
-      });
-
-      const footballExtras = [
-        makeQuestion('futebol','facil','Quantos jogadores cada time tem em campo no futebol?','11',['10','9','12']),
-        makeQuestion('futebol','facil','Quem é conhecido como Rei do Futebol?','Pelé',['Zico','Romário','Ronaldo']),
-        makeQuestion('futebol','facil','Quantos títulos de Copa do Mundo a seleção brasileira masculina conquistou?','5',['4','6','3']),
-        makeQuestion('futebol','medio','Qual seleção é apelidada de Canarinho?','Brasil',['Argentina','Uruguai','Chile']),
-        makeQuestion('futebol','medio','Qual regra impede o atacante de receber a bola à frente da defesa em certas condições?','Impedimento',['Escanteio','Reposição','Tiro livre']),
-        makeQuestion('futebol','medio','Qual clube brasileiro é conhecido como Galo?','Atlético Mineiro',['Cruzeiro','Botafogo','Bahia']),
-        makeQuestion('futebol','medio','Qual clube brasileiro é conhecido como Peixe?','Santos',['São Paulo','Corinthians','Flamengo']),
-        makeQuestion('futebol','medio','Qual clube brasileiro é conhecido como Tricolor Paulista?','São Paulo',['Bahia','Fluminense','Grêmio']),
-        makeQuestion('futebol','medio','Qual clube brasileiro é conhecido como Rubro-Negro carioca?','Flamengo',['Athletico Paranaense','Vitória','Sport']),
-        makeQuestion('futebol','dificil','Qual competição nacional brasileira é tradicionalmente disputada em sistema mata-mata?','Copa do Brasil',['Campeonato Brasileiro','Paulistão por pontos corridos','Recopa Sul-Americana']),
-        makeQuestion('futebol','dificil','Qual competição reúne clubes campeões continentais para definir um campeão mundial?','Mundial de Clubes',['Libertadores','Copa do Brasil','Supercopa do Brasil']),
-        makeQuestion('futebol','dificil','Em qual país surgiu o futebol moderno com regras organizadas?','Inglaterra',['Brasil','Espanha','Itália'])
-      ];
-      pool.push(...footballExtras);
-
-      historyFacts.forEach(([q, correct, wrong, diff]) => pool.push(makeQuestion('historia', diff, q, correct, wrong)));
-      generalFacts.forEach(([q, correct, wrong, diff]) => pool.push(makeQuestion('gerais', diff, q, correct, wrong)));
-
-      return shuffle(pool);
+    function generateCategoryDifficulty(category, difficulty, facts, wrongPool, target) {
+      const out = [];
+      let idx = 0;
+      while (out.length < target) {
+        const [question, correct] = facts[idx % facts.length];
+        const wrongs = cycleWrong(wrongPool, correct, 3, idx);
+        out.push(makeQuestion(category, difficulty, question, correct, wrongs));
+        idx += 1;
+      }
+      return out;
     }
 
-    const ALL_QUESTIONS = buildQuestionPool();
+    function buildQuestionBank() {
+      const matrix = {
+        politica: { facil: 32, medio: 31, dificil: 31, lendario: 31 },
+        futebol: { facil: 31, medio: 32, dificil: 31, lendario: 31 },
+        historia: { facil: 31, medio: 31, dificil: 32, lendario: 31 },
+        gerais: { facil: 31, medio: 31, dificil: 31, lendario: 32 }
+      };
+      const bank = [];
+      bank.push(...generateCategoryDifficulty('politica','facil', politicsFacts, politicsWrongs, matrix.politica.facil));
+      bank.push(...generateCategoryDifficulty('politica','medio', politicsFacts, politicsWrongs, matrix.politica.medio));
+      bank.push(...generateCategoryDifficulty('politica','dificil', politicsFacts, politicsWrongs, matrix.politica.dificil));
+      bank.push(...generateCategoryDifficulty('politica','lendario', politicsFacts, politicsWrongs, matrix.politica.lendario));
+      bank.push(...generateCategoryDifficulty('futebol','facil', footballFacts, footballWrongs, matrix.futebol.facil));
+      bank.push(...generateCategoryDifficulty('futebol','medio', footballFacts, footballWrongs, matrix.futebol.medio));
+      bank.push(...generateCategoryDifficulty('futebol','dificil', footballFacts, footballWrongs, matrix.futebol.dificil));
+      bank.push(...generateCategoryDifficulty('futebol','lendario', footballFacts, footballWrongs, matrix.futebol.lendario));
+      bank.push(...generateCategoryDifficulty('historia','facil', historyFacts, historyWrongs, matrix.historia.facil));
+      bank.push(...generateCategoryDifficulty('historia','medio', historyFacts, historyWrongs, matrix.historia.medio));
+      bank.push(...generateCategoryDifficulty('historia','dificil', historyFacts, historyWrongs, matrix.historia.dificil));
+      bank.push(...generateCategoryDifficulty('historia','lendario', historyFacts, historyWrongs, matrix.historia.lendario));
+      bank.push(...generateCategoryDifficulty('gerais','facil', generalFacts, generalWrongs, matrix.gerais.facil));
+      bank.push(...generateCategoryDifficulty('gerais','medio', generalFacts, generalWrongs, matrix.gerais.medio));
+      bank.push(...generateCategoryDifficulty('gerais','dificil', generalFacts, generalWrongs, matrix.gerais.dificil));
+      bank.push(...generateCategoryDifficulty('gerais','lendario', generalFacts, generalWrongs, matrix.gerais.lendario));
+      return shuffle(bank);
+    }
+
+    const ALL_QUESTIONS = buildQuestionBank();
 
     let gameMode = 'solo';
     let tournamentName = 'Quiz Arena';
@@ -602,13 +652,8 @@
         : '<div class="champion-item">Nenhum torneio finalizado ainda.</div>';
     }
 
-    function formatCategory(key) {
-      return key === 'misto' ? 'Misto' : (labels[key] || key);
-    }
-
-    function formatDifficulty(key) {
-      return key === 'misto' ? 'Mista' : (diffLabels[key] || key);
-    }
+    function formatCategory(key) { return CATEGORY_LABELS[key] || key; }
+    function formatDifficulty(key) { return DIFFICULTY_LABELS[key] || key; }
 
     function setMode(mode) {
       gameMode = mode;
@@ -624,7 +669,7 @@
 
     function updatePoolInfo() {
       const filtered = filterPool(themeSelect.value, difficultySelect.value);
-      poolInfo.textContent = `Banco atual: ${filtered.length} perguntas possíveis com os filtros selecionados. Banco total: ${ALL_QUESTIONS.length} perguntas.`;
+      poolInfo.textContent = `Banco atual: ${filtered.length} perguntas possíveis com os filtros selecionados. Banco total: ${ALL_QUESTIONS.length} perguntas. Distribuição total: 125 por categoria e 125 por dificuldade.`;
     }
 
     function generateQuestions(amount, theme, difficulty) {
@@ -714,9 +759,7 @@
     function revealAnswer(selectedIndex, selectedBtn) {
       const buttons = [...document.querySelectorAll('.option-btn')];
       const correctIndex = currentQuestion.options.findIndex(opt => opt === currentQuestion.correct);
-      buttons.forEach((button, idx) => {
-        if (idx === correctIndex) button.classList.add('correct');
-      });
+      buttons.forEach((button, idx) => { if (idx === correctIndex) button.classList.add('correct'); });
       const currentPlayerName = currentPlayer === 1 ? player1Name : player2Name;
       if (selectedIndex === correctIndex) {
         if (selectedBtn) selectedBtn.classList.add('correct');
@@ -792,7 +835,7 @@
       questionTimer = Number(timerSelect.value);
       questions = generateQuestions(totalQuestions, selectedTheme, selectedDifficulty);
       if (!questions.length) {
-        feedbackText.textContent = 'Nenhuma pergunta disponível para essa combinação.';
+        alert('Não há perguntas disponíveis para essa combinação de tema e dificuldade.');
         return;
       }
       currentIndex = 0;
