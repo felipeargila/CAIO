@@ -5,90 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quiz Arena Turbo</title>
   <style>
-    * { box-sizing: border-box; }
-    :root {
-      --bg1:#0f172a; --bg2:#1e293b; --panel:rgba(255,255,255,.07); --panel-border:rgba(255,255,255,.12);
-      --text:#f8fafc; --muted:#cbd5e1; --blue:#60a5fa; --green:#22c55e; --yellow:#fbbf24; --red:#f87171; --purple:#c084fc;
-      --shadow:0 20px 60px rgba(0,0,0,.35);
-    }
-    body { margin:0; font-family:Arial,Helvetica,sans-serif; background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 100%); color:var(--text); min-height:100vh; padding:24px; }
-    .wrap { max-width:1240px; margin:0 auto; }
-    .panel { background:var(--panel); border:1px solid var(--panel-border); border-radius:28px; padding:26px; box-shadow:var(--shadow); backdrop-filter:blur(10px); margin-bottom:20px; }
-    h1,h2,h3,h4 { margin-top:0; }
-    h1 { margin-bottom:8px; font-size:2.2rem; }
-    p { color:var(--muted); }
-    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
-    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-    .hidden { display:none !important; }
-    label { display:block; font-size:.95rem; font-weight:700; margin-bottom:8px; color:#e2e8f0; }
-    input,select { width:100%; padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.08); color:var(--text); font-size:1rem; outline:none; }
-    .row { display:flex; gap:12px; flex-wrap:wrap; }
-    button { border:none; border-radius:16px; padding:14px 18px; font-size:1rem; font-weight:700; cursor:pointer; transition:transform .15s ease, opacity .15s ease, filter .15s ease; }
-    button:hover { transform:translateY(-2px); filter:brightness(1.03); }
-    button:active { transform:translateY(0); }
-    button:disabled { opacity:.5; cursor:not-allowed; transform:none; }
-    .primary { background:var(--green); color:#052e16; }
-    .secondary { background:var(--blue); color:#082f49; }
-    .warning { background:var(--yellow); color:#422006; }
-    .danger { background:var(--red); color:#450a0a; }
-    .muted-btn { background:rgba(255,255,255,.1); color:var(--text); }
-    .mode-card-wrap { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:18px; }
-    .mode-card { border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); border-radius:22px; padding:20px; cursor:pointer; transition:.15s ease; }
-    .mode-card.active { outline:2px solid rgba(96,165,250,.8); background:rgba(96,165,250,.12); }
-    .checkbox-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-    .check-card { display:flex; align-items:center; gap:10px; padding:14px 16px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.05); }
-    .check-card input { width:18px; height:18px; margin:0; }
-    .info-box { padding:14px 16px; border-radius:16px; background:rgba(192,132,252,.12); border:1px solid rgba(192,132,252,.35); color:#e9d5ff; line-height:1.5; }
-    .scoreboard { display:grid; grid-template-columns:1fr auto 1fr; gap:18px; align-items:center; margin-top:12px; }
-    .card { background:rgba(255,255,255,.08); border-radius:22px; padding:20px; text-align:center; border:1px solid rgba(255,255,255,.1); }
-    .name { font-size:1rem; color:var(--muted); margin-bottom:6px; }
-    .points { font-size:3rem; font-weight:800; line-height:1; }
-    .versus { font-size:1.2rem; font-weight:800; color:var(--yellow); text-align:center; }
-    .question-box { background:rgba(255,255,255,.08); border-radius:22px; padding:20px; border:1px solid rgba(255,255,255,.1); margin-top:20px; }
-    .announcement { min-height:52px; display:flex; align-items:center; justify-content:center; text-align:center; margin-bottom:16px; padding:12px 16px; border-radius:16px; background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.35); color:#fde68a; font-weight:700; }
-    .player-badge { display:inline-flex; align-items:center; justify-content:center; background:rgba(34,197,94,.2); border:2px solid rgba(34,197,94,.8); color:#dcfce7; border-radius:999px; padding:16px 34px; font-size:1.35rem; font-weight:900; margin-bottom:18px; min-height:64px; box-shadow:0 8px 24px rgba(34,197,94,.18); letter-spacing:.02em; }
-    .question { font-size:1.35rem; line-height:1.5; min-height:70px; margin-bottom:12px; }
-    .mini { font-size:.92rem; color:#94a3b8; margin-top:8px; }
-    .status-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:16px; }
-    .status-box { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:16px; }
-    .status-title { color:#93c5fd; font-size:.9rem; margin-bottom:8px; font-weight:800; }
-    .status-value { font-size:1.05rem; font-weight:700; }
-    .options { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
-    .option-btn { text-align:left; padding:16px; background:rgba(255,255,255,.08); color:var(--text); border:1px solid rgba(255,255,255,.12); border-radius:18px; min-height:74px; font-size:1rem; line-height:1.4; }
-    .option-btn.correct { background:rgba(34,197,94,.2); border-color:rgba(34,197,94,.8); }
-    .option-btn.wrong { background:rgba(248,113,113,.2); border-color:rgba(248,113,113,.8); }
-    .history { background:rgba(0,0,0,.22); border-radius:16px; padding:16px; max-height:260px; overflow-y:auto; border:1px solid rgba(255,255,255,.08); margin-top:18px; }
-    .log-entry { padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.05); margin-bottom:8px; color:#e5e7eb; line-height:1.4; }
-    .winner { display:none; margin-top:18px; padding:18px; border-radius:18px; text-align:center; font-size:1.1rem; font-weight:800; background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.35); color:#fde68a; }
-    .podium { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px; }
-    .podium-card { padding:14px; border-radius:16px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); text-align:center; }
-    .champion-item { padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.05); margin-bottom:8px; color:#e5e7eb; }
-    .setup-note { margin-top:12px; color:#93c5fd; font-size:.92rem; }
-    @media (max-width:980px) { .grid,.grid-3,.scoreboard,.status-row,.options,.mode-card-wrap,.checkbox-grid,.podium{grid-template-columns:1fr;} .points{font-size:2.4rem;} .question{font-size:1.1rem;} }
+    *{box-sizing:border-box} :root{--bg1:#0f172a;--bg2:#1e293b;--panel:rgba(255,255,255,.07);--panel-border:rgba(255,255,255,.12);--text:#f8fafc;--muted:#cbd5e1;--blue:#60a5fa;--green:#22c55e;--yellow:#fbbf24;--red:#f87171;--shadow:0 20px 60px rgba(0,0,0,.35)}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);min-height:100vh;padding:24px}
+    .wrap{max-width:1240px;margin:0 auto}.panel{background:var(--panel);border:1px solid var(--panel-border);border-radius:28px;padding:26px;box-shadow:var(--shadow);backdrop-filter:blur(10px);margin-bottom:20px}
+    h1,h2,h3,h4{margin-top:0} h1{margin-bottom:8px;font-size:2.2rem} p{color:var(--muted)} .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.hidden{display:none!important}
+    label{display:block;font-size:.95rem;font-weight:700;margin-bottom:8px;color:#e2e8f0} input,select{width:100%;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:var(--text);font-size:1rem;outline:none}
+    .row{display:flex;gap:12px;flex-wrap:wrap} button{border:none;border-radius:16px;padding:14px 18px;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .15s ease,opacity .15s ease,filter .15s ease} button:hover{transform:translateY(-2px);filter:brightness(1.03)} button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .primary{background:var(--green);color:#052e16}.secondary{background:var(--blue);color:#082f49}.danger{background:var(--red);color:#450a0a}.muted-btn{background:rgba(255,255,255,.1);color:var(--text)}
+    .mode-card-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}.mode-card{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);border-radius:22px;padding:20px;cursor:pointer;transition:.15s ease}.mode-card.active{outline:2px solid rgba(96,165,250,.8);background:rgba(96,165,250,.12)}
+    .checkbox-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.check-card{display:flex;align-items:center;gap:10px;padding:14px 16px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.05)}.check-card input{width:18px;height:18px;margin:0}.info-box{padding:14px 16px;border-radius:16px;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.35);color:#dbeafe;line-height:1.5}
+    .scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;margin-top:12px}.card{background:rgba(255,255,255,.08);border-radius:22px;padding:20px;text-align:center;border:1px solid rgba(255,255,255,.1)}.name{font-size:1rem;color:var(--muted);margin-bottom:6px}.points{font-size:3rem;font-weight:800;line-height:1}.versus{font-size:1.2rem;font-weight:800;color:var(--yellow);text-align:center}
+    .question-box{background:rgba(255,255,255,.08);border-radius:22px;padding:20px;border:1px solid rgba(255,255,255,.1);margin-top:20px}.announcement{min-height:52px;display:flex;align-items:center;justify-content:center;text-align:center;margin-bottom:16px;padding:12px 16px;border-radius:16px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);color:#fde68a;font-weight:700}.player-badge{display:inline-flex;align-items:center;justify-content:center;background:rgba(34,197,94,.2);border:2px solid rgba(34,197,94,.8);color:#dcfce7;border-radius:999px;padding:16px 34px;font-size:1.35rem;font-weight:900;margin-bottom:18px;min-height:64px}.question{font-size:1.35rem;line-height:1.5;min-height:70px;margin-bottom:12px}.mini{font-size:.92rem;color:#94a3b8;margin-top:8px}
+    .status-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px}.status-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px}.status-title{color:#93c5fd;font-size:.9rem;margin-bottom:8px;font-weight:800}.status-value{font-size:1.05rem;font-weight:700}
+    .options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.option-btn{text-align:left;padding:16px;background:rgba(255,255,255,.08);color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:18px;min-height:74px;font-size:1rem;line-height:1.4}.option-btn.correct{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.8)}.option-btn.wrong{background:rgba(248,113,113,.2);border-color:rgba(248,113,113,.8)}
+    .history{background:rgba(0,0,0,.22);border-radius:16px;padding:16px;max-height:260px;overflow-y:auto;border:1px solid rgba(255,255,255,.08);margin-top:18px}.log-entry{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);margin-bottom:8px;color:#e5e7eb;line-height:1.4}.winner{display:none;margin-top:18px;padding:18px;border-radius:18px;text-align:center;font-size:1.1rem;font-weight:800;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);color:#fde68a}.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.podium-card{padding:14px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);text-align:center}.champion-item{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);margin-bottom:8px;color:#e5e7eb}.setup-note{margin-top:12px;color:#93c5fd;font-size:.92rem}
+    @media (max-width:980px){.grid,.grid-3,.scoreboard,.status-row,.options,.mode-card-wrap,.checkbox-grid,.podium{grid-template-columns:1fr}.points{font-size:2.4rem}.question{font-size:1.1rem}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="panel" id="setupPanel">
       <h1>🏁 Quiz Arena Turbo</h1>
-      <p>Versão festa: solo, duelo e campeonato com mensagens dinâmicas, ranking, pódio e filtros flexíveis de temas.</p>
-
+      <p>Solo, duelo e campeonato com temas combináveis, mensagens dinâmicas e 500 perguntas.</p>
       <div class="mode-card-wrap">
         <div class="mode-card active" id="soloModeCard"><h3>🎯 Jogo único</h3><p>Um jogador responde tudo e tenta bater seu melhor placar.</p></div>
         <div class="mode-card" id="duelModeCard"><h3>⚔️ Duelo</h3><p>Dois jogadores alternam perguntas e disputam ponto a ponto.</p></div>
-        <div class="mode-card" id="championshipModeCard"><h3>🏆 Campeonato</h3><p>Vários jogadores, ranking, reações do jogo e pódio final.</p></div>
+        <div class="mode-card" id="championshipModeCard"><h3>🏆 Campeonato</h3><p>Vários jogadores, ranking, reações e pódio final.</p></div>
       </div>
-
       <div class="grid">
         <div><label for="tournamentName">Nome do torneio</label><input id="tournamentName" type="text" value="Quiz Arena" /></div>
         <div><label for="questionCount">Perguntas por partida / duelo</label><select id="questionCount"><option value="5">5 perguntas</option><option value="10" selected>10 perguntas</option><option value="15">15 perguntas</option><option value="20">20 perguntas</option></select></div>
       </div>
-
       <div class="grid" style="margin-top:16px;" id="standardPlayersBox">
-        <div><label for="player1">Nome do jogador</label><input id="player1" type="text" placeholder="Digite o nome do jogador" /></div>
-        <div id="player2Wrap" class="hidden"><label for="player2">Nome do jogador 2</label><input id="player2" type="text" placeholder="Digite o nome do jogador 2" /></div>
+        <div><label for="player1">Nome do jogador</label><input id="player1" type="text" placeholder="Jogador 1" /></div>
+        <div id="player2Wrap" class="hidden"><label for="player2">Nome do jogador 2</label><input id="player2" type="text" placeholder="Jogador 2" /></div>
       </div>
-
       <div class="panel hidden" id="championshipConfig" style="padding:18px; margin-top:18px;">
         <h3>🏆 Configuração do campeonato</h3>
         <div class="grid-3">
@@ -105,7 +56,6 @@
         </div>
         <div id="championshipPlayersInputs" class="grid" style="margin-top:14px;"></div>
       </div>
-
       <div class="grid-3" style="margin-top:16px;">
         <div>
           <label>Temas da partida</label>
@@ -119,7 +69,6 @@
         <div><label for="difficultySelect">Dificuldade</label><select id="difficultySelect"><option value="misto" selected>Mista</option><option value="facil">Fácil</option><option value="medio">Médio</option><option value="dificil">Difícil</option><option value="lendario">Lendário</option></select></div>
         <div><label for="timerSelect">Tempo por pergunta</label><select id="timerSelect"><option value="10">10 segundos</option><option value="15" selected>15 segundos</option><option value="20">20 segundos</option></select></div>
       </div>
-
       <div class="setup-note" id="poolInfo"></div>
       <div class="row" style="margin-top:18px;"><button class="primary" id="startBtn" type="button">Iniciar jogo</button></div>
       <div class="panel" style="padding:18px; margin-top:20px;"><h3>🏆 Histórico de campeões</h3><div id="championsList"></div></div>
@@ -153,327 +102,173 @@
     </div>
   </div>
 
+  <script src="questions.js"></script>
   <script>
     const CATEGORY_LABELS = { politica:'Política do Brasil', futebol:'Futebol', historia:'História', gerais:'Conhecimentos Gerais' };
     const DIFFICULTY_LABELS = { facil:'Fácil', medio:'Médio', dificil:'Difícil', lendario:'Lendário', misto:'Mista' };
+    const STYLE_INFO = {
+      rodadas:'Todos jogam em sequência. Os pontos são acumulados até o fim.',
+      liga:'Todo mundo se enfrenta. Vitória vale 3 pontos, empate vale 1.',
+      mata:'Confrontos eliminatórios. Quem perde sai e quem vence avança.'
+    };
     const MESSAGE_BANK = {
-      intro:['🎯 Vamos começar!','🔥 Noite de jogo liberada!','🍕 Valendo a honra da mesa!','⚡ Preparados para a primeira pergunta?'],
+      intro:['🎯 Vamos começar!','🔥 Noite de jogo liberada!','🍕 Valendo a honra da mesa!','⚡ Preparados para a próxima pergunta?'],
       correct:['✅ Boa! Resposta correta!','🎯 Acertou em cheio!','👏 Mandou bem!','🔥 Boa resposta!'],
       difficultCorrect:['💥 Essa era difícil!','🧠 Conhecimento avançado!','⚡ Jogada de mestre!','🎓 Nível especialista!'],
       wrong:['❌ Dessa vez não foi!','😬 Quase!','👀 Escapou essa!','📚 Bora para a próxima!'],
       timeout:['⏰ Tempo esgotado!','⌛ Acabou o tempo!','😵 O relógio venceu!','⏱️ Foi por pouco!'],
       leader:['👑 Liderança mantida!','📈 Segue na frente!','🔥 Tá difícil buscar!','🚀 Vantagem crescendo!'],
-      newLeader:['👑 Temos um novo líder!','⚔️ Virada no placar!','🔥 Mudança na liderança!','🚀 Alguém tomou o topo!'],
       lastPlace:['⚠️ Você precisa acertar essa, se não já era!','🚨 Hora da reação!','🔥 Ainda dá tempo de sair daí!','🎯 Essa vale ouro para você!'],
       easyMiss:['😅 Essa era tranquila...','📚 Estava no básico!','🤔 Deu branco?','👀 Era pegadinha ou distração?'],
       legendary:['💥 LENDÁRIO!','🏆 Essa foi absurda!','⚡ Resposta de elite!','🧠 Brilhante!'],
-      bonus:['⚡ Momento especial ativado!','🎲 Rodada com clima de final!','🔥 A partida esquentou!','💫 Algo grande está acontecendo!'],
       champion:['🏆 Parabéns! Você venceu!','👑 Campeão da noite!','🎉 Vitória confirmada!','🔥 Ganhou com moral!'],
       vice:['🥈 Excelente campanha!','👏 Quase levou!','🎯 Vice com respeito!','✨ Baita desempenho!'],
       consolation:['🎭 Prêmio consolação!','🏅 Troféu persistência!','😅 Mais sorte na próxima!','👏 Foi até o fim!']
     };
 
-    function randomFrom(list){ return list[Math.floor(Math.random()*list.length)]; }
-    function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-    function cycleWrong(values, exclude, count, offset){ const filtered=values.filter(v=>v!==exclude); const out=[]; for(let i=0;i<count;i++) out.push(filtered[(offset+i)%filtered.length]); return out; }
-    function makeQuestion(category,difficulty,question,correct,wrongOptions){ return { category,difficulty,question,correct,options:shuffle([correct,...wrongOptions.slice(0,3)]) }; }
+    const $ = id => document.getElementById(id);
+    const els = {
+      setupPanel:$('setupPanel'), gamePanel:$('gamePanel'),
+      soloModeCard:$('soloModeCard'), duelModeCard:$('duelModeCard'), championshipModeCard:$('championshipModeCard'),
+      standardPlayersBox:$('standardPlayersBox'), player2Wrap:$('player2Wrap'), championshipConfig:$('championshipConfig'),
+      championshipPlayers:$('championshipPlayers'), championshipStyle:$('championshipStyle'), championshipRounds:$('championshipRounds'), championshipStyleInfo:$('championshipStyleInfo'),
+      toggleAdvancedBtn:$('toggleAdvancedBtn'), championshipAdvanced:$('championshipAdvanced'), bonusEventsToggle:$('bonusEventsToggle'), interactiveMessagesToggle:$('interactiveMessagesToggle'), consolationToggle:$('consolationToggle'), championshipPlayersInputs:$('championshipPlayersInputs'),
+      tournamentName:$('tournamentName'), questionCount:$('questionCount'), player1:$('player1'), player2:$('player2'), difficultySelect:$('difficultySelect'), timerSelect:$('timerSelect'),
+      poolInfo:$('poolInfo'), championsList:$('championsList'), gameTitle:$('gameTitle'), gameSubtitle:$('gameSubtitle'), name1:$('name1'), name2:$('name2'), score1:$('score1'), score2:$('score2'), scoreCard2:$('scoreCard2'), versusText:$('versusText'), roundText:$('roundText'), categoryText:$('categoryText'), difficultyText:$('difficultyText'), timerText:$('timerText'), announcementBox:$('announcementBox'), turnBadge:$('turnBadge'), questionText:$('questionText'), optionsWrap:$('optionsWrap'), feedbackText:$('feedbackText'), historyList:$('historyList'), winnerBox:$('winnerBox'), startBtn:$('startBtn'), backBtn:$('backBtn'), resetBtn:$('resetBtn'), skipBtn:$('skipBtn')
+    };
 
-    const politicsFacts = [
-      ['Qual é a capital do Brasil?','Brasília'], ['Em que ano foi promulgada a atual Constituição brasileira?','1988'], ['Quantos poderes existem no Brasil?','3'],
-      ['Qual poder executa as leis no Brasil?','Executivo'], ['Qual é o nome do sistema político do Brasil?','República federativa'], ['Quem foi o primeiro presidente do Brasil?','Deodoro da Fonseca'],
-      ['Qual é a sede do Poder Executivo federal?','Palácio do Planalto'], ['Qual é a casa legislativa que representa os estados?','Senado Federal'], ['Qual é o tribunal mais alto do Brasil?','Supremo Tribunal Federal'],
-      ['Quantos senadores cada estado elege?','3'], ['Qual é a residência oficial do presidente do Brasil?','Palácio da Alvorada'], ['Qual é a idade mínima para concorrer à Presidência da República?','35 anos'],
-      ['Qual poder julga no Brasil?','Judiciário'], ['Qual poder cria as leis?','Legislativo'], ['Qual é o apelido comum dado à Constituição de 1988?','Constituição Cidadã'],
-      ['A Constituição de 1988 foi promulgada durante qual período?','Redemocratização'], ['Qual órgão fiscaliza as contas públicas federais?','Tribunal de Contas da União'], ['Qual tribunal é responsável pela Justiça Eleitoral na esfera máxima?','Tribunal Superior Eleitoral'],
-      ['Qual é o nome do conjunto formado por Câmara e Senado?','Congresso Nacional'], ['Quantos anos dura o mandato presidencial no Brasil?','4 anos'], ['Qual instrumento permite ao presidente editar norma com força de lei em casos relevantes e urgentes?','Medida provisória'],
-      ['O voto no Brasil é, em regra, de qual tipo?','Direto e secreto'], ['Qual instrumento constitucional permite ao presidente vetar total ou parcialmente um projeto de lei?','Veto presidencial'], ['Qual princípio organiza as competências entre União, estados e municípios?','Federalismo'],
-      ['Qual instituição brasileira tem a função de defender judicialmente a União?','Advocacia-Geral da União'], ['Qual órgão julga presidentes por crimes de responsabilidade no processo de impeachment?','Senado Federal'], ['Qual tribunal superior não integra a Justiça Comum, mas a Justiça Eleitoral?','TSE'],
-      ['Qual princípio constitucional impede a concentração de funções estatais em um só poder?','Separação dos poderes'], ['Qual casa inicia a autorização para abertura de processo de impeachment do presidente?','Câmara dos Deputados'], ['Qual cidade foi inaugurada como capital federal em 1960?','Brasília'],
-      ['Qual cidade deixou de ser capital do Brasil em 1960?','Rio de Janeiro'], ['Qual cidade foi capital do Brasil entre 1549 e 1763?','Salvador'], ['Em que ano o Rio de Janeiro se tornou capital do Brasil, substituindo Salvador?','1763'],
-      ['Qual presidente está ligado à construção de Brasília?','Juscelino Kubitschek'], ['Qual presidente sofreu impeachment em 1992?','Fernando Collor'], ['Qual presidente brasileiro se suicidou em 1954?','Getúlio Vargas'],
-      ['Qual presidente governou o Brasil entre 2019 e 2023?','Jair Bolsonaro'], ['Qual presidente governou o Brasil entre 2016 e 2019?','Michel Temer'], ['Qual presidente governou o Brasil entre 2011 e 2016?','Dilma Rousseff'],
-      ['Qual presidente governou o Brasil entre 2003 e 2011?','Luiz Inácio Lula da Silva']
-    ];
-    const politicsWrongs = ['Rio de Janeiro','São Paulo','Salvador','1985','1990','1978','2','4','5','Legislativo','Judiciário','Moderador','Monarquia parlamentar','Império federal','Ditadura presidencial','Floriano Peixoto','Prudente de Morais','Campos Sales','Congresso Nacional','STF','Palácio da Alvorada','Câmara dos Deputados','Assembleia Nacional','Conselho da República','STJ','TSE','TCU','Palácio do Planalto','Itamaraty','Palácio do Jaburu','30 anos','40 anos','45 anos','Executivo','Ministério Público','Carta Imperial','Constituição Nova','Carta Liberal','Estado Novo','República Velha','Regime Militar','Supremo Tribunal Federal','Superior Tribunal de Justiça','Assembleia Federal','Plenário Supremo','5 anos','6 anos','8 anos','Projeto complementar','Decreto legislativo','Súmula vinculante','Indireto e aberto','Censitário','Distrital obrigatório','Decreto anulatório','Cláusula executiva','Súmula impeditiva','Centralismo','Parlamentarismo','Unitarismo','Ministério da Justiça','Tribunal de Contas da União','Legalidade estrita','Anterioridade tributária','Irretroatividade penal','Recife','Olinda','Belo Horizonte','Goiânia','José Sarney','Itamar Franco','Fernando Henrique Cardoso'];
+    const state = {
+      mode:'solo', questions:[], currentIndex:0, currentQuestion:null, answered:false, timer:null, timeLeft:15, timerSeconds:15, usedSkip:false, specialEvent:null, players:[], currentPlayerIndex:0,
+      championship:{ style:'rodadas', rounds:3, questionsPerUnit:3, turnOrder:[], matchups:[], matchupIndex:0, stepInMatch:0, roundLabel:'' }
+    };
 
-    const footballFacts = [
-      ['Quantos jogadores cada time tem em campo no futebol?','11'], ['Quem é conhecido como Rei do Futebol?','Pelé'], ['Quantos títulos de Copa do Mundo a seleção brasileira masculina conquistou?','5'],
-      ['Qual seleção é apelidada de Canarinho?','Brasil'], ['Qual regra impede o atacante de receber a bola à frente da defesa em certas condições?','Impedimento'], ['Qual clube brasileiro é conhecido como Galo?','Atlético Mineiro'],
-      ['Qual clube brasileiro é conhecido como Peixe?','Santos'], ['Qual clube brasileiro é conhecido como Tricolor Paulista?','São Paulo'], ['Qual clube brasileiro é conhecido como Rubro-Negro carioca?','Flamengo'],
-      ['Qual competição nacional brasileira é tradicionalmente disputada em sistema mata-mata?','Copa do Brasil'], ['Qual competição reúne clubes campeões continentais para definir um campeão mundial?','Mundial de Clubes'], ['Em qual país surgiu o futebol moderno com regras organizadas?','Inglaterra'],
-      ['Qual clube manda seus jogos no Morumbi?','São Paulo'], ['Qual clube manda seus jogos na Neo Química Arena?','Corinthians'], ['Qual clube manda seus jogos no Allianz Parque?','Palmeiras'],
-      ['Qual clube manda seus jogos na Vila Belmiro?','Santos'], ['Qual clube manda seus jogos no Beira-Rio?','Internacional'], ['Qual clube manda seus jogos na Arena do Grêmio?','Grêmio'],
-      ['Qual clube manda seus jogos no Barradão?','Vitória'], ['Qual clube manda seus jogos na Arena Fonte Nova?','Bahia'], ['Qual clube manda seus jogos no Couto Pereira?','Coritiba'],
-      ['Qual clube manda seus jogos na Ilha do Retiro?','Sport'], ['Qual clube manda seus jogos nos Aflitos?','Náutico'], ['Quem venceu a Copa do Mundo de 2002?','Brasil'],
-      ['Quem venceu a Copa do Mundo de 2014?','Alemanha'], ['Quem venceu a Copa do Mundo de 1994?','Brasil'], ['Em qual país ocorreu a Copa do Mundo de 1958?','Suécia'],
-      ['Em qual país ocorreu a Copa do Mundo de 1962?','Chile'], ['Em qual país ocorreu a Copa do Mundo de 1970?','México'], ['Em qual país ocorreu a Copa do Mundo de 1994?','Estados Unidos'],
-      ['Em qual país ocorreu a Copa do Mundo de 2002?','Coreia do Sul e Japão'], ['Em qual país ocorreu a Copa do Mundo de 2014?','Brasil'], ['Qual cidade é a sede do Flamengo?','Rio de Janeiro'],
-      ['Qual cidade é a sede do Corinthians?','São Paulo'], ['Qual cidade é a sede do Santos?','Santos'], ['Qual cidade é a sede do Grêmio?','Porto Alegre'],
-      ['Qual cidade é a sede do Cruzeiro?','Belo Horizonte'], ['Qual cidade é a sede do Bahia?','Salvador'], ['Qual cidade é a sede do Athletico Paranaense?','Curitiba'],
-      ['Qual cidade é a sede do Fortaleza?','Fortaleza']
-    ];
-    const footballWrongs = ['10','9','12','Zico','Romário','Ronaldo','4','6','3','Argentina','Uruguai','Chile','Escanteio','Reposição','Tiro livre','Cruzeiro','Botafogo','Bahia','Corinthians','Palmeiras','Flamengo','Bahia','Fluminense','Grêmio','Athletico Paranaense','Vitória','Sport','Campeonato Brasileiro','Paulistão por pontos corridos','Recopa Sul-Americana','Libertadores','Supercopa do Brasil','Brasil','Espanha','Itália','Ceará','Santa Cruz','Alemanha','França','México','Estados Unidos','Porto Alegre','Belo Horizonte','Salvador','Curitiba','Fortaleza'];
+    const rand = list => list[Math.floor(Math.random()*list.length)];
+    const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+    const selectedThemes = () => [...document.querySelectorAll('.themeCheck:checked')].map(n=>n.value);
+    const say = type => rand(MESSAGE_BANK[type] || ['']);
+    const formatCategory = k => CATEGORY_LABELS[k] || k;
+    const formatDifficulty = k => DIFFICULTY_LABELS[k] || k;
+    const currentPlayer = () => state.players[state.currentPlayerIndex];
 
-    const historyFacts = [
-      ['Em que ano ocorreu a Independência do Brasil?','1822'], ['Quem proclamou a Independência do Brasil?','Dom Pedro I'], ['Em que ano ocorreu a Proclamação da República no Brasil?','1889'],
-      ['Quem liderou a Proclamação da República?','Deodoro da Fonseca'], ['Em que ano foi assinada a Lei Áurea?','1888'], ['Quem assinou a Lei Áurea?','Princesa Isabel'],
-      ['Em que ano a família real portuguesa chegou ao Brasil?','1808'], ['Quem chegou ao Brasil em 1500 segundo a narrativa histórica tradicional?','Pedro Álvares Cabral'], ['Qual conflito global ocorreu entre 1914 e 1918?','Primeira Guerra Mundial'],
-      ['Qual conflito global ocorreu entre 1939 e 1945?','Segunda Guerra Mundial'], ['Qual período de tensão geopolítica opôs EUA e URSS sem guerra direta total?','Guerra Fria'], ['Qual civilização construiu as pirâmides de Gizé?','Egípcia'],
-      ['Em que século ocorreu a Revolução Francesa?','Século XVIII'], ['Qual documento inglês de 1215 é marco na limitação do poder real?','Magna Carta'], ['Qual movimento foi liderado por Antônio Conselheiro?','Guerra de Canudos'],
-      ['Qual revolta urbana ocorreu contra a vacinação obrigatória no Rio de Janeiro?','Revolta da Vacina'], ['Em que ano começou o regime militar no Brasil?','1964'], ['Em que ano terminou o regime militar no Brasil?','1985'],
-      ['Qual guerra opôs o Paraguai à Tríplice Aliança?','Guerra do Paraguai'], ['Qual foi a primeira constituição do Brasil?','Constituição de 1824'], ['Qual líder da Inconfidência Mineira é mais lembrado como mártir?','Tiradentes'],
-      ['Qual era o imperador do Brasil quando a República foi proclamada?','Dom Pedro II'], ['Qual período brasileiro ficou conhecido como Estado Novo?','1937-1945'], ['Em qual cidade foi dado o Grito do Ipiranga?','São Paulo'],
-      ['Qual presidente governava o Brasil quando a Constituição de 1988 foi promulgada?','José Sarney'], ['Qual presidente foi deposto em 1964?','João Goulart'], ['Em que ano começou a Segunda Guerra Mundial?','1939'],
-      ['Em que ano terminou a Segunda Guerra Mundial?','1945'], ['Em que ano começou a Primeira Guerra Mundial?','1914'], ['Em que ano terminou a Primeira Guerra Mundial?','1918'],
-      ['Qual conflito brasileiro do século XIX envolveu o Rio Grande do Sul e ficou conhecido como Revolução Farroupilha?','Guerra dos Farrapos'], ['Qual documento brasileiro acabou com a escravidão formal?','Lei Áurea'], ['Qual foi a primeira constituição republicana do Brasil?','Constituição de 1891'],
-      ['Qual foi a capital do Brasil antes de Brasília?','Rio de Janeiro'], ['Qual foi a capital do Brasil antes do Rio de Janeiro?','Salvador'], ['Quem foi o presidente que se suicidou em 1954?','Getúlio Vargas'],
-      ['Quem foi o imperador do Brasil na Independência?','Dom Pedro I'], ['Qual civilização antiga foi responsável pelas pirâmides de Gizé?','Egípcia'], ['Em que século se localiza o ano de 1500?','Século XVI'],
-      ['Em que século se localiza o ano de 1889?','Século XIX']
-    ];
-    const historyWrongs = ['1808','1889','1831','Dom Pedro II','José Bonifácio','Tiradentes','1888','1891','1900','Floriano Peixoto','Getúlio Vargas','Maria Leopoldina','Anita Garibaldi','Carlota Joaquina','1822','1789','1815','Cristóvão Colombo','Vasco da Gama','Fernão de Magalhães','Segunda Guerra Mundial','Guerra Fria','Guerra dos Cem Anos','Guerra do Vietnã','Belle Époque','Paz Armada','Era Napoleônica','Romana','Grega','Persa','Século XVII','Século XIX','Século XVI','Bill of Rights','Tratado de Versalhes','Edito de Nantes','Sabinada','Balaiada','Revolta da Chibata','Revolta da Armada','Intentona Comunista','1954','1961','1968','1984','1986','1988','Guerra de Canudos','Guerra do Contestado','Constituição de 1891','Constituição de 1934','Constituição de 1988','Rio de Janeiro','Petrópolis','1937','1941','1944','1946','1912','1920','1916','Recife','Olinda'];
-
-    const generalFacts = [
-      ['Qual planeta é conhecido como Planeta Vermelho?','Marte'], ['Qual é a fórmula química da água?','H2O'], ['Qual é o maior oceano da Terra?','Pacífico'],
-      ['Quantos lados tem um hexágono?','6'], ['Qual é a capital da França?','Paris'], ['Qual é a capital do Japão?','Tóquio'],
-      ['Qual é o maior planeta do Sistema Solar?','Júpiter'], ['Qual é a unidade básica da vida?','Célula'], ['Qual processo permite às plantas produzir seu alimento?','Fotossíntese'],
-      ['Qual instrumento mede a temperatura?','Termômetro'], ['Qual é o idioma mais falado no Brasil?','Português'], ['Qual é o resultado de 9 x 8?','72'],
-      ['Qual animal é o maior mamífero do planeta?','Baleia-azul'], ['Qual rio é o mais extenso do Brasil?','Amazonas'], ['Qual cientista formulou a teoria da relatividade?','Albert Einstein'],
-      ['Qual é o gás mais abundante na atmosfera terrestre?','Nitrogênio'], ['Qual é o único número primo par?','2'], ['Quem escreveu Dom Casmurro?','Machado de Assis'],
-      ['Qual elemento químico tem símbolo Au?','Ouro'], ['Qual metal é líquido em temperatura ambiente?','Mercúrio'], ['Qual é a capital da Itália?','Roma'],
-      ['Qual é a capital da Espanha?','Madri'], ['Qual é a capital da Alemanha?','Berlim'], ['Qual é a capital da Argentina?','Buenos Aires'],
-      ['Qual é a capital do Chile?','Santiago'], ['Qual é a capital do Uruguai?','Montevidéu'], ['Qual é a capital do Canadá?','Ottawa'],
-      ['Qual é a capital da Austrália?','Camberra'], ['Qual é a capital de Portugal?','Lisboa'], ['Qual é a capital da China?','Pequim'],
-      ['Qual órgão do corpo humano bombeia sangue?','Coração'], ['Qual planeta é o mais próximo do Sol?','Mercúrio'], ['Qual planeta é conhecido pelos anéis mais visíveis?','Saturno'],
-      ['Qual é o resultado de 12 x 12?','144'], ['Qual é o maior animal terrestre?','Elefante africano'], ['Qual é o ponto de ebulição da água ao nível do mar?','100°C'],
-      ['Qual é o principal satélite natural da Terra?','Lua'], ['Qual é a montanha mais alta do mundo acima do nível do mar?','Everest'], ['Qual é o símbolo químico do sódio?','Na'],
-      ['Qual é o símbolo químico do ferro?','Fe']
-    ];
-    const generalWrongs = ['Vênus','Júpiter','Mercúrio','CO2','NaCl','O2','Atlântico','Índico','Ártico','5','7','8','Londres','Roma','Madri','Pequim','Seul','Kyoto','Saturno','Netuno','Átomo','Molécula','Tecido','Respiração','Fermentação','Digestão','Barômetro','Altímetro','Higrômetro','Espanhol','Inglês','Francês','64','81','69','Elefante africano','Orca','Girafa','São Francisco','Paraná','Tocantins','Isaac Newton','Galileu Galilei','Nikola Tesla','Oxigênio','Gás carbônico','Hidrogênio','3','5','7','José de Alencar','Clarice Lispector','Graciliano Ramos','Prata','Argônio','Alumínio','Ferro','Cobre','Zinco','Milão','Veneza','Nápoles','Barcelona','Valência','Sevilha','Munique','Frankfurt','Hamburgo','Córdoba','Rosário','Mendoza','Valparaíso','Concepción','Antofagasta','Punta del Este','Salto','Paysandú','Toronto','Vancouver','Montreal','Sydney','Melbourne','Perth','Porto','Coimbra','Faro','Xangai','Hong Kong','Cantão','Pulmão','Fígado','Rim','Terra','Urano','124','132','156','Rinoceronte','Hipopótamo','90°C','80°C','120°C','Fobos','Io','Titã','K2','Aconcágua','Makalu','So','Sd','S','Fr','Ir','Fi'];
-
-    function generateCategoryDifficulty(category,difficulty,facts,wrongPool,target){
-      const out=[]; let idx=0;
-      while(out.length<target){ const [question,correct]=facts[idx%facts.length]; out.push(makeQuestion(category,difficulty,question,correct,cycleWrong(wrongPool,correct,3,idx))); idx++; }
+    function renderChampions(){
+      let champions; try{ champions=JSON.parse(localStorage.getItem('quizArenaChampions')||'[]'); }catch{ champions=[]; }
+      els.championsList.innerHTML = champions.length ? champions.map(c=>`<div class="champion-item">${c}</div>`).join('') : '<div class="champion-item">Nenhum torneio finalizado ainda.</div>';
+    }
+    function saveChampion(text){
+      let champions; try{ champions=JSON.parse(localStorage.getItem('quizArenaChampions')||'[]'); }catch{ champions=[]; }
+      champions.unshift(`${new Date().toLocaleDateString('pt-BR')} • ${text}`);
+      localStorage.setItem('quizArenaChampions', JSON.stringify(champions.slice(0,12)));
+      renderChampions();
+    }
+    function updatePoolInfo(){
+      const themes=selectedThemes(); const diff=els.difficultySelect.value;
+      const filtered=QUESTIONS.filter(q=>themes.includes(q.category) && (diff==='misto' || q.difficulty===diff));
+      els.poolInfo.textContent = `Banco atual: ${filtered.length} perguntas possíveis. Banco total: ${QUESTIONS.length}. Distribuição total: 125 por categoria e 125 por dificuldade.`;
+    }
+    function setMode(mode){
+      state.mode=mode;
+      els.soloModeCard.classList.toggle('active',mode==='solo');
+      els.duelModeCard.classList.toggle('active',mode==='duel');
+      els.championshipModeCard.classList.toggle('active',mode==='championship');
+      els.standardPlayersBox.classList.toggle('hidden',mode==='championship');
+      els.player2Wrap.classList.toggle('hidden',mode!=='duel');
+      els.championshipConfig.classList.toggle('hidden',mode!=='championship');
+      document.querySelector('label[for="player1"]').textContent = mode==='duel' ? 'Nome do jogador 1' : 'Nome do jogador';
+    }
+    function updateChampionshipStyleInfo(){ els.championshipStyleInfo.textContent = STYLE_INFO[els.championshipStyle.value]; }
+    function toggleChampionshipAdvanced(){ els.championshipAdvanced.classList.toggle('hidden'); els.toggleAdvancedBtn.textContent = els.championshipAdvanced.classList.contains('hidden') ? 'Opções avançadas' : 'Ocultar opções avançadas'; }
+    function renderChampionshipPlayersInputs(){
+      const count=Number(els.championshipPlayers.value); els.championshipPlayersInputs.innerHTML='';
+      for(let i=0;i<count;i++){ const wrap=document.createElement('div'); wrap.innerHTML=`<label>Jogador ${i+1}</label><input type="text" class="champPlayerInput" placeholder="Jogador ${i+1}" />`; els.championshipPlayersInputs.appendChild(wrap); }
+    }
+    function buildQuestionSet(amount){
+      const themes=selectedThemes(); const diff=els.difficultySelect.value;
+      const filtered=QUESTIONS.filter(q=>themes.includes(q.category) && (diff==='misto' || q.difficulty===diff));
+      const src=(filtered.length?shuffle(filtered):shuffle(QUESTIONS));
+      const out=[];
+      for(let i=0;i<amount;i++){ const base=src[i % src.length]; out.push({ ...base, options:shuffle(base.options) }); }
       return out;
     }
-
-    function buildQuestionBank(){
-      const distribution={ politica:{facil:32,medio:31,dificil:31,lendario:31}, futebol:{facil:31,medio:32,dificil:31,lendario:31}, historia:{facil:31,medio:31,dificil:32,lendario:31}, gerais:{facil:31,medio:31,dificil:31,lendario:32} };
-      const bank=[];
-      bank.push(...generateCategoryDifficulty('politica','facil',politicsFacts,politicsWrongs,distribution.politica.facil));
-      bank.push(...generateCategoryDifficulty('politica','medio',politicsFacts,politicsWrongs,distribution.politica.medio));
-      bank.push(...generateCategoryDifficulty('politica','dificil',politicsFacts,politicsWrongs,distribution.politica.dificil));
-      bank.push(...generateCategoryDifficulty('politica','lendario',politicsFacts,politicsWrongs,distribution.politica.lendario));
-      bank.push(...generateCategoryDifficulty('futebol','facil',footballFacts,footballWrongs,distribution.futebol.facil));
-      bank.push(...generateCategoryDifficulty('futebol','medio',footballFacts,footballWrongs,distribution.futebol.medio));
-      bank.push(...generateCategoryDifficulty('futebol','dificil',footballFacts,footballWrongs,distribution.futebol.dificil));
-      bank.push(...generateCategoryDifficulty('futebol','lendario',footballFacts,footballWrongs,distribution.futebol.lendario));
-      bank.push(...generateCategoryDifficulty('historia','facil',historyFacts,historyWrongs,distribution.historia.facil));
-      bank.push(...generateCategoryDifficulty('historia','medio',historyFacts,historyWrongs,distribution.historia.medio));
-      bank.push(...generateCategoryDifficulty('historia','dificil',historyFacts,historyWrongs,distribution.historia.dificil));
-      bank.push(...generateCategoryDifficulty('historia','lendario',historyFacts,historyWrongs,distribution.historia.lendario));
-      bank.push(...generateCategoryDifficulty('gerais','facil',generalFacts,generalWrongs,distribution.gerais.facil));
-      bank.push(...generateCategoryDifficulty('gerais','medio',generalFacts,generalWrongs,distribution.gerais.medio));
-      bank.push(...generateCategoryDifficulty('gerais','dificil',generalFacts,generalWrongs,distribution.gerais.dificil));
-      bank.push(...generateCategoryDifficulty('gerais','lendario',generalFacts,generalWrongs,distribution.gerais.lendario));
-      return shuffle(bank);
+    function leaderboard(){
+      return [...state.players].sort((a,b)=>((state.championship.style==='liga' ? (b.tablePoints||0) : (b.score||0)) - (state.championship.style==='liga' ? (a.tablePoints||0) : (a.score||0))) || ((b.correct||0)-(a.correct||0)));
     }
-
-    const ALL_QUESTIONS = buildQuestionBank();
-
-    const app = {
-      mode:'solo', timerSeconds:15, selectedDifficulty:'misto', questions:[], currentIndex:0, timer:null, timeLeft:15,
-      answered:false, usedSkip:false, currentQuestion:null, players:[], currentPlayerIndex:0, gameTitle:'Quiz Arena',
-      championship:{ count:4, style:'rodadas', rounds:3, advancedOpen:false, bonusEvents:true, interactive:true, consolation:true, turnOrder:[], currentRound:1, matches:[], matchIndex:0, questionsPerSide:3, sideQuestionCount:0, roundName:'' },
-      specialEvent:null
-    };
-
-    const el = {
-      setupPanel:document.getElementById('setupPanel'), gamePanel:document.getElementById('gamePanel'),
-      soloModeCard:document.getElementById('soloModeCard'), duelModeCard:document.getElementById('duelModeCard'), championshipModeCard:document.getElementById('championshipModeCard'),
-      standardPlayersBox:document.getElementById('standardPlayersBox'), player2Wrap:document.getElementById('player2Wrap'),
-      championshipConfig:document.getElementById('championshipConfig'), championshipPlayers:document.getElementById('championshipPlayers'), championshipStyle:document.getElementById('championshipStyle'), championshipRounds:document.getElementById('championshipRounds'), championshipStyleInfo:document.getElementById('championshipStyleInfo'), toggleAdvancedBtn:document.getElementById('toggleAdvancedBtn'), championshipAdvanced:document.getElementById('championshipAdvanced'), bonusEventsToggle:document.getElementById('bonusEventsToggle'), interactiveMessagesToggle:document.getElementById('interactiveMessagesToggle'), consolationToggle:document.getElementById('consolationToggle'), championshipPlayersInputs:document.getElementById('championshipPlayersInputs'),
-      tournamentName:document.getElementById('tournamentName'), questionCount:document.getElementById('questionCount'), player1:document.getElementById('player1'), player2:document.getElementById('player2'), difficultySelect:document.getElementById('difficultySelect'), timerSelect:document.getElementById('timerSelect'), poolInfo:document.getElementById('poolInfo'), championsList:document.getElementById('championsList'),
-      gameTitle:document.getElementById('gameTitle'), gameSubtitle:document.getElementById('gameSubtitle'), name1:document.getElementById('name1'), name2:document.getElementById('name2'), score1:document.getElementById('score1'), score2:document.getElementById('score2'), scoreCard2:document.getElementById('scoreCard2'), versusText:document.getElementById('versusText'), roundText:document.getElementById('roundText'), categoryText:document.getElementById('categoryText'), difficultyText:document.getElementById('difficultyText'), timerText:document.getElementById('timerText'), announcementBox:document.getElementById('announcementBox'), turnBadge:document.getElementById('turnBadge'), questionText:document.getElementById('questionText'), optionsWrap:document.getElementById('optionsWrap'), feedbackText:document.getElementById('feedbackText'), historyList:document.getElementById('historyList'), winnerBox:document.getElementById('winnerBox')
-    };
-
-    function getThemeSelection(){ return [...document.querySelectorAll('.themeCheck:checked')].map(i=>i.value); }
-    function renderChampions(){ let champions; try{ champions=JSON.parse(localStorage.getItem('quizArenaChampions')||'[]'); }catch{ champions=[]; } el.championsList.innerHTML=champions.length?champions.map(item=>`<div class="champion-item">${item}</div>`).join(''):'<div class="champion-item">Nenhum torneio finalizado ainda.</div>'; }
-    function saveChampion(text){ let champions; try{ champions=JSON.parse(localStorage.getItem('quizArenaChampions')||'[]'); }catch{ champions=[]; } champions.unshift(`${new Date().toLocaleDateString('pt-BR')} • ${text}`); localStorage.setItem('quizArenaChampions',JSON.stringify(champions.slice(0,12))); renderChampions(); }
-    function updatePoolInfo(){ const themes=getThemeSelection(); const difficulty=el.difficultySelect.value; const filtered=ALL_QUESTIONS.filter(q=>themes.includes(q.category)&&(difficulty==='misto'||q.difficulty===difficulty)); el.poolInfo.textContent=`Banco atual: ${filtered.length} perguntas possíveis. Banco total: ${ALL_QUESTIONS.length}. Distribuição total: 125 por categoria e 125 por dificuldade.`; }
-    function formatCategory(key){ return CATEGORY_LABELS[key]||key; }
-    function formatDifficulty(key){ return DIFFICULTY_LABELS[key]||key; }
-    function setMode(mode){ app.mode=mode; el.soloModeCard.classList.toggle('active',mode==='solo'); el.duelModeCard.classList.toggle('active',mode==='duel'); el.championshipModeCard.classList.toggle('active',mode==='championship'); el.standardPlayersBox.classList.toggle('hidden',mode==='championship'); el.player2Wrap.classList.toggle('hidden',mode!=='duel'); el.championshipConfig.classList.toggle('hidden',mode!=='championship'); document.querySelector('label[for="player1"]').textContent=mode==='duel'?'Nome do jogador 1':'Nome do jogador'; updatePoolInfo(); }
-    function renderChampionshipPlayersInputs(){ const count=Number(el.championshipPlayers.value); const defaults=['Caio','Ana','Pedro','Julia','Lucas','Maria','Bruno','Nina']; el.championshipPlayersInputs.innerHTML=''; for(let i=0;i<count;i++){ const wrap=document.createElement('div'); wrap.innerHTML=`<label>Jogador ${i+1}</label><input type="text" class="champPlayerInput" data-index="${i}" placeholder="Nome do jogador ${i+1}" value="${defaults[i]||''}">`; el.championshipPlayersInputs.appendChild(wrap);} }
-    function updateChampionshipStyleInfo(){ const map={ rodadas:'Todos jogam em sequência. Cada rodada percorre todos os jogadores e os pontos se acumulam até o fim.', liga:'Todo mundo se enfrenta em confrontos diretos. Vitória vale 3 pontos, empate vale 1.', mata:'Confrontos eliminatórios. Quem perder sai, quem vencer avança até a final.' }; el.championshipStyleInfo.textContent=map[el.championshipStyle.value]; }
-    function toggleChampionshipAdvanced(){ app.championship.advancedOpen=!app.championship.advancedOpen; el.championshipAdvanced.classList.toggle('hidden',!app.championship.advancedOpen); el.toggleAdvancedBtn.textContent=app.championship.advancedOpen?'Ocultar opções avançadas':'Opções avançadas'; }
-
-    function getQuestions(amount){ const themes=getThemeSelection(); const difficulty=el.difficultySelect.value; const filtered=ALL_QUESTIONS.filter(q=>themes.includes(q.category)&&(difficulty==='misto'||q.difficulty===difficulty)); const source=(filtered.length?shuffle(filtered):shuffle(ALL_QUESTIONS)); const out=[]; for(let i=0;i<amount;i++){ const base=source[i%source.length]; out.push({...base,round:i+1,options:shuffle(base.options)}); } return out; }
-    function say(type,fallback=''){ if(app.mode==='championship'&&!el.interactiveMessagesToggle.checked&&type!=='champion') return fallback||''; return MESSAGE_BANK[type]?randomFrom(MESSAGE_BANK[type]):fallback; }
-    function showAnnouncement(text){ el.announcementBox.textContent=text||''; }
-    function addHistory(text){ const div=document.createElement('div'); div.className='log-entry'; div.textContent=text; el.historyList.prepend(div); }
-    function getLeaderboard(){ return [...app.players].sort((a,b)=>{ const pa=(app.mode==='championship'&&app.championship.style==='liga')?(a.tablePoints||0):(a.score||0); const pb=(app.mode==='championship'&&app.championship.style==='liga')?(b.tablePoints||0):(b.score||0); if(pb!==pa) return pb-pa; return (b.correct||0)-(a.correct||0); }); }
     function updateScoreboard(){
-      if(app.mode==='solo'){ el.name1.textContent=app.players[0]?.name||'Jogador'; el.score1.textContent=app.players[0]?.score||0; el.scoreCard2.classList.add('hidden'); el.versusText.classList.add('hidden'); return; }
-      if(app.mode==='duel'){ el.name1.textContent=app.players[0].name; el.name2.textContent=app.players[1].name; el.score1.textContent=app.players[0].score; el.score2.textContent=app.players[1].score; el.scoreCard2.classList.remove('hidden'); el.versusText.classList.remove('hidden'); return; }
-      const board=getLeaderboard(); el.name1.textContent=board[0]?.name||'—'; el.score1.textContent=(app.championship.style==='liga'?(board[0]?.tablePoints||0):(board[0]?.score||0)); el.name2.textContent=board[1]?.name||'—'; el.score2.textContent=(app.championship.style==='liga'?(board[1]?.tablePoints||0):(board[1]?.score||0)); el.scoreCard2.classList.remove('hidden'); el.versusText.classList.remove('hidden');
+      if(state.mode==='solo'){
+        els.name1.textContent=state.players[0]?.name || 'Jogador 1'; els.score1.textContent=String(state.players[0]?.score || 0); els.scoreCard2.classList.add('hidden'); els.versusText.classList.add('hidden'); return;
+      }
+      if(state.mode==='duel'){
+        els.name1.textContent=state.players[0]?.name || 'Jogador 1'; els.name2.textContent=state.players[1]?.name || 'Jogador 2'; els.score1.textContent=String(state.players[0]?.score || 0); els.score2.textContent=String(state.players[1]?.score || 0); els.scoreCard2.classList.remove('hidden'); els.versusText.classList.remove('hidden'); return;
+      }
+      const board=leaderboard(); els.name1.textContent=board[0]?.name || 'Jogador 1'; els.name2.textContent=board[1]?.name || 'Jogador 2'; els.score1.textContent=String(state.championship.style==='liga' ? (board[0]?.tablePoints||0) : (board[0]?.score||0)); els.score2.textContent=String(state.championship.style==='liga' ? (board[1]?.tablePoints||0) : (board[1]?.score||0)); els.scoreCard2.classList.remove('hidden'); els.versusText.classList.remove('hidden');
     }
-    function currentPlayer(){ return app.players[app.currentPlayerIndex]; }
-    function setTurnBadge(name){ el.turnBadge.textContent=(name||'JOGADOR').toUpperCase(); }
-    function startTimer(){ clearInterval(app.timer); app.timeLeft=app.timerSeconds; el.timerText.textContent=`${app.timeLeft}s`; app.timer=setInterval(()=>{ app.timeLeft-=1; el.timerText.textContent=`${app.timeLeft}s`; if(app.timeLeft<=0){ clearInterval(app.timer); lockOptions(); revealAnswer(-1,null); } },1000); }
-    function lockOptions(){ document.querySelectorAll('.option-btn').forEach(btn=>btn.disabled=true); app.answered=true; }
-
-    function chooseSpecialEvent(){
-      if(app.mode!=='championship' || !el.bonusEventsToggle.checked) return null;
-      const roll=Math.random();
-      if(roll<0.08) return { type:'double', label:'⚡ Pergunta relâmpago valendo 2 pontos!' };
-      if(roll<0.13) return { type:'risk', label:'💀 Pergunta risco: acertou +2, errou -1!' };
-      if(roll<0.17) return { type:'lastStand', label:'🚨 Último colocado pode virar o jogo!' };
-      return null;
-    }
-
-    function dynamicAnnouncement(){
-      const special=chooseSpecialEvent();
-      app.specialEvent=special;
-      if(special) return special.label;
-      if(app.mode!=='championship') return say('intro');
-      const board=getLeaderboard();
-      const player=currentPlayer();
-      if(board.length>=3 && board[board.length-1]?.name===player.name) return `${player.name}, ${say('lastPlace').replace(/^\S+\s*/,'')}`;
-      if(board[0]?.name===player.name) return `${player.name}, ${say('leader')}`;
-      return say('intro');
-    }
+    function clearTimer(){ if(state.timer){ clearInterval(state.timer); state.timer=null; } }
+    function startTimer(){ clearTimer(); state.timeLeft=state.timerSeconds; els.timerText.textContent=`${state.timeLeft}s`; state.timer=setInterval(()=>{ state.timeLeft-=1; els.timerText.textContent=`${state.timeLeft}s`; if(state.timeLeft<=0){ clearTimer(); lockOptions(); revealAnswer(-1,null); } },1000); }
+    function lockOptions(){ document.querySelectorAll('.option-btn').forEach(btn=>btn.disabled=true); state.answered=true; }
+    function setTurnBadge(name){ els.turnBadge.textContent=(name || 'JOGADOR').toUpperCase(); }
+    function showAnnouncement(text){ els.announcementBox.textContent=text || ''; }
+    function addHistory(text){ const div=document.createElement('div'); div.className='log-entry'; div.textContent=text; els.historyList.prepend(div); }
+    function chooseSpecialEvent(){ if(state.mode!=='championship' || !els.bonusEventsToggle.checked) return null; const r=Math.random(); if(r<0.08) return { type:'double', label:'⚡ Pergunta relâmpago valendo 2 pontos!' }; if(r<0.13) return { type:'risk', label:'💀 Pergunta risco: acertou +2, errou -1!' }; if(r<0.17) return { type:'lastStand', label:'🚨 Último colocado pode virar o jogo!' }; return null; }
+    function dynamicAnnouncement(){ state.specialEvent=chooseSpecialEvent(); if(state.specialEvent) return state.specialEvent.label; if(state.mode!=='championship') return say('intro'); const board=leaderboard(); const player=currentPlayer(); if(board.length>=3 && board[board.length-1]?.name===player.name && els.interactiveMessagesToggle.checked) return `${player.name}, ${say('lastPlace').replace(/^\S+\s*/, '')}`; if(board[0]?.name===player.name && els.interactiveMessagesToggle.checked) return `${player.name}, ${say('leader')}`; return say('intro'); }
 
     function renderQuestion(){
-      if(app.currentIndex>=app.questions.length){ finishGame(); return; }
-      clearInterval(app.timer); app.answered=false; el.feedbackText.textContent=''; el.skipBtn.disabled=app.usedSkip; app.currentQuestion=app.questions[app.currentIndex]; el.categoryText.textContent=formatCategory(app.currentQuestion.category); el.difficultyText.textContent=formatDifficulty(app.currentQuestion.difficulty); el.questionText.textContent=app.currentQuestion.question; setTurnBadge(currentPlayer().name); showAnnouncement(dynamicAnnouncement());
-      if(app.mode==='championship') el.roundText.textContent=app.championship.roundName||`${app.currentIndex+1} / ${app.questions.length}`; else el.roundText.textContent=`${app.currentIndex+1} / ${app.questions.length}`;
-      el.optionsWrap.innerHTML='';
-      app.currentQuestion.options.forEach((option,index)=>{ const btn=document.createElement('button'); btn.type='button'; btn.className='option-btn'; btn.innerHTML=`<strong>${String.fromCharCode(65+index)}.</strong> ${option}`; btn.addEventListener('click',()=>handleAnswer(index,btn)); el.optionsWrap.appendChild(btn); });
+      if(!state.questions.length || state.currentIndex >= state.questions.length){ finishGame(); return; }
+      state.currentQuestion=state.questions[state.currentIndex];
+      state.answered=false;
+      els.feedbackText.textContent='';
+      els.skipBtn.disabled=state.usedSkip;
+      els.categoryText.textContent=formatCategory(state.currentQuestion.category);
+      els.difficultyText.textContent=formatDifficulty(state.currentQuestion.difficulty);
+      els.questionText.textContent=state.currentQuestion.question;
+      setTurnBadge(currentPlayer()?.name || 'JOGADOR');
+      showAnnouncement(dynamicAnnouncement());
+      els.roundText.textContent=state.championship.roundLabel || `${state.currentIndex+1} / ${state.questions.length}`;
+      els.optionsWrap.innerHTML='';
+      state.currentQuestion.options.forEach((option,index)=>{ const btn=document.createElement('button'); btn.type='button'; btn.className='option-btn'; btn.innerHTML=`<strong>${String.fromCharCode(65+index)}.</strong> ${option}`; btn.addEventListener('click',()=>handleAnswer(index,btn)); els.optionsWrap.appendChild(btn); });
       startTimer();
     }
 
-    function applyEventScore(player, correctAnswer){
-      let delta=correctAnswer?1:0;
-      if(app.specialEvent?.type==='double' && correctAnswer) delta=2;
-      if(app.specialEvent?.type==='risk') delta=correctAnswer?2:-1;
-      if(app.specialEvent?.type==='lastStand'){
-        const board=getLeaderboard();
-        const lastName=board[board.length-1]?.name;
-        if(player.name===lastName && correctAnswer) delta=2;
-      }
-      player.score=Math.max(0,(player.score||0)+delta);
-      return delta;
-    }
-
-    function handleAnswer(index,btn){ if(app.answered) return; clearInterval(app.timer); lockOptions(); revealAnswer(index,btn); }
+    function scoreDelta(correct){ if(!correct){ return state.specialEvent?.type==='risk' ? -1 : 0; } if(state.specialEvent?.type==='double') return 2; if(state.specialEvent?.type==='risk') return 2; if(state.specialEvent?.type==='lastStand'){ const board=leaderboard(); if(board[board.length-1]?.name===currentPlayer().name) return 2; } return 1; }
+    function handleAnswer(index,btn){ if(state.answered) return; clearTimer(); lockOptions(); revealAnswer(index,btn); }
     function revealAnswer(selectedIndex,selectedBtn){
-      const buttons=[...document.querySelectorAll('.option-btn')];
-      const correctIndex=app.currentQuestion.options.findIndex(opt=>opt===app.currentQuestion.correct);
-      buttons.forEach((button,idx)=>{ if(idx===correctIndex) button.classList.add('correct'); });
-      const player=currentPlayer();
-      let msg='';
-      if(selectedIndex===correctIndex){
-        if(selectedBtn) selectedBtn.classList.add('correct');
-        player.correct=(player.correct||0)+1;
-        const delta=applyEventScore(player,true);
-        if(app.mode==='championship' && (app.championship.style==='liga' || app.championship.style==='mata')) player.matchScore=(player.matchScore||0)+delta;
-        msg=app.currentQuestion.difficulty==='lendario'?say('legendary'):(app.currentQuestion.difficulty==='dificil'?say('difficultCorrect'):say('correct'));
-        addHistory(`Pergunta ${app.currentIndex+1}: ${player.name} acertou (${delta >= 0 ? '+'+delta : delta}).`);
-      } else {
-        if(selectedBtn) selectedBtn.classList.add('wrong');
-        player.wrong=(player.wrong||0)+1;
-        const delta=applyEventScore(player,false);
-        if(app.mode==='championship' && (app.championship.style==='liga' || app.championship.style==='mata')) player.matchScore=(player.matchScore||0)+delta;
-        msg=selectedIndex===-1?say('timeout'):(app.currentQuestion.difficulty==='facil'?say('easyMiss'):say('wrong'));
-        addHistory(`Pergunta ${app.currentIndex+1}: ${player.name} ${selectedIndex===-1?'ficou sem tempo':'errou'} (${delta >= 0 ? '+'+delta : delta}).`);
-      }
-      el.feedbackText.textContent=`${msg} Resposta: ${app.currentQuestion.correct}.`;
-      updateScoreboard(); el.skipBtn.disabled=true; setTimeout(nextTurn,1400);
+      const buttons=[...document.querySelectorAll('.option-btn')]; const correctIndex=state.currentQuestion.options.findIndex(opt=>opt===state.currentQuestion.correct); buttons.forEach((button,idx)=>{ if(idx===correctIndex) button.classList.add('correct'); });
+      const player=currentPlayer(); const isCorrect=selectedIndex===correctIndex; if(selectedBtn && isCorrect) selectedBtn.classList.add('correct'); if(selectedBtn && !isCorrect) selectedBtn.classList.add('wrong'); const delta=scoreDelta(isCorrect); player.score=Math.max(0,(player.score||0)+delta); if(state.mode==='championship' && (state.championship.style==='liga' || state.championship.style==='mata')) player.matchScore=(player.matchScore||0)+delta; if(isCorrect) player.correct=(player.correct||0)+1; else player.wrong=(player.wrong||0)+1;
+      const msg = isCorrect ? (state.currentQuestion.difficulty==='lendario' ? say('legendary') : (state.currentQuestion.difficulty==='dificil' ? say('difficultCorrect') : say('correct'))) : (selectedIndex===-1 ? say('timeout') : (state.currentQuestion.difficulty==='facil' ? say('easyMiss') : say('wrong')));
+      els.feedbackText.textContent=`${msg} Resposta: ${state.currentQuestion.correct}.`;
+      addHistory(`Pergunta ${state.currentIndex+1}: ${player.name} ${isCorrect ? 'acertou' : 'errou'} (${delta >= 0 ? '+'+delta : delta}).`);
+      updateScoreboard(); els.skipBtn.disabled=true; setTimeout(nextStep, 1400);
     }
 
-    function nextTurn(){ app.currentIndex+=1; if(app.mode==='solo') app.currentPlayerIndex=0; else if(app.mode==='duel') app.currentPlayerIndex=app.currentPlayerIndex===0?1:0; else advanceChampionshipTurn(); renderQuestion(); }
-
-    function buildChampionship(){
-      const count=Number(el.championshipPlayers.value);
-      const inputs=[...document.querySelectorAll('.champPlayerInput')];
-      app.players=Array.from({length:count},(_,i)=>({ id:i, name:(inputs[i]?.value||`Jogador ${i+1}`).trim()||`Jogador ${i+1}`, score:0, correct:0, wrong:0, tablePoints:0, matchScore:0, eliminated:false }));
-      app.championship.style=el.championshipStyle.value; app.championship.rounds=Number(el.championshipRounds.value); app.championship.questionsPerSide=Number(el.championshipRounds.value); app.currentPlayerIndex=0; app.usedSkip=false;
-      if(app.championship.style==='rodadas'){
-        const order=[]; for(let r=0;r<app.championship.rounds;r++){ for(let p=0;p<app.players.length;p++) order.push(p); }
-        app.championship.turnOrder=order; app.questions=getQuestions(order.length); app.championship.roundName=`Rodada 1 / ${app.championship.rounds}`;
-      } else if(app.championship.style==='liga'){
-        const matches=[]; for(let i=0;i<app.players.length;i++){ for(let j=i+1;j<app.players.length;j++) matches.push([i,j]); }
-        app.championship.matches=matches; app.questions=getQuestions(matches.length*app.championship.questionsPerSide*2); app.championship.matchIndex=0; app.currentPlayerIndex=matches[0][0]; app.players.forEach(p=>p.matchScore=0); app.championship.sideQuestionCount=0; app.championship.roundName=`Liga • Confronto 1 / ${matches.length}`;
-      } else {
-        const seeded=shuffle(app.players.map(p=>p.id)); const matches=[]; for(let i=0;i<seeded.length;i+=2) matches.push([seeded[i], seeded[i+1] ?? null]);
-        app.championship.matches=matches; app.questions=getQuestions(200); app.championship.matchIndex=0; app.currentPlayerIndex=matches[0][0]; app.players.forEach(p=>p.matchScore=0); app.championship.sideQuestionCount=0; app.championship.roundName=`Mata-mata • Confronto 1 / ${matches.length}`;
-      }
+    function prepareSoloOrDuel(){
+      state.players = state.mode==='solo' ? [{ name:(els.player1.value.trim() || 'Jogador 1'), score:0, correct:0, wrong:0 }] : [{ name:(els.player1.value.trim() || 'Jogador 1'), score:0, correct:0, wrong:0 }, { name:(els.player2.value.trim() || 'Jogador 2'), score:0, correct:0, wrong:0 }];
+      state.currentPlayerIndex=0; state.questions=buildQuestionSet(Number(els.questionCount.value)); state.championship.roundLabel=`1 / ${state.questions.length}`;
     }
-
-    function advanceChampionshipTurn(){
-      if(app.championship.style==='rodadas'){
-        if(app.currentIndex<app.championship.turnOrder.length){ app.currentPlayerIndex=app.championship.turnOrder[app.currentIndex] ?? 0; const currentRound=Math.floor(app.currentIndex/app.players.length)+1; app.championship.roundName=`Rodada ${currentRound} / ${app.championship.rounds}`; }
-        return;
-      }
-      if(app.championship.style==='liga'){
-        const currentMatch=app.championship.matches[app.championship.matchIndex]; const [a,b]=currentMatch; app.championship.sideQuestionCount+=1; const totalSideQuestions=app.championship.questionsPerSide*2;
-        if(app.championship.sideQuestionCount<totalSideQuestions){ app.currentPlayerIndex=app.championship.sideQuestionCount%2===0?a:b; app.championship.roundName=`Liga • Confronto ${app.championship.matchIndex+1} / ${app.championship.matches.length}`; }
-        else {
-          const pA=app.players[a], pB=app.players[b];
-          if(pA.matchScore>pB.matchScore){ pA.tablePoints+=3; showAnnouncement(`👑 ${pA.name} venceu o confronto!`); }
-          else if(pB.matchScore>pA.matchScore){ pB.tablePoints+=3; showAnnouncement(`👑 ${pB.name} venceu o confronto!`); }
-          else { pA.tablePoints+=1; pB.tablePoints+=1; showAnnouncement('⚖️ Empate no confronto!'); }
-          pA.matchScore=0; pB.matchScore=0; app.championship.matchIndex+=1; app.championship.sideQuestionCount=0;
-          if(app.championship.matchIndex<app.championship.matches.length){ const nextMatch=app.championship.matches[app.championship.matchIndex]; app.currentPlayerIndex=nextMatch[0]; app.championship.roundName=`Liga • Confronto ${app.championship.matchIndex+1} / ${app.championship.matches.length}`; }
-          else app.currentIndex=app.questions.length;
-        }
-        return;
-      }
-      const match=app.championship.matches[app.championship.matchIndex]; const [a,b]=match;
-      if(b===null){ app.players[a].tablePoints+=1; app.championship.matchIndex+=1; if(app.championship.matchIndex<app.championship.matches.length){ app.currentPlayerIndex=app.championship.matches[app.championship.matchIndex][0]; app.championship.roundName=`Mata-mata • Confronto ${app.championship.matchIndex+1} / ${app.championship.matches.length}`; } else resolveKnockoutRound(); return; }
-      app.championship.sideQuestionCount+=1; const totalSideQuestions=app.championship.questionsPerSide*2;
-      if(app.championship.sideQuestionCount<totalSideQuestions){ app.currentPlayerIndex=app.championship.sideQuestionCount%2===0?a:b; app.championship.roundName=`Mata-mata • Confronto ${app.championship.matchIndex+1} / ${app.championship.matches.length}`; }
-      else {
-        let winner=a, loser=b; if(app.players[b].matchScore>app.players[a].matchScore){ winner=b; loser=a; } else if(app.players[b].matchScore===app.players[a].matchScore){ winner=Math.random()<0.5?a:b; loser=winner===a?b:a; }
-        app.players[winner].tablePoints+=1; app.players[loser].eliminated=true; app.players[a].matchScore=0; app.players[b].matchScore=0; app.championship.matchIndex+=1; app.championship.sideQuestionCount=0;
-        if(app.championship.matchIndex<app.championship.matches.length){ app.currentPlayerIndex=app.championship.matches[app.championship.matchIndex][0]; app.championship.roundName=`Mata-mata • Confronto ${app.championship.matchIndex+1} / ${app.championship.matches.length}`; }
-        else resolveKnockoutRound();
-      }
+    function prepareChampionship(){
+      const count=Number(els.championshipPlayers.value); const inputs=[...document.querySelectorAll('.champPlayerInput')]; state.players=Array.from({length:count}, (_,i)=>({ name:(inputs[i]?.value.trim() || `Jogador ${i+1}`), score:0, correct:0, wrong:0, tablePoints:0, matchScore:0, eliminated:false })); state.championship.style=els.championshipStyle.value; state.championship.rounds=Number(els.championshipRounds.value); state.championship.questionsPerUnit=Number(els.championshipRounds.value);
+      if(state.championship.style==='rodadas'){ const order=[]; for(let r=0;r<state.championship.rounds;r++){ for(let p=0;p<state.players.length;p++) order.push(p); } state.championship.turnOrder=order; state.questions=buildQuestionSet(order.length); state.currentPlayerIndex=order[0]||0; state.championship.roundLabel=`Rodada 1 / ${state.championship.rounds}`; return; }
+      if(state.championship.style==='liga'){ const matchups=[]; for(let i=0;i<state.players.length;i++){ for(let j=i+1;j<state.players.length;j++) matchups.push([i,j]); } state.championship.matchups=matchups; state.championship.matchupIndex=0; state.championship.stepInMatch=0; state.questions=buildQuestionSet(matchups.length * state.championship.questionsPerUnit * 2); state.currentPlayerIndex=matchups[0]?.[0] || 0; state.championship.roundLabel=`Liga • Confronto 1 / ${matchups.length}`; return; }
+      const ids=shuffle(state.players.map((_,i)=>i)); const matchups=[]; for(let i=0;i<ids.length;i+=2) matchups.push([ids[i], ids[i+1] ?? null]); state.championship.matchups=matchups; state.championship.matchupIndex=0; state.championship.stepInMatch=0; state.questions=buildQuestionSet(200); state.currentPlayerIndex=matchups[0]?.[0] || 0; state.championship.roundLabel=`Mata-mata • Confronto 1 / ${matchups.length}`;
     }
-
-    function resolveKnockoutRound(){ const survivors=app.players.filter(p=>!p.eliminated).map(p=>p.id); if(survivors.length<=1){ app.currentIndex=app.questions.length; return; } const matches=[]; for(let i=0;i<survivors.length;i+=2) matches.push([survivors[i],survivors[i+1]??null]); app.championship.matches=matches; app.championship.matchIndex=0; app.championship.sideQuestionCount=0; app.currentPlayerIndex=matches[0][0]; const roundName=survivors.length===2?'Final':(survivors.length===4?'Semifinal':'Quartas'); app.championship.roundName=`${roundName} • Confronto 1 / ${matches.length}`; }
-    function buildStandardPlayers(){ app.players=[ {name:(el.player1.value.trim()||'Jogador 1'),score:0,correct:0,wrong:0}, {name:(el.player2.value.trim()||'Jogador 2'),score:0,correct:0,wrong:0} ]; if(app.mode==='solo') app.players=[app.players[0]]; app.currentPlayerIndex=0; app.questions=getQuestions(Number(el.questionCount.value)); app.usedSkip=false; }
+    function resolveKnockoutRound(){ const survivors=state.players.map((p,i)=>({p,i})).filter(x=>!x.p.eliminated).map(x=>x.i); if(survivors.length<=1){ state.currentIndex=state.questions.length; return; } const matchups=[]; for(let i=0;i<survivors.length;i+=2) matchups.push([survivors[i], survivors[i+1] ?? null]); state.championship.matchups=matchups; state.championship.matchupIndex=0; state.championship.stepInMatch=0; state.currentPlayerIndex=matchups[0][0]; const roundName = survivors.length===2 ? 'Final' : (survivors.length===4 ? 'Semifinal' : 'Quartas'); state.championship.roundLabel=`${roundName} • Confronto 1 / ${matchups.length}`; }
+    function advanceChampionship(){
+      if(state.championship.style==='rodadas'){ if(state.currentIndex < state.championship.turnOrder.length){ state.currentPlayerIndex=state.championship.turnOrder[state.currentIndex] ?? 0; const currentRound=Math.floor(state.currentIndex / state.players.length) + 1; state.championship.roundLabel=`Rodada ${currentRound} / ${state.championship.rounds}`; } return; }
+      if(state.championship.style==='liga'){ const match=state.championship.matchups[state.championship.matchupIndex]; const [a,b]=match; state.championship.stepInMatch += 1; const totalSteps=state.championship.questionsPerUnit * 2; if(state.championship.stepInMatch < totalSteps){ state.currentPlayerIndex = state.championship.stepInMatch % 2 === 0 ? a : b; state.championship.roundLabel=`Liga • Confronto ${state.championship.matchupIndex+1} / ${state.championship.matchups.length}`; return; } const pa=state.players[a], pb=state.players[b]; if(pa.matchScore > pb.matchScore) pa.tablePoints += 3; else if(pb.matchScore > pa.matchScore) pb.tablePoints += 3; else { pa.tablePoints += 1; pb.tablePoints += 1; } pa.matchScore=0; pb.matchScore=0; state.championship.matchupIndex += 1; state.championship.stepInMatch = 0; if(state.championship.matchupIndex >= state.championship.matchups.length){ state.currentIndex=state.questions.length; return; } state.currentPlayerIndex = state.championship.matchups[state.championship.matchupIndex][0]; state.championship.roundLabel=`Liga • Confronto ${state.championship.matchupIndex+1} / ${state.championship.matchups.length}`; return; }
+      const match=state.championship.matchups[state.championship.matchupIndex]; const [a,b]=match; if(b===null){ state.championship.matchupIndex += 1; if(state.championship.matchupIndex >= state.championship.matchups.length){ resolveKnockoutRound(); return; } state.currentPlayerIndex = state.championship.matchups[state.championship.matchupIndex][0]; return; } state.championship.stepInMatch += 1; const totalSteps=state.championship.questionsPerUnit * 2; if(state.championship.stepInMatch < totalSteps){ state.currentPlayerIndex = state.championship.stepInMatch % 2 === 0 ? a : b; state.championship.roundLabel=`Mata-mata • Confronto ${state.championship.matchupIndex+1} / ${state.championship.matchups.length}`; return; } let winner=a, loser=b; if(state.players[b].matchScore > state.players[a].matchScore){ winner=b; loser=a; } else if(state.players[b].matchScore === state.players[a].matchScore){ winner=Math.random() < 0.5 ? a : b; loser=winner===a ? b : a; } state.players[loser].eliminated=true; state.players[a].matchScore=0; state.players[b].matchScore=0; state.championship.matchupIndex += 1; state.championship.stepInMatch = 0; if(state.championship.matchupIndex >= state.championship.matchups.length){ resolveKnockoutRound(); return; } state.currentPlayerIndex = state.championship.matchups[state.championship.matchupIndex][0]; state.championship.roundLabel=`Mata-mata • Confronto ${state.championship.matchupIndex+1} / ${state.championship.matchups.length}`; }
+    function nextStep(){ state.currentIndex += 1; if(state.mode==='solo') state.currentPlayerIndex=0; else if(state.mode==='duel') state.currentPlayerIndex = state.currentPlayerIndex===0 ? 1 : 0; else advanceChampionship(); renderQuestion(); }
 
     function startGame(){
-      const themes=getThemeSelection(); if(!themes.length){ alert('Selecione pelo menos um tema.'); return; }
-      app.gameTitle=el.tournamentName.value.trim()||'Quiz Arena'; app.timerSeconds=Number(el.timerSelect.value); app.selectedDifficulty=el.difficultySelect.value; app.currentIndex=0; app.currentQuestion=null; app.usedSkip=false; app.answered=false; app.specialEvent=null; el.historyList.innerHTML=''; el.winnerBox.style.display='none'; el.winnerBox.innerHTML='';
-      if(app.mode==='championship') buildChampionship(); else buildStandardPlayers();
-      updateScoreboard(); el.gameTitle.textContent=app.gameTitle; el.gameSubtitle.textContent=app.mode==='championship'?`Modo campeonato • ${el.championshipStyle.value} • ${themes.length} tema(s)`:(app.mode==='duel'?`${app.players[0].name} vs ${app.players[1].name}`:`${app.players[0].name} em jogo único`); el.setupPanel.classList.add('hidden'); el.gamePanel.classList.remove('hidden'); addHistory(`Novo jogo iniciado: ${app.gameTitle}.`); renderQuestion(); }
+      if(!selectedThemes().length){ alert('Selecione pelo menos um tema.'); return; }
+      state.timerSeconds=Number(els.timerSelect.value); state.currentIndex=0; state.currentQuestion=null; state.answered=false; state.usedSkip=false; state.specialEvent=null; els.historyList.innerHTML=''; els.winnerBox.style.display='none'; els.winnerBox.innerHTML='';
+      if(state.mode==='championship') prepareChampionship(); else prepareSoloOrDuel();
+      if(!state.questions.length){ alert('Não há perguntas disponíveis.'); return; }
+      updateScoreboard(); els.gameTitle.textContent = els.tournamentName.value.trim() || 'Quiz Arena'; els.gameSubtitle.textContent = state.mode==='championship' ? `Modo campeonato • ${els.championshipStyle.value}` : (state.mode==='duel' ? `${state.players[0].name} vs ${state.players[1].name}` : `${state.players[0].name} em jogo único`); els.setupPanel.classList.add('hidden'); els.gamePanel.classList.remove('hidden'); addHistory(`Novo jogo iniciado: ${els.gameTitle.textContent}.`); renderQuestion(); }
+    function finishGame(){ clearTimer(); els.optionsWrap.innerHTML=''; els.questionText.textContent='Fim do jogo.'; els.turnBadge.textContent='RESULTADO'; els.timerText.textContent='0s'; els.feedbackText.textContent=''; els.skipBtn.disabled=true; els.winnerBox.style.display='block'; if(state.mode==='solo'){ const p=state.players[0]; const text=`${say('champion')} ${p.name} fez ${p.score} ponto(s).`; els.winnerBox.innerHTML=text; saveChampion(text); return; } if(state.mode==='duel'){ const [a,b]=state.players; const text=a.score>b.score?`${say('champion')} ${a.name}! Placar: ${a.score} x ${b.score}.`:b.score>a.score?`${say('champion')} ${b.name}! Placar: ${b.score} x ${a.score}.`:`🤝 Empate! ${a.name} ${a.score} x ${b.score} ${b.name}.`; els.winnerBox.innerHTML=text; saveChampion(text); return; } const board=leaderboard(); const champion=board[0], vice=board[1]||{name:'—',score:0,tablePoints:0}, last=board[board.length-1]; const primary=state.championship.style==='liga' ? 'pontos de tabela' : 'pontos'; const c1=state.championship.style==='liga' ? champion.tablePoints : champion.score; const c2=state.championship.style==='liga' ? vice.tablePoints : vice.score; const c3=state.championship.style==='liga' ? last.tablePoints : last.score; els.winnerBox.innerHTML=`<div>${say('champion')} ${champion.name} foi o campeão do campeonato!</div><div class="podium"><div class="podium-card"><strong>🥇 Campeão</strong><br>${champion.name}<br>${c1} ${primary}</div><div class="podium-card"><strong>🥈 Vice</strong><br>${vice.name}<br>${c2} ${primary}</div><div class="podium-card"><strong>🎭 Consolação</strong><br>${last.name}<br>${c3} ${primary}</div></div><div style="margin-top:12px;">${say('vice')} ${vice.name} terminou em segundo.</div>${els.consolationToggle.checked?`<div style="margin-top:8px;">${say('consolation')} ${last.name} ficou com o prêmio consolação.</div>`:''}`; saveChampion(`🏆 Campeonato: ${champion.name} venceu ${els.gameTitle.textContent}.`); }
+    function goBack(){ clearTimer(); els.gamePanel.classList.add('hidden'); els.setupPanel.classList.remove('hidden'); updatePoolInfo(); renderChampions(); }
+    function resetAll(){ clearTimer(); state.questions=[]; state.currentIndex=0; state.players=[]; state.usedSkip=false; els.player1.value=''; els.player2.value=''; els.tournamentName.value='Quiz Arena'; els.questionCount.value='10'; els.difficultySelect.value='misto'; els.timerSelect.value='15'; document.querySelectorAll('.themeCheck').forEach(i=>i.checked=true); els.historyList.innerHTML=''; els.winnerBox.style.display='none'; els.gamePanel.classList.add('hidden'); els.setupPanel.classList.remove('hidden'); setMode('solo'); updatePoolInfo(); renderChampions(); }
+    function skipQuestion(){ if(state.usedSkip || state.answered || !state.currentQuestion) return; state.usedSkip=true; clearTimer(); lockOptions(); const who=currentPlayer()?.name || 'Jogador'; els.feedbackText.textContent='⏭️ Pergunta pulada.'; addHistory(`Pergunta ${state.currentIndex+1}: ${who} pulou.`); setTimeout(nextStep,900); }
 
-    function finishGame(){ clearInterval(app.timer); el.optionsWrap.innerHTML=''; el.questionText.textContent='Fim do jogo.'; el.turnBadge.textContent='RESULTADO'; el.timerText.textContent='0s'; el.feedbackText.textContent=''; el.skipBtn.disabled=true; el.winnerBox.style.display='block';
-      if(app.mode==='solo'){ const winner=app.players[0]; const text=`${say('champion')} ${winner.name} fez ${winner.score} ponto(s).`; el.winnerBox.innerHTML=text; saveChampion(text); return; }
-      if(app.mode==='duel'){ const [a,b]=app.players; let text=''; if(a.score>b.score) text=`${say('champion')} ${a.name}! Placar: ${a.score} x ${b.score}.`; else if(b.score>a.score) text=`${say('champion')} ${b.name}! Placar: ${b.score} x ${a.score}.`; else text=`🤝 Empate! ${a.name} ${a.score} x ${b.score} ${b.name}.`; el.winnerBox.innerHTML=text; saveChampion(text); return; }
-      const board=getLeaderboard(); const champion=board[0]; const vice=board[1]||{name:'—',score:0,tablePoints:0}; const last=board[board.length-1]; const primaryLabel=app.championship.style==='liga'?'pontos de tabela':'pontos'; const text=`${say('champion')} ${champion.name} foi o campeão do campeonato!`; const viceText=`${say('vice')} ${vice.name} terminou em segundo.`; const consolationText=el.consolationToggle.checked?`${say('consolation')} ${last.name} ficou com o prêmio consolação.`:'';
-      el.winnerBox.innerHTML=`<div>${text}</div><div class="podium"><div class="podium-card"><strong>🥇 Campeão</strong><br>${champion.name}<br>${app.championship.style==='liga'?champion.tablePoints:champion.score} ${primaryLabel}</div><div class="podium-card"><strong>🥈 Vice</strong><br>${vice.name}<br>${app.championship.style==='liga'?vice.tablePoints:vice.score} ${primaryLabel}</div><div class="podium-card"><strong>🎭 Consolação</strong><br>${last.name}<br>${app.championship.style==='liga'?last.tablePoints:last.score} ${primaryLabel}</div></div><div style="margin-top:12px;">${viceText}</div>${consolationText?`<div style="margin-top:8px;">${consolationText}</div>`:''}`;
-      saveChampion(`🏆 Campeonato: ${champion.name} venceu ${app.gameTitle}.`);
-    }
-
-    function goBack(){ clearInterval(app.timer); el.gamePanel.classList.add('hidden'); el.setupPanel.classList.remove('hidden'); updatePoolInfo(); renderChampions(); }
-    function resetAll(){ clearInterval(app.timer); app.questions=[]; app.currentIndex=0; app.players=[]; app.usedSkip=false; el.player1.value=''; el.player2.value=''; el.tournamentName.value='Quiz Arena'; el.questionCount.value='10'; el.difficultySelect.value='misto'; el.timerSelect.value='15'; document.querySelectorAll('.themeCheck').forEach(i=>i.checked=true); el.historyList.innerHTML=''; el.winnerBox.style.display='none'; el.gamePanel.classList.add('hidden'); el.setupPanel.classList.remove('hidden'); setMode('solo'); updatePoolInfo(); renderChampions(); }
-    function skipQuestion(){ if(app.usedSkip||app.answered||!app.currentQuestion) return; app.usedSkip=true; clearInterval(app.timer); lockOptions(); const who=currentPlayer().name; el.feedbackText.textContent='⏭️ Pergunta pulada.'; addHistory(`Pergunta ${app.currentIndex+1}: ${who} pulou.`); setTimeout(nextTurn,900); }
-
-    document.getElementById('startBtn').addEventListener('click', startGame);
-    document.getElementById('backBtn').addEventListener('click', goBack);
-    document.getElementById('resetBtn').addEventListener('click', resetAll);
-    document.getElementById('skipBtn').addEventListener('click', skipQuestion);
-    el.soloModeCard.addEventListener('click', ()=>setMode('solo'));
-    el.duelModeCard.addEventListener('click', ()=>setMode('duel'));
-    el.championshipModeCard.addEventListener('click', ()=>setMode('championship'));
-    document.querySelectorAll('.themeCheck').forEach(i=>i.addEventListener('change', updatePoolInfo));
-    el.difficultySelect.addEventListener('change', updatePoolInfo);
-    el.championshipPlayers.addEventListener('change', renderChampionshipPlayersInputs);
-    el.championshipStyle.addEventListener('change', updateChampionshipStyleInfo);
-    el.toggleAdvancedBtn.addEventListener('click', toggleChampionshipAdvanced);
+    els.startBtn.addEventListener('click', startGame); els.backBtn.addEventListener('click', goBack); els.resetBtn.addEventListener('click', resetAll); els.skipBtn.addEventListener('click', skipQuestion);
+    els.soloModeCard.addEventListener('click', ()=>setMode('solo')); els.duelModeCard.addEventListener('click', ()=>setMode('duel')); els.championshipModeCard.addEventListener('click', ()=>setMode('championship'));
+    document.querySelectorAll('.themeCheck').forEach(i=>i.addEventListener('change', updatePoolInfo)); els.difficultySelect.addEventListener('change', updatePoolInfo); els.championshipPlayers.addEventListener('change', renderChampionshipPlayersInputs); els.championshipStyle.addEventListener('change', updateChampionshipStyleInfo); els.toggleAdvancedBtn.addEventListener('click', toggleChampionshipAdvanced);
 
     setMode('solo'); renderChampionshipPlayersInputs(); updateChampionshipStyleInfo(); renderChampions(); updatePoolInfo();
   </script>
