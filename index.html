@@ -1,342 +1,874 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
-<meta charset="UTF-8">
-
-<title>AI Quiz Arena</title>
-
-<style>
-
-body{
-background:#121212;
-color:white;
-font-family:Arial;
-text-align:center;
-}
-
-button{
-padding:10px;
-margin:8px;
-font-size:16px;
-cursor:pointer;
-}
-
-.option{
-display:block;
-width:300px;
-margin:10px auto;
-padding:12px;
-background:#333;
-border:none;
-color:white;
-}
-
-.correct{background:green;}
-.wrong{background:red;}
-
-#timer{
-font-size:22px;
-margin:10px;
-}
-
-</style>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Arena</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg1: #0f172a;
+      --bg2: #1e293b;
+      --panel: rgba(255,255,255,0.07);
+      --panel-border: rgba(255,255,255,0.12);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --blue: #60a5fa;
+      --green: #22c55e;
+      --yellow: #fbbf24;
+      --red: #f87171;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 28px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      margin-bottom: 20px;
+    }
+    h1, h2, h3 { margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: 2.2rem; }
+    p { color: var(--muted); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .hidden { display: none !important; }
+    label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #e2e8f0;
+    }
+    input, select {
+      width: 100%;
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
+    }
+    button:hover { transform: translateY(-2px); filter: brightness(1.03); }
+    button:active { transform: translateY(0); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .primary { background: var(--green); color: #052e16; }
+    .secondary { background: var(--blue); color: #082f49; }
+    .warning { background: var(--yellow); color: #422006; }
+    .danger { background: var(--red); color: #450a0a; }
+    .muted-btn { background: rgba(255,255,255,0.1); color: var(--text); }
+    .mode-card-wrap {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .mode-card {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      border-radius: 22px;
+      padding: 20px;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+    .mode-card.active {
+      outline: 2px solid rgba(96,165,250,0.8);
+      background: rgba(96,165,250,0.12);
+    }
+    .mode-card h3 { margin-bottom: 6px; }
+    .scoreboard {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .name {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .points {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .versus {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--yellow);
+      text-align: center;
+    }
+    .question-box {
+      background: rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-top: 20px;
+    }
+    .question-label {
+      font-size: 0.95rem;
+      color: #93c5fd;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+    .question {
+      font-size: 1.35rem;
+      line-height: 1.5;
+      min-height: 70px;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .mini {
+      font-size: 0.92rem;
+      color: #94a3b8;
+      margin-top: 8px;
+    }
+    .status-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .status-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .status-title {
+      color: #93c5fd;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
+    .status-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .option-btn {
+      text-align: left;
+      padding: 16px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      min-height: 74px;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    .option-btn.correct {
+      background: rgba(34,197,94,0.2);
+      border-color: rgba(34,197,94,0.8);
+    }
+    .option-btn.wrong {
+      background: rgba(248,113,113,0.2);
+      border-color: rgba(248,113,113,0.8);
+    }
+    .lifelines {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .history {
+      background: rgba(0,0,0,0.22);
+      border-radius: 16px;
+      padding: 16px;
+      max-height: 260px;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-top: 18px;
+    }
+    .log-entry {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      margin-bottom: 8px;
+      color: #e5e7eb;
+      line-height: 1.4;
+    }
+    .winner {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      background: rgba(251,191,36,0.12);
+      border: 1px solid rgba(251,191,36,0.35);
+      color: #fde68a;
+    }
+    .champions {
+      margin-top: 18px;
+    }
+    .champion-item {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      margin-bottom: 8px;
+      color: #e5e7eb;
+    }
+    @media (max-width: 900px) {
+      .grid, .grid-3, .scoreboard, .status-row, .options, .mode-card-wrap { grid-template-columns: 1fr; }
+      .points { font-size: 2.4rem; }
+      .question { font-size: 1.1rem; }
+    }
+  </style>
 </head>
-
 <body>
-
-<h1>AI QUIZ ARENA</h1>
-
-<div id="setup">
-
-<button onclick="startGame('solo')">Modo Solo</button>
-
-<button onclick="startGame('duelo')">Modo Duelo</button>
-
-<br><br>
-
-<input id="player1" placeholder="Jogador 1" value="Gepeteta">
-
-<input id="player2" placeholder="Jogador 2" value="Mano Google">
-
-</div>
-
-<div id="game" style="display:none">
-
-<h2 id="turn"></h2>
-
-<div id="timer"></div>
-
-<h3 id="question"></h3>
-
-<div id="options"></div>
-
-<br>
-
-<button onclick="skip()">Pular</button>
-
-<button onclick="fifty()">50/50</button>
-
-<h3 id="score"></h3>
-
-</div>
-
-<script>
-
-// BASE DE CONHECIMENTO
-
-const politicians=[
-{name:"Aécio Neves",party:"PMDB"},
-{name:"Fernando Henrique",party:"MDB"},
-{name:"Lula",party:"PT"}
-]
-
-const stadiums=[
-{team:"Goiatuba",stadium:"Estádio Divino Garcia Rosa"},
-{team:"Flamengo",stadium:"Maracanã"},
-{team:"Palmeiras",stadium:"Allianz Parque"}
-]
-
-const pokemonFirst="Rhydon"
-
-const carsWinner="Chick Hicks"
-
-let mode
-let score1=0
-let score2=0
-let currentPlayer=1
-let currentCorrect
-let timer
-let time=15
-
-function startGame(m){
-
-mode=m
-
-document.getElementById("setup").style.display="none"
-
-document.getElementById("game").style.display="block"
-
-nextQuestion()
-
-}
-
-function random(arr){
-
-return arr[Math.floor(Math.random()*arr.length)]
-
-}
-
-function shuffle(arr){
-
-return arr.sort(()=>Math.random()-0.5)
-
-}
-
-function generateQuestion(){
-
-let type=Math.floor(Math.random()*4)
-
-if(type===0){
-
-let p=random(politicians)
-
-let options=[p.party,"PSDB","PFL","PTB"]
-
-shuffle(options)
-
-currentCorrect=options.indexOf(p.party)
-
-return{
-text:"Qual foi o primeiro partido de "+p.name+"?",
-options:options
-}
-
-}
-
-if(type===1){
-
-let s=random(stadiums)
-
-let options=[s.stadium,"Mineirão","Morumbi","Serra Dourada"]
-
-shuffle(options)
-
-currentCorrect=options.indexOf(s.stadium)
-
-return{
-text:"Qual é o estádio do "+s.team+"?",
-options:options
-}
-
-}
-
-if(type===2){
-
-let options=["Bulbasaur",pokemonFirst,"Mew","Pikachu"]
-
-shuffle(options)
-
-currentCorrect=options.indexOf(pokemonFirst)
-
-return{
-text:"Qual foi o primeiro Pokémon criado?",
-options:options
-}
-
-}
-
-if(type===3){
-
-let options=["Relâmpago McQueen",carsWinner,"The King","Guido"]
-
-shuffle(options)
-
-currentCorrect=options.indexOf(carsWinner)
-
-return{
-text:"Quem venceu a Copa Pistão em Carros 1?",
-options:options
-}
-
-}
-
-}
-
-function nextQuestion(){
-
-let q=generateQuestion()
-
-document.getElementById("question").innerText=q.text
-
-let optDiv=document.getElementById("options")
-
-optDiv.innerHTML=""
-
-q.options.forEach((opt,i)=>{
-
-let btn=document.createElement("button")
-
-btn.className="option"
-
-btn.innerText=opt
-
-btn.onclick=()=>answer(i,btn)
-
-optDiv.appendChild(btn)
-
-})
-
-startTimer()
-
-updateUI()
-
-}
-
-function startTimer(){
-
-clearInterval(timer)
-
-time=15
-
-timer=setInterval(()=>{
-
-time--
-
-document.getElementById("timer").innerText="Tempo: "+time
-
-if(time<=0){
-
-clearInterval(timer)
-
-nextQuestion()
-
-}
-
-},1000)
-
-}
-
-function answer(i,btn){
-
-clearInterval(timer)
-
-let buttons=document.querySelectorAll(".option")
-
-buttons.forEach(b=>b.disabled=true)
-
-if(i===currentCorrect){
-
-btn.classList.add("correct")
-
-if(mode==="solo") score1++
-
-if(mode==="duelo"){
-
-if(currentPlayer===1) score1++
-else score2++
-
-}
-
-}else{
-
-btn.classList.add("wrong")
-
-buttons[currentCorrect].classList.add("correct")
-
-}
-
-updateUI()
-
-}
-
-function updateUI(){
-
-let p1=document.getElementById("player1").value||"Jogador1"
-
-let p2=document.getElementById("player2").value||"Jogador2"
-
-document.getElementById("score").innerText=p1+" "+score1+" x "+score2+" "+p2
-
-if(mode==="duelo"){
-
-document.getElementById("turn").innerText="Turno de "+(currentPlayer===1?p1:p2)
-
-currentPlayer=currentPlayer===1?2:1
-
-}
-
-}
-
-function skip(){
-
-nextQuestion()
-
-}
-
-function fifty(){
-
-let buttons=document.querySelectorAll(".option")
-
-let removed=0
-
-buttons.forEach((b,i)=>{
-
-if(i!==currentCorrect && removed<2){
-
-b.style.display="none"
-
-removed++
-
-}
-
-})
-
-}
-
-</script>
-
+  <div class="wrap">
+    <div class="panel" id="setupPanel">
+      <h1>🏁 Quiz Arena</h1>
+      <p>Escolha o modo, defina o torneio e jogue um quiz automático com perguntas geradas por base local, validação automática, placar e histórico de campeões.</p>
+
+      <div class="mode-card-wrap">
+        <div class="mode-card active" id="soloModeCard">
+          <h3>🎯 Jogo único</h3>
+          <p>Um jogador responde todas as perguntas e tenta fazer a maior pontuação possível.</p>
+        </div>
+        <div class="mode-card" id="duelModeCard">
+          <h3>⚔️ Duelo</h3>
+          <p>Dois jogadores alternam as rodadas e disputam ponto a ponto até o fim do torneio.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="tournamentName">Nome do torneio</label>
+          <input id="tournamentName" type="text" value="Quiz Arena" />
+        </div>
+        <div>
+          <label for="questionCount">Quantidade de perguntas</label>
+          <select id="questionCount">
+            <option value="5">5 perguntas</option>
+            <option value="10" selected>10 perguntas</option>
+            <option value="15">15 perguntas</option>
+            <option value="20">20 perguntas</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top: 16px;">
+        <div>
+          <label for="player1">Nome do jogador</label>
+          <input id="player1" type="text" placeholder="Digite o nome do jogador" />
+        </div>
+        <div id="player2Wrap" class="hidden">
+          <label for="player2">Nome do jogador 2</label>
+          <input id="player2" type="text" placeholder="Digite o nome do jogador 2" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 18px;">
+        <button class="secondary" id="previewBtn">Gerar prévia</button>
+        <button class="primary" id="startBtn">Iniciar jogo</button>
+      </div>
+
+      <div class="panel" style="margin-top: 20px; padding: 18px;">
+        <h3>Prévia de perguntas</h3>
+        <p id="previewText" class="mini">Clique em “Gerar prévia” para ver exemplos de perguntas.</p>
+      </div>
+
+      <div class="panel champions" style="padding: 18px;">
+        <h3>🏆 Histórico de campeões</h3>
+        <div id="championsList"></div>
+      </div>
+    </div>
+
+    <div class="panel hidden" id="gamePanel">
+      <h2 id="gameTitle">Quiz Arena</h2>
+      <p id="gameSubtitle">Responda corretamente para marcar pontos.</p>
+
+      <div class="scoreboard" id="scoreboard">
+        <div class="card">
+          <div class="name" id="name1">Jogador 1</div>
+          <div class="points" id="score1">0</div>
+        </div>
+        <div class="versus" id="versusText">VS</div>
+        <div class="card" id="scoreCard2">
+          <div class="name" id="name2">Jogador 2</div>
+          <div class="points" id="score2">0</div>
+        </div>
+      </div>
+
+      <div class="status-row">
+        <div class="status-box">
+          <div class="status-title">Rodada</div>
+          <div class="status-value" id="roundText">1</div>
+        </div>
+        <div class="status-box">
+          <div class="status-title">Categoria</div>
+          <div class="status-value" id="categoryText">Política</div>
+        </div>
+        <div class="status-box">
+          <div class="status-title">Tempo</div>
+          <div class="status-value" id="timerText">20s</div>
+        </div>
+      </div>
+
+      <div class="question-box">
+        <div class="question-label" id="turnText">Vez de Jogador 1</div>
+        <div class="question" id="questionText"></div>
+        <div class="options" id="optionsWrap"></div>
+        <div class="lifelines">
+          <button class="warning" id="fiftyBtn">50/50</button>
+          <button class="muted-btn" id="skipBtn">Pular pergunta</button>
+        </div>
+        <div class="mini" id="feedbackText"></div>
+      </div>
+
+      <div class="history">
+        <div id="historyList"></div>
+      </div>
+
+      <div class="winner" id="winnerBox"></div>
+
+      <div class="row" style="margin-top: 16px;">
+        <button class="muted-btn" id="backBtn">Voltar ao menu</button>
+        <button class="danger" id="resetBtn">Reiniciar tudo</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questionBase = {
+      politica: [
+        {
+          question: 'Qual foi o primeiro partido de Aécio Neves?',
+          options: ['PSDB', 'PMDB', 'PFL', 'PTB'],
+          correct: 'PMDB'
+        },
+        {
+          question: 'Quando Ciro Gomes foi candidato a presidente?',
+          options: ['1998, 2002, 2018 e 2022', '1994, 1998, 2014 e 2022', '2002, 2006, 2010 e 2022', '1998, 2006, 2014 e 2018'],
+          correct: '1998, 2002, 2018 e 2022'
+        },
+        {
+          question: 'Qual partido foi citado como criação recente no jogo?',
+          options: ['Partido Missão', 'Novo Centro', 'Partido Brasil Unido', 'Frente Popular Nacional'],
+          correct: 'Partido Missão'
+        },
+        {
+          question: 'Quem foi citado como governador de Goiás nas conversas sobre 2026?',
+          options: ['Ronaldo Caiado', 'Romeu Zema', 'Tarcísio de Freitas', 'Ratinho Júnior'],
+          correct: 'Ronaldo Caiado'
+        }
+      ],
+      futebol: [
+        {
+          question: 'Qual é o estádio do Goiatuba?',
+          options: ['Estádio Divino Garcia Rosa', 'Serra Dourada', 'Mineirão', 'Morumbi'],
+          correct: 'Estádio Divino Garcia Rosa'
+        },
+        {
+          question: 'Quem venceu a Copa Pistão em Carros 1?',
+          options: ['Relâmpago McQueen', 'Chick Hicks', 'The King', 'Guido'],
+          correct: 'Chick Hicks'
+        }
+      ],
+      pokemon: [
+        {
+          question: 'Qual foi o primeiro Pokémon criado?',
+          options: ['Bulbasaur', 'Rhydon', 'Mew', 'Pikachu'],
+          correct: 'Rhydon'
+        },
+        {
+          question: 'No jogo anterior, qual resposta automática estava errada sobre Pokémon GO?',
+          options: ['Rolycoly', 'Pikachu', 'Mewtwo', 'Togepi'],
+          correct: 'Rolycoly'
+        }
+      ],
+      internet: [
+        {
+          question: 'No torneio, qual apelido foi dado para Gemini?',
+          options: ['Mano Google', 'Professor Calmo', 'Zuckbot', 'Troll do Espaço'],
+          correct: 'Mano Google'
+        },
+        {
+          question: 'Qual apelido foi dado para DeepSeek?',
+          options: ['Baleia Ruim', 'Detetive da Internet', 'Vento Francês', 'Parceiro da Microsoft'],
+          correct: 'Baleia Ruim'
+        },
+        {
+          question: 'Em uma das rodadas, qual criador foi usado na pergunta sobre vídeo mais recente?',
+          options: ['Guto Zacarias', 'Felca', 'Luba', 'Orochinho'],
+          correct: 'Guto Zacarias'
+        }
+      ],
+      pegadinhas: [
+        {
+          question: 'No jogo, qual letra apareceu na pergunta sobre o nome do usuário?',
+          options: ['K ou C', 'A ou E', 'M ou N', 'R ou S'],
+          correct: 'K ou C'
+        },
+        {
+          question: 'No dilema do trem, qual foi a tendência de resposta adotada?',
+          options: ['Puxar a alavanca para salvar as 5', 'Não agir em hipótese alguma', 'Salvar apenas 1', 'Ignorar o dilema'],
+          correct: 'Puxar a alavanca para salvar as 5'
+        },
+        {
+          question: 'No Minecraft hardcore, qual foi a resposta direta dada no torneio?',
+          options: ['Sim', 'Não', 'Depende', 'Talvez'],
+          correct: 'Sim'
+        }
+      ],
+      cultura_pop: [
+        {
+          question: 'Quem foi bicampeão da Copa pIAstão?',
+          options: ['Mano Google', 'Gepeteta', 'DeepSeek', 'Claude'],
+          correct: 'Mano Google'
+        },
+        {
+          question: 'Qual foi o placar final citado na segunda Copa pIAstão?',
+          options: ['7x6 para o Mano Google', '8x6 para o Gepeteta', '6x6 empate', '7x5 para o Mano Google'],
+          correct: '7x6 para o Mano Google'
+        }
+      ]
+    };
+
+    let gameMode = 'solo';
+    let tournamentName = 'Quiz Arena';
+    let player1Name = '';
+    let player2Name = '';
+    let totalQuestions = 10;
+    let questions = [];
+    let currentIndex = 0;
+    let score1 = 0;
+    let score2 = 0;
+    let currentQuestion = null;
+    let currentPlayer = 1;
+    let timer = null;
+    let timeLeft = 20;
+    let usedFifty = false;
+    let usedSkip = false;
+    let answered = false;
+
+    const setupPanel = document.getElementById('setupPanel');
+    const gamePanel = document.getElementById('gamePanel');
+    const soloModeCard = document.getElementById('soloModeCard');
+    const duelModeCard = document.getElementById('duelModeCard');
+    const player2Wrap = document.getElementById('player2Wrap');
+    const tournamentNameInput = document.getElementById('tournamentName');
+    const questionCountInput = document.getElementById('questionCount');
+    const player1Input = document.getElementById('player1');
+    const player2Input = document.getElementById('player2');
+    const previewText = document.getElementById('previewText');
+    const championsList = document.getElementById('championsList');
+
+    const gameTitle = document.getElementById('gameTitle');
+    const gameSubtitle = document.getElementById('gameSubtitle');
+    const name1El = document.getElementById('name1');
+    const name2El = document.getElementById('name2');
+    const score1El = document.getElementById('score1');
+    const score2El = document.getElementById('score2');
+    const scoreCard2 = document.getElementById('scoreCard2');
+    const versusText = document.getElementById('versusText');
+    const roundText = document.getElementById('roundText');
+    const categoryText = document.getElementById('categoryText');
+    const timerText = document.getElementById('timerText');
+    const turnText = document.getElementById('turnText');
+    const questionText = document.getElementById('questionText');
+    const optionsWrap = document.getElementById('optionsWrap');
+    const feedbackText = document.getElementById('feedbackText');
+    const historyList = document.getElementById('historyList');
+    const winnerBox = document.getElementById('winnerBox');
+    const fiftyBtn = document.getElementById('fiftyBtn');
+    const skipBtn = document.getElementById('skipBtn');
+
+    function getChampions() {
+      try {
+        return JSON.parse(localStorage.getItem('quizArenaChampions') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveChampion(entry) {
+      const champions = getChampions();
+      champions.unshift(entry);
+      localStorage.setItem('quizArenaChampions', JSON.stringify(champions.slice(0, 12)));
+      renderChampions();
+    }
+
+    function renderChampions() {
+      const champions = getChampions();
+      if (!champions.length) {
+        championsList.innerHTML = '<div class="champion-item">Nenhum torneio finalizado ainda.</div>';
+        return;
+      }
+      championsList.innerHTML = champions.map(item => `<div class="champion-item">${item}</div>`).join('');
+    }
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function formatCategory(key) {
+      const map = {
+        politica: 'Política',
+        futebol: 'Futebol',
+        pokemon: 'Pokémon',
+        internet: 'Internet',
+        pegadinhas: 'Pegadinhas',
+        cultura_pop: 'Cultura pop'
+      };
+      return map[key] || key;
+    }
+
+    function buildPool() {
+      const pool = [];
+      Object.entries(questionBase).forEach(([category, items]) => {
+        items.forEach(item => {
+          pool.push({
+            category,
+            question: item.question,
+            options: shuffle(item.options),
+            correct: item.correct
+          });
+        });
+      });
+      return pool;
+    }
+
+    function generateQuestions(amount) {
+      const pool = shuffle(buildPool());
+      const selected = [];
+      for (let i = 0; i < amount; i++) {
+        const baseQuestion = pool[i % pool.length];
+        selected.push({
+          round: i + 1,
+          category: baseQuestion.category,
+          question: baseQuestion.question,
+          options: shuffle(baseQuestion.options),
+          correct: baseQuestion.correct
+        });
+      }
+      return selected;
+    }
+
+    function setMode(mode) {
+      gameMode = mode;
+      soloModeCard.classList.toggle('active', mode === 'solo');
+      duelModeCard.classList.toggle('active', mode === 'duel');
+      player2Wrap.classList.toggle('hidden', mode !== 'duel');
+      const label1 = document.querySelector('label[for="player1"]');
+      label1.textContent = mode === 'solo' ? 'Nome do jogador' : 'Nome do jogador 1';
+    }
+
+    function previewQuestions() {
+      const amount = Number(questionCountInput.value);
+      const preview = generateQuestions(Math.min(amount, 6));
+      previewText.innerHTML = preview.map(q => `• [${formatCategory(q.category)}] ${q.question}`).join('<br>');
+    }
+
+    function updateScoreboard() {
+      score1El.textContent = score1;
+      score2El.textContent = score2;
+    }
+
+    function addHistory(text) {
+      const div = document.createElement('div');
+      div.className = 'log-entry';
+      div.textContent = text;
+      historyList.prepend(div);
+    }
+
+    function updateGameLayout() {
+      name1El.textContent = player1Name;
+      name2El.textContent = player2Name || '—';
+      if (gameMode === 'solo') {
+        scoreCard2.classList.add('hidden');
+        versusText.classList.add('hidden');
+      } else {
+        scoreCard2.classList.remove('hidden');
+        versusText.classList.remove('hidden');
+      }
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      timeLeft = 20;
+      timerText.textContent = `${timeLeft}s`;
+      timer = setInterval(() => {
+        timeLeft -= 1;
+        timerText.textContent = `${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          lockOptions();
+          revealAnswer(-1);
+        }
+      }, 1000);
+    }
+
+    function lockOptions() {
+      document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+      answered = true;
+    }
+
+    function renderQuestion() {
+      if (currentIndex >= questions.length) {
+        finishGame();
+        return;
+      }
+
+      clearInterval(timer);
+      usedFifty = false;
+      answered = false;
+      fiftyBtn.disabled = false;
+      skipBtn.disabled = usedSkip;
+      feedbackText.textContent = '';
+
+      currentQuestion = questions[currentIndex];
+      roundText.textContent = `${currentQuestion.round} / ${questions.length}`;
+      categoryText.textContent = formatCategory(currentQuestion.category);
+      questionText.textContent = currentQuestion.question;
+      turnText.textContent = gameMode === 'solo'
+        ? `Vez de ${player1Name}`
+        : `Vez de ${currentPlayer === 1 ? player1Name : player2Name}`;
+
+      optionsWrap.innerHTML = '';
+      currentQuestion.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<strong>${String.fromCharCode(65 + index)}.</strong> ${option}`;
+        btn.addEventListener('click', () => handleAnswer(index, btn));
+        optionsWrap.appendChild(btn);
+      });
+
+      startTimer();
+    }
+
+    function handleAnswer(index, btn) {
+      if (answered) return;
+      clearInterval(timer);
+      lockOptions();
+      revealAnswer(index, btn);
+    }
+
+    function revealAnswer(selectedIndex, selectedBtn = null) {
+      const buttons = [...document.querySelectorAll('.option-btn')];
+      const correctIndex = currentQuestion.options.findIndex(opt => opt === currentQuestion.correct);
+
+      buttons.forEach((button, idx) => {
+        if (idx === correctIndex) button.classList.add('correct');
+      });
+
+      const currentPlayerName = currentPlayer === 1 ? player1Name : player2Name;
+
+      if (selectedIndex === correctIndex) {
+        if (selectedBtn) selectedBtn.classList.add('correct');
+        if (gameMode === 'solo') {
+          score1 += 1;
+          feedbackText.textContent = `✅ Resposta correta. ${player1Name} marcou 1 ponto.`;
+          addHistory(`Pergunta ${currentQuestion.round}: ${player1Name} acertou.`);
+        } else {
+          if (currentPlayer === 1) score1 += 1;
+          else score2 += 1;
+          feedbackText.textContent = `✅ Resposta correta. ${currentPlayerName} marcou 1 ponto.`;
+          addHistory(`Pergunta ${currentQuestion.round}: ${currentPlayerName} acertou.`);
+        }
+      } else {
+        if (selectedBtn) selectedBtn.classList.add('wrong');
+        if (selectedIndex === -1) {
+          feedbackText.textContent = `⏰ Tempo esgotado. A resposta certa era: ${currentQuestion.correct}.`;
+          addHistory(`Pergunta ${currentQuestion.round}: tempo esgotado.`);
+        } else {
+          feedbackText.textContent = `❌ Resposta errada. A correta era: ${currentQuestion.correct}.`;
+          addHistory(`Pergunta ${currentQuestion.round}: ${gameMode === 'solo' ? player1Name : currentPlayerName} errou.`);
+        }
+      }
+
+      updateScoreboard();
+      skipBtn.disabled = true;
+      fiftyBtn.disabled = true;
+
+      setTimeout(() => {
+        currentIndex += 1;
+        if (gameMode === 'duel') currentPlayer = currentPlayer === 1 ? 2 : 1;
+        renderQuestion();
+      }, 1600);
+    }
+
+    function useFifty() {
+      if (usedFifty || answered) return;
+      usedFifty = true;
+      fiftyBtn.disabled = true;
+      const correctIndex = currentQuestion.options.findIndex(opt => opt === currentQuestion.correct);
+      const buttons = [...document.querySelectorAll('.option-btn')];
+      let removed = 0;
+      buttons.forEach((button, idx) => {
+        if (idx !== correctIndex && removed < 2) {
+          button.style.visibility = 'hidden';
+          removed += 1;
+        }
+      });
+    }
+
+    function skipQuestion() {
+      if (usedSkip || answered) return;
+      usedSkip = true;
+      clearInterval(timer);
+      lockOptions();
+      feedbackText.textContent = '⏭️ Pergunta pulada.';
+      addHistory(`Pergunta ${currentQuestion.round}: ${gameMode === 'solo' ? player1Name : (currentPlayer === 1 ? player1Name : player2Name)} pulou.`);
+      setTimeout(() => {
+        currentIndex += 1;
+        if (gameMode === 'duel') currentPlayer = currentPlayer === 1 ? 2 : 1;
+        renderQuestion();
+      }, 1000);
+    }
+
+    function finishGame() {
+      clearInterval(timer);
+      optionsWrap.innerHTML = '';
+      questionText.textContent = 'Fim do torneio.';
+      turnText.textContent = 'Resultado final';
+      roundText.textContent = `${questions.length} / ${questions.length}`;
+      timerText.textContent = '0s';
+      feedbackText.textContent = '';
+      fiftyBtn.disabled = true;
+      skipBtn.disabled = true;
+      winnerBox.style.display = 'block';
+
+      let championText = '';
+      if (gameMode === 'solo') {
+        championText = `🏆 ${player1Name} terminou ${tournamentName} com ${score1} ponto(s).`;
+      } else if (score1 > score2) {
+        championText = `🏆 ${player1Name} venceu ${tournamentName} por ${score1} x ${score2}.`;
+      } else if (score2 > score1) {
+        championText = `🏆 ${player2Name} venceu ${tournamentName} por ${score2} x ${score1}.`;
+      } else {
+        championText = `🤝 ${tournamentName} terminou empatado em ${score1} x ${score2}.`;
+      }
+
+      winnerBox.textContent = championText;
+      saveChampion(`${new Date().toLocaleDateString('pt-BR')} • ${championText}`);
+    }
+
+    function startGame() {
+      tournamentName = tournamentNameInput.value.trim() || 'Quiz Arena';
+      player1Name = player1Input.value.trim() || 'Jogador 1';
+      player2Name = gameMode === 'duel' ? (player2Input.value.trim() || 'Jogador 2') : '';
+      totalQuestions = Number(questionCountInput.value);
+      questions = generateQuestions(totalQuestions);
+      currentIndex = 0;
+      score1 = 0;
+      score2 = 0;
+      currentPlayer = 1;
+      usedSkip = false;
+      historyList.innerHTML = '';
+      winnerBox.style.display = 'none';
+      winnerBox.textContent = '';
+
+      gameTitle.textContent = tournamentName;
+      gameSubtitle.textContent = gameMode === 'solo'
+        ? `${player1Name} em modo solo`
+        : `${player1Name} vs ${player2Name}`;
+
+      updateGameLayout();
+      updateScoreboard();
+      setupPanel.classList.add('hidden');
+      gamePanel.classList.remove('hidden');
+      addHistory(`Novo torneio iniciado: ${tournamentName}.`);
+      renderQuestion();
+    }
+
+    function goBack() {
+      clearInterval(timer);
+      gamePanel.classList.add('hidden');
+      setupPanel.classList.remove('hidden');
+      renderChampions();
+    }
+
+    function resetAll() {
+      clearInterval(timer);
+      questions = [];
+      currentIndex = 0;
+      score1 = 0;
+      score2 = 0;
+      currentPlayer = 1;
+      usedSkip = false;
+      player1Input.value = '';
+      player2Input.value = '';
+      tournamentNameInput.value = 'Quiz Arena';
+      questionCountInput.value = '10';
+      previewText.textContent = 'Clique em “Gerar prévia” para ver exemplos de perguntas.';
+      historyList.innerHTML = '';
+      winnerBox.style.display = 'none';
+      setupPanel.classList.remove('hidden');
+      gamePanel.classList.add('hidden');
+      setMode('solo');
+      renderChampions();
+    }
+
+    soloModeCard.addEventListener('click', () => setMode('solo'));
+    duelModeCard.addEventListener('click', () => setMode('duel'));
+    document.getElementById('previewBtn').addEventListener('click', previewQuestions);
+    document.getElementById('startBtn').addEventListener('click', startGame);
+    fiftyBtn.addEventListener('click', useFifty);
+    skipBtn.addEventListener('click', skipQuestion);
+    document.getElementById('backBtn').addEventListener('click', goBack);
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+    setMode('solo');
+    renderChampions();
+    previewQuestions();
+  </script>
 </body>
 </html>
