@@ -1,611 +1,230 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gerador de Torneio</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-      color: #f8fafc;
-      min-height: 100vh;
-      padding: 24px;
-    }
-    .wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .panel {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-      backdrop-filter: blur(10px);
-      margin-bottom: 20px;
-    }
-    h1, h2, h3 { margin-top: 0; }
-    h1 { margin-bottom: 8px; }
-    p { color: #cbd5e1; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-    label {
-      display: block;
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: #e2e8f0;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 14px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.08);
-      color: #f8fafc;
-      font-size: 1rem;
-      outline: none;
-    }
-    textarea {
-      min-height: 190px;
-      resize: vertical;
-      line-height: 1.5;
-    }
-    .row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    button {
-      border: none;
-      border-radius: 16px;
-      padding: 14px 18px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.15s ease;
-    }
-    button:hover { transform: translateY(-2px); }
-    button:active { transform: translateY(0); }
-    .primary { background: #22c55e; color: #052e16; }
-    .secondary { background: #60a5fa; color: #082f49; }
-    .warning { background: #fbbf24; color: #422006; }
-    .danger { background: #f87171; color: #450a0a; }
-    .muted { background: rgba(255,255,255,0.1); color: #f8fafc; }
-    .scoreboard {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 18px;
-      align-items: center;
-      margin-top: 12px;
-    }
-    .card {
-      background: rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 20px;
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .name {
-      font-size: 1rem;
-      color: #cbd5e1;
-      margin-bottom: 6px;
-    }
-    .points {
-      font-size: 3rem;
-      font-weight: 800;
-      line-height: 1;
-    }
-    .versus {
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: #fbbf24;
-      text-align: center;
-    }
-    .question-box {
-      background: rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .question-label {
-      font-size: 0.95rem;
-      color: #93c5fd;
-      margin-bottom: 10px;
-      font-weight: 800;
-    }
-    .question {
-      font-size: 1.35rem;
-      line-height: 1.5;
-      min-height: 70px;
-      color: #f8fafc;
-    }
-    .mini {
-      font-size: 0.92rem;
-      color: #94a3b8;
-      margin-top: 8px;
-    }
-    .pill {
-      display: inline-block;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.1);
-      color: #e2e8f0;
-      font-size: 0.9rem;
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
-    .log {
-      background: rgba(0,0,0,0.22);
-      border-radius: 16px;
-      padding: 16px;
-      max-height: 280px;
-      overflow-y: auto;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    .log-entry {
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.05);
-      margin-bottom: 8px;
-      color: #e5e7eb;
-      line-height: 1.4;
-    }
-    .winner {
-      display: none;
-      margin-top: 18px;
-      padding: 16px;
-      border-radius: 16px;
-      text-align: center;
-      font-size: 1.1rem;
-      font-weight: 800;
-      background: rgba(251,191,36,0.12);
-      border: 1px solid rgba(251,191,36,0.35);
-      color: #fde68a;
-    }
-    .hidden { display: none; }
-    @media (max-width: 860px) {
-      .grid, .grid-3, .scoreboard { grid-template-columns: 1fr; }
-      .points { font-size: 2.4rem; }
-      .question { font-size: 1.1rem; }
-    }
-  </style>
+<meta charset="UTF-8">
+<title>AI Quiz Arena</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#111;
+color:white;
+text-align:center;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+.option{
+display:block;
+width:300px;
+margin:10px auto;
+padding:10px;
+background:#333;
+border:none;
+color:white;
+}
+
+.correct{
+background:green;
+}
+
+.wrong{
+background:red;
+}
+
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="panel" id="setupPanel">
-      <h1>🏁 Criador de Torneio</h1>
-      <p>Defina o nome do torneio, escolha os jogadores e deixe o jogo gerar perguntas automaticamente a partir de uma base interna.</p>
 
-      <div class="grid">
-        <div>
-          <label for="tournamentName">Nome do torneio</label>
-          <input id="tournamentName" type="text" value="Copa pIAstão" />
-        </div>
-        <div>
-          <label for="questionCount">Quantidade de perguntas</label>
-          <select id="questionCount">
-            <option value="5">5 perguntas</option>
-            <option value="10" selected>10 perguntas</option>
-            <option value="15">15 perguntas</option>
-          </select>
-        </div>
-      </div>
+<h1 id="title">AI QUIZ ARENA</h1>
 
-      <div class="grid" style="margin-top: 16px;">
-        <div>
-          <label for="player1">Jogador 1</label>
-          <input id="player1" type="text" value="Gepeteta" />
-        </div>
-        <div>
-          <label for="player2">Jogador 2</label>
-          <input id="player2" type="text" value="Mano Google" />
-        </div>
-      </div>
+<div id="setup">
 
-      <div style="margin-top: 18px;">
-        <label>Base de categorias usadas para gerar perguntas</label>
-        <div>
-          <span class="pill">Política</span>
-          <span class="pill">Futebol</span>
-          <span class="pill">Cultura pop</span>
-          <span class="pill">Pokémon</span>
-          <span class="pill">Internet</span>
-          <span class="pill">Pegadinhas</span>
-        </div>
-        <div class="mini">As perguntas são criadas automaticamente a partir dessa base. Você pode editar os dados no código.</div>
-      </div>
+<h3>Modo</h3>
 
-      <div style="margin-top: 18px;">
-        <label for="questionPreview">Prévia das perguntas geradas</label>
-        <textarea id="questionPreview" readonly></textarea>
-      </div>
+<button onclick="startGame('solo')">Jogador único</button>
+<button onclick="startGame('duelo')">Duelo</button>
 
-      <div class="row" style="margin-top: 16px;">
-        <button class="secondary" id="generateQuestionsBtn">Gerar perguntas</button>
-        <button class="primary" id="startGameBtn">Iniciar torneio</button>
-      </div>
-    </div>
+<br><br>
 
-    <div class="panel hidden" id="gamePanel">
-      <h2 id="gameTitle">Copa pIAstão</h2>
-      <p id="gameSubtitle">Decida quem ganhou cada rodada.</p>
+<input id="player1" placeholder="Jogador 1" value="Gepeteta">
 
-      <div class="scoreboard">
-        <div class="card">
-          <div class="name" id="name1">Jogador 1</div>
-          <div class="points" id="score1">0</div>
-        </div>
-        <div class="versus">VS</div>
-        <div class="card">
-          <div class="name" id="name2">Jogador 2</div>
-          <div class="points" id="score2">0</div>
-        </div>
-      </div>
+<input id="player2" placeholder="Jogador 2" value="Mano Google">
 
-      <div class="question-box" style="margin-top: 20px;">
-        <div class="question-label" id="roundLabel">Pergunta 1</div>
-        <div class="question" id="questionText"></div>
-        <div class="mini" id="categoryText"></div>
-      </div>
+</div>
 
-      <div class="row" style="margin-top: 16px;">
-        <button class="primary" id="pointP1Btn">Ponto para Jogador 1</button>
-        <button class="secondary" id="pointP2Btn">Ponto para Jogador 2</button>
-        <button class="warning" id="skipBtn">Pular pergunta</button>
-      </div>
+<div id="game" style="display:none">
 
-      <div style="margin-top: 18px;">
-        <h3>Histórico</h3>
-        <div class="log" id="logEntries"></div>
-      </div>
+<h2 id="turn"></h2>
 
-      <div class="winner" id="winnerBox"></div>
+<h3 id="question"></h3>
 
-      <div class="row" style="margin-top: 16px;">
-        <button class="muted" id="backBtn">Voltar para configuração</button>
-        <button class="danger" id="resetBtn">Reiniciar torneio</button>
-      </div>
-    </div>
-  </div>
+<div id="options"></div>
 
-  <script>
-    const questionBase = {
-      politica: [
-        {
-          type: 'primeiro_partido',
-          person: 'Aécio Neves',
-          answer: 'PMDB'
-        },
-        {
-          type: 'eleicoes_presidenciais',
-          person: 'Ciro Gomes',
-          years: [1998, 2002, 2018, 2022]
-        },
-        {
-          type: 'pre_candidatos',
-          year: 2026,
-          theme: 'pré-candidatos a presidente'
-        },
-        {
-          type: 'partido_recente',
-          answer: 'Partido Missão'
-        }
-      ],
-      futebol: [
-        {
-          type: 'estadio',
-          team: 'Goiatuba',
-          answer: 'Estádio Divino Garcia Rosa'
-        },
-        {
-          type: 'campeao_filme',
-          title: 'Carros 1',
-          answer: 'Chick Hicks'
-        }
-      ],
-      pokemon: [
-        {
-          type: 'primeiro_criado',
-          answer: 'Rhydon'
-        },
-        {
-          type: 'mais_recente_go',
-          theme: 'Pokémon GO'
-        }
-      ],
-      internet: [
-        {
-          type: 'ultimo_video',
-          person: 'Guto Zacarias'
-        },
-        {
-          type: 'apelidos_ias',
-          amount: 10
-        }
-      ],
-      pegadinhas: [
-        {
-          type: 'quem_sou_eu'
-        },
-        {
-          type: 'dilema_trem'
-        },
-        {
-          type: 'minecraft_cachorro'
-        }
-      ],
-      cultura_pop: [
-        {
-          type: 'recado_ia',
-          target: 'DeepSeek'
-        },
-        {
-          type: 'nome_tem_letra'
-        }
-      ]
-    };
+<h3 id="score"></h3>
 
-    let tournamentQuestions = [];
-    let currentQuestionIndex = 0;
-    let score1 = 0;
-    let score2 = 0;
-    let player1Name = 'Gepeteta';
-    let player2Name = 'Mano Google';
-    let tournamentName = 'Copa pIAstão';
+<button onclick="nextQuestion()">Próxima</button>
 
-    const setupPanel = document.getElementById('setupPanel');
-    const gamePanel = document.getElementById('gamePanel');
-    const tournamentNameInput = document.getElementById('tournamentName');
-    const questionCountInput = document.getElementById('questionCount');
-    const player1Input = document.getElementById('player1');
-    const player2Input = document.getElementById('player2');
-    const questionPreview = document.getElementById('questionPreview');
+</div>
 
-    const gameTitle = document.getElementById('gameTitle');
-    const gameSubtitle = document.getElementById('gameSubtitle');
-    const name1El = document.getElementById('name1');
-    const name2El = document.getElementById('name2');
-    const score1El = document.getElementById('score1');
-    const score2El = document.getElementById('score2');
-    const roundLabelEl = document.getElementById('roundLabel');
-    const questionTextEl = document.getElementById('questionText');
-    const categoryTextEl = document.getElementById('categoryText');
-    const logEntriesEl = document.getElementById('logEntries');
-    const winnerBoxEl = document.getElementById('winnerBox');
-    const pointP1Btn = document.getElementById('pointP1Btn');
-    const pointP2Btn = document.getElementById('pointP2Btn');
+<script>
 
-    function sample(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
+// BASE DE CONHECIMENTO
 
-    function shuffle(array) {
-      const copy = [...array];
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
+const base = [
 
-    function formatCategory(key) {
-      const names = {
-        politica: 'Política',
-        futebol: 'Futebol',
-        pokemon: 'Pokémon',
-        internet: 'Internet',
-        pegadinhas: 'Pegadinhas',
-        cultura_pop: 'Cultura pop'
-      };
-      return names[key] || key;
-    }
+{
+question:"Qual foi o primeiro partido de Aécio Neves?",
+options:["PSDB","PMDB","PFL","PTB"],
+correct:1
+},
 
-    function buildQuestion(category, item) {
-      switch (item.type) {
-        case 'primeiro_partido':
-          return `Qual foi o primeiro partido de ${item.person}?`;
-        case 'eleicoes_presidenciais':
-          return `Quando ${item.person} foi candidato a presidente?`;
-        case 'pre_candidatos':
-          return `Quais são os principais ${item.theme} em ${item.year}?`;
-        case 'partido_recente':
-          return 'Foi criado um partido recentemente. Qual é?';
-        case 'estadio':
-          return `Qual é o estádio do ${item.team}?`;
-        case 'campeao_filme':
-          return `Quem ganhou a Copa Pistão no filme ${item.title}?`;
-        case 'primeiro_criado':
-          return 'Qual foi o primeiro Pokémon criado?';
-        case 'mais_recente_go':
-          return `Quem é o Pokémon mais recente adicionado em ${item.theme}?`;
-        case 'ultimo_video':
-          return `Quando lançou o último vídeo de ${item.person}?`;
-        case 'apelidos_ias':
-          return `Dê apelidos para ${item.amount} IAs.`;
-        case 'quem_sou_eu':
-          return 'Quem sou eu? Você tem 5 perguntas e um chute por resposta.';
-        case 'dilema_trem':
-          return 'Se essa situação fosse o dilema do trem, sua opinião mudaria?';
-        case 'minecraft_cachorro':
-          return 'Você mataria seu cachorrinho no Minecraft para salvar seu mundo hardcore?';
-        case 'recado_ia':
-          return `Mande um recado para ${item.target}.`;
-        case 'nome_tem_letra':
-          return 'Meu nome tem K ou C?';
-        default:
-          return 'Pergunta surpresa.';
-      }
-    }
+{
+question:"Quem venceu a Copa Pistão em Carros 1?",
+options:["Relâmpago McQueen","Chick Hicks","The King","Guido"],
+correct:1
+},
 
-    function generateTournamentQuestions() {
-      const total = Number(questionCountInput.value);
-      const categories = Object.keys(questionBase);
-      const pool = [];
+{
+question:"Qual foi o primeiro Pokémon criado?",
+options:["Bulbasaur","Rhydon","Mew","Pikachu"],
+correct:1
+},
 
-      categories.forEach(category => {
-        questionBase[category].forEach(item => {
-          pool.push({
-            category,
-            text: buildQuestion(category, item)
-          });
-        });
-      });
+{
+question:"Qual é o estádio do Goiatuba?",
+options:[
+Estádio Divino Garcia Rosa,
+Mineirão,
+Serra Dourada,
+Morumbi
+],
+correct:0
+},
 
-      const shuffled = shuffle(pool);
-      const selected = [];
+{
+question:"Quando Ciro Gomes foi candidato a presidente?",
+options:[
+"1998, 2002, 2018, 2022",
+"1994, 1998, 2014",
+"2006, 2010, 2018",
+"2002, 2010, 2014"
+],
+correct:0
+}
 
-      while (selected.length < total) {
-        const next = shuffled[selected.length % shuffled.length];
-        selected.push({ ...next, round: selected.length + 1 });
-      }
+];
 
-      tournamentQuestions = selected;
-      questionPreview.value = tournamentQuestions
-        .map(q => `${q.round}. [${formatCategory(q.category)}] ${q.text}`)
-        .join('\n');
-    }
+let mode
+let currentPlayer=1
+let score1=0
+let score2=0
+let currentQuestion
 
-    function updateButtons() {
-      pointP1Btn.textContent = `Ponto para ${player1Name}`;
-      pointP2Btn.textContent = `Ponto para ${player2Name}`;
-    }
+function startGame(m){
 
-    function updateScores() {
-      score1El.textContent = score1;
-      score2El.textContent = score2;
-    }
+mode=m
 
-    function addLog(text) {
-      const entry = document.createElement('div');
-      entry.className = 'log-entry';
-      entry.textContent = text;
-      logEntriesEl.prepend(entry);
-    }
+document.getElementById("setup").style.display="none"
+document.getElementById("game").style.display="block"
 
-    function renderQuestion() {
-      if (currentQuestionIndex >= tournamentQuestions.length) {
-        roundLabelEl.textContent = 'Fim do torneio';
-        questionTextEl.textContent = 'Todas as perguntas terminaram.';
-        categoryTextEl.textContent = '';
-        showWinner();
-        return;
-      }
+nextQuestion()
 
-      const current = tournamentQuestions[currentQuestionIndex];
-      roundLabelEl.textContent = `Pergunta ${current.round}`;
-      questionTextEl.textContent = current.text;
-      categoryTextEl.textContent = `Categoria: ${formatCategory(current.category)}`;
-    }
+}
 
-    function showWinner() {
-      winnerBoxEl.style.display = 'block';
-      if (score1 > score2) {
-        winnerBoxEl.textContent = `🏆 ${player1Name} venceu ${tournamentName} por ${score1} x ${score2}.`;
-      } else if (score2 > score1) {
-        winnerBoxEl.textContent = `🏆 ${player2Name} venceu ${tournamentName} por ${score2} x ${score1}.`;
-      } else {
-        winnerBoxEl.textContent = `🤝 ${tournamentName} terminou empatado em ${score1} x ${score2}.`;
-      }
-    }
+function nextQuestion(){
 
-    function startGame() {
-      tournamentName = tournamentNameInput.value.trim() || 'Torneio sem nome';
-      player1Name = player1Input.value.trim() || 'Jogador 1';
-      player2Name = player2Input.value.trim() || 'Jogador 2';
+const q = base[Math.floor(Math.random()*base.length)]
 
-      if (!tournamentQuestions.length) {
-        generateTournamentQuestions();
-      }
+currentQuestion=q
 
-      currentQuestionIndex = 0;
-      score1 = 0;
-      score2 = 0;
-      winnerBoxEl.style.display = 'none';
-      logEntriesEl.innerHTML = '';
+document.getElementById("question").innerText=q.question
 
-      gameTitle.textContent = tournamentName;
-      gameSubtitle.textContent = `${player1Name} vs ${player2Name}`;
-      name1El.textContent = player1Name;
-      name2El.textContent = player2Name;
-      updateButtons();
-      updateScores();
-      renderQuestion();
+const optionsDiv=document.getElementById("options")
 
-      setupPanel.classList.add('hidden');
-      gamePanel.classList.remove('hidden');
-      addLog(`Novo torneio iniciado: ${tournamentName}.`);
-    }
+optionsDiv.innerHTML=""
 
-    function awardPoint(player) {
-      if (currentQuestionIndex >= tournamentQuestions.length) return;
-      const current = tournamentQuestions[currentQuestionIndex];
+q.options.forEach((opt,i)=>{
 
-      if (player === 1) {
-        score1++;
-        addLog(`Pergunta ${current.round}: ponto para ${player1Name} — ${current.text}`);
-      } else {
-        score2++;
-        addLog(`Pergunta ${current.round}: ponto para ${player2Name} — ${current.text}`);
-      }
+const btn=document.createElement("button")
 
-      currentQuestionIndex++;
-      updateScores();
-      renderQuestion();
-    }
+btn.className="option"
 
-    function skipQuestion() {
-      if (currentQuestionIndex >= tournamentQuestions.length) return;
-      const current = tournamentQuestions[currentQuestionIndex];
-      addLog(`Pergunta ${current.round}: pulada — ${current.text}`);
-      currentQuestionIndex++;
-      renderQuestion();
-    }
+btn.innerText=opt
 
-    function backToSetup() {
-      gamePanel.classList.add('hidden');
-      setupPanel.classList.remove('hidden');
-    }
+btn.onclick=()=>answer(i,btn)
 
-    function resetAll() {
-      tournamentQuestions = [];
-      questionPreview.value = '';
-      currentQuestionIndex = 0;
-      score1 = 0;
-      score2 = 0;
-      updateScores();
-      logEntriesEl.innerHTML = '';
-      winnerBoxEl.style.display = 'none';
-      tournamentNameInput.value = 'Copa pIAstão';
-      player1Input.value = 'Gepeteta';
-      player2Input.value = 'Mano Google';
-      questionCountInput.value = '10';
-      gameTitle.textContent = 'Copa pIAstão';
-      gameSubtitle.textContent = 'Decida quem ganhou cada rodada.';
-      setupPanel.classList.remove('hidden');
-      gamePanel.classList.add('hidden');
-    }
+optionsDiv.appendChild(btn)
 
-    document.getElementById('generateQuestionsBtn').addEventListener('click', generateTournamentQuestions);
-    document.getElementById('startGameBtn').addEventListener('click', startGame);
-    document.getElementById('pointP1Btn').addEventListener('click', () => awardPoint(1));
-    document.getElementById('pointP2Btn').addEventListener('click', () => awardPoint(2));
-    document.getElementById('skipBtn').addEventListener('click', skipQuestion);
-    document.getElementById('backBtn').addEventListener('click', backToSetup);
-    document.getElementById('resetBtn').addEventListener('click', resetAll);
+})
 
-    generateTournamentQuestions();
-  </script>
+updateUI()
+
+}
+
+function answer(i,btn){
+
+const correct=currentQuestion.correct
+
+const buttons=document.querySelectorAll(".option")
+
+buttons.forEach(b=>b.disabled=true)
+
+if(i===correct){
+
+btn.classList.add("correct")
+
+if(mode==="solo") score1++
+
+if(mode==="duelo"){
+
+if(currentPlayer===1) score1++
+else score2++
+
+}
+
+}else{
+
+btn.classList.add("wrong")
+
+buttons[correct].classList.add("correct")
+
+}
+
+updateUI()
+
+}
+
+function updateUI(){
+
+let p1=document.getElementById("player1").value||"Jogador1"
+let p2=document.getElementById("player2").value||"Jogador2"
+
+document.getElementById("score").innerText=
+p1+" "+score1+" x "+score2+" "+p2
+
+if(mode==="duelo"){
+
+document.getElementById("turn").innerText=
+"Turno de "+(currentPlayer===1?p1:p2)
+
+currentPlayer=currentPlayer===1?2:1
+
+}else{
+
+document.getElementById("turn").innerText=""
+
+}
+
+}
+
+</script>
+
 </body>
 </html>
